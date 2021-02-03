@@ -236,6 +236,17 @@ AssignDriverlessVehiclesSpecifications <- list(
       ISELEMENTOF = ""
     ),
     item(
+      NAME = items("Age65Plus",
+                   "Drv65Plus",
+                   "Drivers"),
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "people",
+      UNITS = "PRSN",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = ""
+    ),
+    item(
       NAME = items(
         "NumLtTrk",
         "NumAuto",
@@ -250,6 +261,16 @@ AssignDriverlessVehiclesSpecifications <- list(
   ),
   #Specify data to saved in the data store
   Set = items(
+    item(
+      NAME = items("Drv65Plus",
+                   "Drivers"),
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "people",
+      UNITS = "PRSN",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = ""
+    ),
     item(
       NAME = "DriverlessDvmtProp",
       TABLE = "Household",
@@ -342,7 +363,7 @@ AssignDriverlessVehicles <- function(L) {
 
   #Assign driverless to household vehicles
   #---------------------------------------
-  Driverless_ <- integer(NumVeh)
+  Driverless_ <- setNames(integer(NumVeh), L$Year$Vehicle$VehId)
   RegionDriverlessPropByYear_df <- data.frame(L$Global$RegionDriverlessProps)
   RegionDriverlessPropByYear_df$VehYear <- as.integer(gsub("\\.\\d*", "",
                                                            RegionDriverlessPropByYear_df$VehYear))
@@ -409,12 +430,35 @@ AssignDriverlessVehicles <- function(L) {
   DriverlessDvmtProp_[names(NumDriverlessVehByHh_)] <- NumDriverlessVehByHh_ /
     pmax(NumEligibleVehByHh_[names(NumDriverlessVehByHh_)],1)
 
+  # Update drivers for driverless vehicles
+  NumDrivers_ <- L$Year$Household$Drivers
+  names(NumDrivers_) <- L$Year$Household$HhId
+  NumPersonAge65Plus_ <- L$Year$Household$Age65Plus
+  names(NumPersonAge65Plus_) <- L$Year$Household$HhId
+  NumDriverAge65Plus_ <- L$Year$Household$Drv65Plus
+  names(NumDriverAge65Plus_) <- L$Year$Household$HhId
+  NumChangeDriverAge65Plus_ <- integer(length(L$Year$Household$HhId))
+  names(NumChangeDriverAge65Plus_) <- L$Year$Household$HhId
+  NumDriverlessVehByHh_ <- NumDriverlessVehByHh_[L$Year$Household$HhId]
+
+  isHhOwnDriverless_ <- NumDriverlessVehByHh_ > 0
+  NumChangeDriverAge65Plus_[isHhOwnDriverless_] <- NumPersonAge65Plus_[isHhOwnDriverless_] -
+    NumDriverAge65Plus_[isHhOwnDriverless_]
+
+  # Update the elderly drivers
+  NumDriverAge65Plus_[isHhOwnDriverless_] <- NumPersonAge65Plus_[isHhOwnDriverless_]
+  # Update the total drivers
+  NumDrivers_ <- NumDrivers_ + NumChangeDriverAge65Plus_
+  
+
   Out_ls$Year <- list(
     Vehicle = list(
       Driverless = Driverless_
     ),
     Household = list(
-      DriverlessDvmtProp = DriverlessDvmtProp_
+      DriverlessDvmtProp = DriverlessDvmtProp_,
+      Drv65Plus = NumDriverAge65Plus_,
+      Drivers = NumDrivers_
     )
   )
 
