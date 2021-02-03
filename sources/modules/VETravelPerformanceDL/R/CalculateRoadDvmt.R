@@ -5,7 +5,7 @@
 #<doc>
 #
 ## CalculateRoadDvmt Module
-#### January 27, 2019
+#### June 5, 2020
 #
 #When run for the base year, this module computes several factors used in computing roadway DVMT including factors for calculating commercial service vehicle travel and heavy truck travel. While base year heavy truck DVMT and commercial service vehicle DVMT are calculated directly from inputs and model parameters, future year DVMT is calculated as a function of the declared growth basis which for heavy trucks may be population or income, and for commercial service vehicles may be population, income, or household DVMT. Factors are calculated for each basis. In non-base years, the module uses these factors to compute heavy truck and commercial service DVMT. This module also calculates the proportions of light duty vehicles, heavy truck, and bus DVMT that are driverless.
 #
@@ -616,7 +616,7 @@ CalculateRoadDvmtSpecifications <- list(
 #' }
 #' @source CalculateRoadDvmt.R script.
 "CalculateRoadDvmtSpecifications"
-usethis::use_data(CalculateRoadDvmtSpecifications, overwrite = TRUE)
+visioneval::savePackageDataset(CalculateRoadDvmtSpecifications, overwrite = TRUE)
 
 
 #=======================================================
@@ -661,20 +661,26 @@ assignHhUrbanDvmtProp <- function(Hh_ls, HhUrbanRoadDvmt_Ma) {
       Dvmt_ <- Hh_ls$Dvmt[Hh_ls$Marea == ma]
       LocType_ <- Hh_ls$LocType[Hh_ls$Marea == ma]
       Prob_ <- as.numeric(LocType_ == "Urban")
-      UrbanRoadProp_ <- Prob_ * HhUrbanRoadDvmt_Ma[ma] / sum(Dvmt_ * Prob_)
-      if (any(UrbanRoadProp_ > 1)) {
+      if (any(Prob_ == 1)) {
+        UrbanRoadProp_ <- Prob_ * HhUrbanRoadDvmt_Ma[ma] / sum(Dvmt_ * Prob_)
+        if (any(UrbanRoadProp_ > 1)) {
+          UrbanRoadProp_[UrbanRoadProp_ > 1] <- 1
+          RoadDvmtDiff <- HhUrbanRoadDvmt_Ma[ma] - sum(UrbanRoadProp_ * Dvmt_)
+          UrbanRoadProp_[LocType_ != "Urban"] <-
+            RoadDvmtDiff / sum(Dvmt_[LocType_ != "Urban"])
+        }
         UrbanRoadProp_[UrbanRoadProp_ > 1] <- 1
-        RoadDvmtDiff <- HhUrbanRoadDvmt_Ma[ma] - sum(UrbanRoadProp_ * Dvmt_)
-        UrbanRoadProp_[LocType_ != "Urban"] <-
-          RoadDvmtDiff / sum(Dvmt_[LocType_ != "Urban"])
+        HhDvmt_ <- tapply(Dvmt_, LocType_, sum)
+        HhUrbanDvmt_ <- tapply(UrbanRoadProp_ * Dvmt_, LocType_, sum)
+        Prop_[Hh_ls$Marea == ma] <- UrbanRoadProp_
+        UrbanHhPropUrbanDvmt_Ma[ma] <- HhUrbanDvmt_["Urban"] / HhDvmt_["Urban"]
+        NonUrbanHhPropUrbanDvmt_Ma[ma] <-
+          (sum(HhUrbanDvmt_) - HhUrbanDvmt_["Urban"])  / (sum(HhDvmt_) - HhDvmt_["Urban"])
+      } else {
+        Prop_[Hh_ls$Marea == ma] <- HhUrbanRoadDvmt_Ma[ma] / sum(Dvmt_)
+        UrbanHhPropUrbanDvmt_Ma[ma] <- 0
+        NonUrbanHhPropUrbanDvmt_Ma[ma] <- HhUrbanRoadDvmt_Ma[ma] / sum(Dvmt_)
       }
-      UrbanRoadProp_[UrbanRoadProp_ > 1] <- 1
-      HhDvmt_ <- tapply(Dvmt_, LocType_, sum)
-      HhUrbanDvmt_ <- tapply(UrbanRoadProp_ * Dvmt_, LocType_, sum)
-      Prop_[Hh_ls$Marea == ma] <- UrbanRoadProp_
-      UrbanHhPropUrbanDvmt_Ma[ma] <- HhUrbanDvmt_["Urban"] / HhDvmt_["Urban"]
-      NonUrbanHhPropUrbanDvmt_Ma[ma] <-
-        (sum(HhUrbanDvmt_) - HhUrbanDvmt_["Urban"])  / (sum(HhDvmt_) - HhDvmt_["Urban"])
     } else {
       Prop_[Hh_ls$Marea == ma] <- 0
       UrbanHhPropUrbanDvmt_Ma[ma] <- 0
@@ -1090,18 +1096,8 @@ documentModule("CalculateRoadDvmt")
 #   # SaveDatastore = TRUE
 #   SaveDatastore = FALSE
 # )
-# #Define test setup parameters
-# TestSetup_ls <- list(
-#   TestDataRepo = "../Test_Data/VE-RSPM",
-#   DatastoreName = "Datastore.tar",
-#   LoadDatastore = TRUE,
-#   TestDocsDir = "verspm",
-#   ClearLogs = TRUE,
-#   # SaveDatastore = TRUE
-#   SaveDatastore = FALSE
-# )
 # setUpTests(TestSetup_ls)
-#Run test module
+# #Run test module
 # TestDat_ <- testModule(
 #   ModuleName = "CalculateRoadDvmt",
 #   LoadDatastore = TRUE,

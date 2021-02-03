@@ -427,7 +427,7 @@ AdjustHhVehicleMpgMpkwhSpecifications <- list(
 #' }
 #' @source AdjustHhVehicleMpgMpkwh.R script.
 "AdjustHhVehicleMpgMpkwhSpecifications"
-usethis::use_data(AdjustHhVehicleMpgMpkwhSpecifications, overwrite = TRUE)
+visioneval::savePackageDataset(AdjustHhVehicleMpgMpkwhSpecifications, overwrite = TRUE)
 
 
 #=======================================================

@@ -5,7 +5,7 @@
 #<doc>
 #
 ## CalculateHhVehicleOperatingCosts Module
-#### January 23, 2019
+#### June 5, 2020
 #
 #This module calculates vehicle operating costs per mile of travel and uses those costs to determine the proportional split of DVMT among household vehicles. The module also calculates the average out-of-pocket costs per mile of vehicle travel by household, as well as the cost of social and environmental impacts, and road use taxes per mile of vehicle travel. Three operating costs are calculated:
 #
@@ -527,7 +527,7 @@ OpCosts_ls <- list(
 #' }
 #' @source CalculateVehicleOperatingCost.R script.
 "OpCosts_ls"
-usethis::use_data(OpCosts_ls, overwrite = TRUE)
+visioneval::savePackageDataset(OpCosts_ls, overwrite = TRUE)
 rm(VehCost_AgTy, AAAOpCost_, RelBLSOpCost_, CO2eCost_, Deflators_Yr, OtherExtCost_)
 
 
@@ -1123,7 +1123,7 @@ CalculateVehicleOperatingCostSpecifications <- list(
       TYPE = "currency",
       UNITS = "USD.2010",
       NAVALUE = -1,
-      PROHIBIT = c("NA", "< 0"),
+      PROHIBIT = c("< 0"),
       ISELEMENTOF = "",
       SIZE = 0,
       DESCRIPTION = "Average out-of-pocket cost in dollars per mile of vehicle travel"
@@ -1135,7 +1135,7 @@ CalculateVehicleOperatingCostSpecifications <- list(
       TYPE = "currency",
       UNITS = "USD.2010",
       NAVALUE = -1,
-      PROHIBIT = c("NA", "< 0"),
+      PROHIBIT = c("< 0"),
       ISELEMENTOF = "",
       SIZE = 0,
       DESCRIPTION = "Average cost in dollars of the social and environmental impacts per mile of vehicle travel"
@@ -1147,7 +1147,7 @@ CalculateVehicleOperatingCostSpecifications <- list(
       TYPE = "currency",
       UNITS = "USD.2010",
       NAVALUE = -1,
-      PROHIBIT = c("NA", "< 0"),
+      PROHIBIT = c("< 0"),
       ISELEMENTOF = "",
       SIZE = 0,
       DESCRIPTION = "Average road use taxes in dollars collected per mile of vehicle travel"
@@ -1207,7 +1207,7 @@ CalculateVehicleOperatingCostSpecifications <- list(
       TYPE = "compound",
       UNITS = "GGE/MI",
       NAVALUE = -1,
-      PROHIBIT = c("NA", "< 0"),
+      PROHIBIT = c("< 0"),
       ISELEMENTOF = "",
       SIZE = 0,
       DESCRIPTION = "Average gasoline equivalent gallons per mile of household vehicle travel"
@@ -1219,7 +1219,7 @@ CalculateVehicleOperatingCostSpecifications <- list(
       TYPE = "compound",
       UNITS = "KWH/MI",
       NAVALUE = -1,
-      PROHIBIT = c("NA", "< 0"),
+      PROHIBIT = c("< 0"),
       ISELEMENTOF = "",
       SIZE = 0,
       DESCRIPTION = "Average kilowatt-hours per mile of household vehicle travel"
@@ -1231,7 +1231,7 @@ CalculateVehicleOperatingCostSpecifications <- list(
       TYPE = "compound",
       UNITS = "GM/MI",
       NAVALUE = -1,
-      PROHIBIT = c("NA", "< 0"),
+      PROHIBIT = c("< 0"),
       ISELEMENTOF = "",
       SIZE = 0,
       DESCRIPTION = "Average grams of carbon-dioxide equivalents produced per mile of household vehicle travel"
@@ -1280,7 +1280,7 @@ CalculateVehicleOperatingCostSpecifications <- list(
 #' }
 #' @source CalculateVehicleOperatingCost.R script.
 "CalculateVehicleOperatingCostSpecifications"
-usethis::use_data(CalculateVehicleOperatingCostSpecifications, overwrite = TRUE)
+visioneval::savePackageDataset(CalculateVehicleOperatingCostSpecifications, overwrite = TRUE)
 
 
 #=======================================================
@@ -1332,6 +1332,8 @@ CalculateVehicleOperatingCost <- function(L) {
   MaToVehIdx_Ve <- match(L$Year$Vehicle$Marea, L$Year$Marea$Marea)
   #Proportion of vehicle DVMT on urban roads
   UrbanVmtProp_Ve <- L$Year$Household$UrbanDvmtProp[HhToVehIdx_Ve]
+
+  OpCosts_ls <- VETravelPerformance::OpCosts_ls
 
   #Calculate vehicle cost components
   #---------------------------------

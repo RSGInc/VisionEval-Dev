@@ -337,7 +337,7 @@ rm(Inp_ls, SpeedSmoothEffect_df, Spd_)
 #' }
 #' @source CalculateMpgMpkwhAdjustments.R script.
 "MpgMpkwhAdj_ls"
-usethis::use_data(MpgMpkwhAdj_ls, overwrite = TRUE)
+visioneval::savePackageDataset(MpgMpkwhAdj_ls, overwrite = TRUE)
 
 
 #================================================
@@ -586,7 +586,7 @@ CalculateMpgMpkwhAdjustmentsSpecifications <- list(
 #' }
 #' @source CalculateMpgMpkwhAdjustments.R script.
 "CalculateMpgMpkwhAdjustmentsSpecifications"
-usethis::use_data(CalculateMpgMpkwhAdjustmentsSpecifications, overwrite = TRUE)
+visioneval::savePackageDataset(CalculateMpgMpkwhAdjustmentsSpecifications, overwrite = TRUE)
 
 
 #=======================================================
@@ -671,6 +671,7 @@ CalculateMpgMpkwhAdjustments <- function(L) {
       Dvmt_MaRc <- Dvmt_MaRcVt[,,x]
       Dvmt_MaRc <- t(as.matrix(Dvmt_MaRc))
       rownames(Dvmt_MaRc) <- Ma
+    colnames(Dvmt_MaRc) <- c("Fwy", "Art", "Oth")
       sweep(Dvmt_MaRc, 1, rowSums(Dvmt_MaRc), "/")
     })
   }
@@ -698,6 +699,9 @@ CalculateMpgMpkwhAdjustments <- function(L) {
   #-------------------------------------------------------------------------
   #Calculates speed smoothing maximum factors by road class for a given vehicle
   #type based on the estimated congested speeds
+
+  MpgMpkwhAdj_ls <- VETravelPerformance::MpgMpkwhAdj_ls
+
   calcMaxSpdSmAdj <- function(vt) {
     #Choose the speed smoothing factor model
     if (vt == "Ldv"){
@@ -757,7 +761,7 @@ CalculateMpgMpkwhAdjustments <- function(L) {
       Fwy = L$Year$Marea$FwySmooth[L$Year$Marea$Marea == ma],
       Art = L$Year$Marea$ArtSmooth[L$Year$Marea$Marea == ma],
       Oth = 0
-    )
+    ) * 0.5
     #Apply the driverless DVMT adjustment functions to
     #adjust speed smoothing fractions
     AveDriverlessDvmtProp_Rc <- AveDriverlessDvmtProp_MaRc[ma,]
@@ -769,7 +773,7 @@ CalculateMpgMpkwhAdjustments <- function(L) {
     #Calculate the smoothing factors from the maximum values for the vehicle
     #type and the smoothing fractions
     #Maximum practical smoothing by congestion level and road class for the metropolitan area
-    SpdSmMaxFactor_ClRc <- SpdSmMaxFactors_ls[[vt]][ma,,] * 0.5
+    SpdSmMaxFactor_ClRc <- SpdSmMaxFactors_ls[[vt]][ma,,]
     #Apply the smoothing fractions calculated above
     SpdSmFactor_ClRc <-
       sweep(SpdSmMaxFactor_ClRc, 2, SmoothFractions_Rc, "*") + 1

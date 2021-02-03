@@ -1,6 +1,6 @@
 
 # CalculateHhVehicleOperatingCosts Module
-### January 23, 2019
+### June 5, 2020
 
 This module calculates vehicle operating costs per mile of travel and uses those costs to determine the proportional split of DVMT among household vehicles. The module also calculates the average out-of-pocket costs per mile of vehicle travel by household, as well as the cost of social and environmental impacts, and road use taxes per mile of vehicle travel. Three operating costs are calculated:
 
@@ -432,17 +432,17 @@ ISELEMENTOF - Categorical values that are permitted. Values in the datastore are
 |PaysForParking         |Worker    |Year   |integer   |binary      |             |0, 1                       |
 
 ## Datasets Produced by the Module
-The following table documents each dataset that is retrieved from the datastore and used by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
+The following table documents each dataset that is placed in the datastore by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
 
 NAME - The dataset name.
 
-TABLE - The table in the datastore that the data is retrieved from.
+TABLE - The table in the datastore that the data is placed in.
 
 GROUP - The group in the datastore where the table is located. Note that the datastore has a group named 'Global' and groups for every model run year. For example, if the model run years are 2010 and 2050, then the datastore will have a group named '2010' and a group named '2050'. If the value for 'GROUP' is 'Year', then the dataset will exist in each model run year. If the value for 'GROUP' is 'BaseYear' then the dataset will only exist in the base year group (e.g. '2010'). If the value for 'GROUP' is 'Global' then the dataset will only exist in the 'Global' group.
 
 TYPE - The data type. The framework uses the type to check units and inputs. Refer to the model system design and users guide for information on allowed types.
 
-UNITS - The units that input values need to represent. Some data types have defined units that are represented as abbreviations or combinations of abbreviations. For example 'MI/HR' means miles per hour. Many of these abbreviations are self evident, but the VisionEval model system design and users guide should be consulted.
+UNITS - The native units that are created in the datastore. Some data types have defined units that are represented as abbreviations or combinations of abbreviations. For example 'MI/HR' means miles per hour. Many of these abbreviations are self evident, but the VisionEval model system design and users guide should be consulted.
 
 PROHIBIT - Values that are prohibited. Values in the datastore do not meet any of the listed conditions.
 
@@ -452,15 +452,15 @@ DESCRIPTION - A description of the data.
 
 |NAME                  |TABLE     |GROUP |TYPE     |UNITS      |PROHIBIT     |ISELEMENTOF |DESCRIPTION                                                                                |
 |:---------------------|:---------|:-----|:--------|:----------|:------------|:-----------|:------------------------------------------------------------------------------------------|
-|AveVehCostPM          |Household |Year  |currency |USD.2010   |NA, < 0      |            |Average out-of-pocket cost in dollars per mile of vehicle travel                           |
-|AveSocEnvCostPM       |Household |Year  |currency |USD.2010   |NA, < 0      |            |Average cost in dollars of the social and environmental impacts per mile of vehicle travel |
-|AveRoadUseTaxPM       |Household |Year  |currency |USD.2010   |NA, < 0      |            |Average road use taxes in dollars collected per mile of vehicle travel                     |
+|AveVehCostPM          |Household |Year  |currency |USD.2010   |< 0          |            |Average out-of-pocket cost in dollars per mile of vehicle travel                           |
+|AveSocEnvCostPM       |Household |Year  |currency |USD.2010   |< 0          |            |Average cost in dollars of the social and environmental impacts per mile of vehicle travel |
+|AveRoadUseTaxPM       |Household |Year  |currency |USD.2010   |< 0          |            |Average road use taxes in dollars collected per mile of vehicle travel                     |
 |DriverlessDvmtAdjProp |Household |Year  |double   |proportion |NA, < 0, > 1 |            |Proportion of total DVMT that is the added driverless DVMT                                 |
 |DeadheadDvmtAdjProp   |Household |Year  |double   |proportion |NA, < 0, > 1 |            |Proportion of total DVMT that is the added car service deadhead mileage                    |
 |DriverlessDvmtProp    |Household |Year  |double   |proportion |NA, < 0, > 1 |            |Proportion of total DVMT that is driverless                                                |
 |Dvmt                  |Household |Year  |compound |MI/DAY     |NA, < 0      |            |Total DVMT including the additional driverless DVMT and car service deadhead               |
-|AveGPM                |Household |Year  |compound |GGE/MI     |NA, < 0      |            |Average gasoline equivalent gallons per mile of household vehicle travel                   |
-|AveKWHPM              |Household |Year  |compound |KWH/MI     |NA, < 0      |            |Average kilowatt-hours per mile of household vehicle travel                                |
-|AveCO2ePM             |Household |Year  |compound |GM/MI      |NA, < 0      |            |Average grams of carbon-dioxide equivalents produced per mile of household vehicle travel  |
+|AveGPM                |Household |Year  |compound |GGE/MI     |< 0          |            |Average gasoline equivalent gallons per mile of household vehicle travel                   |
+|AveKWHPM              |Household |Year  |compound |KWH/MI     |< 0          |            |Average kilowatt-hours per mile of household vehicle travel                                |
+|AveCO2ePM             |Household |Year  |compound |GM/MI      |< 0          |            |Average grams of carbon-dioxide equivalents produced per mile of household vehicle travel  |
 |DvmtProp              |Vehicle   |Year  |double   |proportion |NA, < 0, > 1 |            |Proportion of household DVMT allocated to vehicle                                          |
 |HhDriverlessDvmtProp  |Marea     |Year  |double   |proportion |NA, < 0, > 1 |            |Proportion of household DVMT that is driverless                                            |
