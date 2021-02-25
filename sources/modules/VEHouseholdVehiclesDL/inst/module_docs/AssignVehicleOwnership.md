@@ -139,11 +139,35 @@ spacing      2.68819    0.01687  159.37
 
 ## How the Module Works
 
-For each household, the metropolitan or non-metropolitan binary logit model is run to predict the probability that the household owns no vehicles. A random number is drawn from a uniform distribution in the interval from 0 to 1 and if the result is less than the probability of zero-vehicle ownership, the household is assigned no vehicles. Households that have no drivers are also assigned 0 vehicles. The metropolitan or non-metropolitan ordered logit model is run to predict the number of vehicles owned by the household if they own any.
+For each household, the metropolitan or non-metropolitan binary logit model is run to predict the probability that the household owns no vehicles. A random number is drawn from a uniform distribution in the interval from 0 to 1 and if the result is less than the probability of zero-vehicle ownership, the household is assigned no vehicles. Households that have no drivers are also assigned 0 vehicles. The metropolitan or non-metropolitan ordered logit model is run to predict the number of vehicles owned by the household if they own any. The number of vehicles per driver are adjusted to target data if provided.
 
 
 ## User Inputs
-This module has no user input requirements.
+The following table(s) document each input file that must be provided in order for the module to run correctly. User input files are comma-separated valued (csv) formatted text files. Each row in the table(s) describes a field (column) in the input file. The table names and their meanings are as follows:
+
+NAME - The field (column) name in the input file. Note that if the 'TYPE' is 'currency' the field name must be followed by a period and the year that the currency is denominated in. For example if the NAME is 'HHIncomePC' (household per capita income) and the input values are in 2010 dollars, the field name in the file must be 'HHIncomePC.2010'. The framework uses the embedded date information to convert the currency into base year currency amounts. The user may also embed a magnitude indicator if inputs are in thousand, millions, etc. The VisionEval model system design and users guide should be consulted on how to do that.
+
+TYPE - The data type. The framework uses the type to check units and inputs. The user can generally ignore this, but it is important to know whether the 'TYPE' is 'currency'
+
+UNITS - The units that input values need to represent. Some data types have defined units that are represented as abbreviations or combinations of abbreviations. For example 'MI/HR' means miles per hour. Many of these abbreviations are self evident, but the VisionEval model system design and users guide should be consulted.
+
+PROHIBIT - Values that are prohibited. Values may not meet any of the listed conditions.
+
+ISELEMENTOF - Categorical values that are permitted. Value must be one of the listed values.
+
+UNLIKELY - Values that are unlikely. Values that meet any of the listed conditions are permitted but a warning message will be given when the input data are processed.
+
+DESCRIPTION - A description of the data.
+
+### azone_hh_ave_veh_per_driver.csv
+This input file is OPTIONAL.
+
+|NAME                   |TYPE     |UNITS   |PROHIBIT |ISELEMENTOF |UNLIKELY |DESCRIPTION                                                               |
+|:----------------------|:--------|:-------|:--------|:-----------|:--------|:-------------------------------------------------------------------------|
+|Geo                    |         |        |         |Azones      |         |Must contain a record for each Azone and model run year.                  |
+|Year                   |         |        |         |            |         |Must contain a record for each Azone and model run year.                  |
+|AveVehPerDriver        |compound |VEH/DRV |NA, < 0  |            |> 2      |Average number of household vehicles per licensed driver by Azone         |
+|AveVehPerElderlyDriver |compound |VEH/DRV |NA, < 0  |            |> 2      |Average number of household vehicles per licensed elderly driver by Azone |
 
 ## Datasets Used by the Module
 The following table documents each dataset that is retrieved from the datastore and used by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
@@ -162,35 +186,40 @@ PROHIBIT - Values that are prohibited. Values in the datastore do not meet any o
 
 ISELEMENTOF - Categorical values that are permitted. Values in the datastore are one or more of the listed values.
 
-|NAME            |TABLE     |GROUP |TYPE      |UNITS      |PROHIBIT |ISELEMENTOF        |
-|:---------------|:---------|:-----|:---------|:----------|:--------|:------------------|
-|Marea           |Marea     |Year  |character |ID         |         |                   |
-|TranRevMiPC     |Marea     |Year  |compound  |MI/PRSN/YR |NA, < 0  |                   |
-|Marea           |Bzone     |Year  |character |ID         |         |                   |
-|Bzone           |Bzone     |Year  |character |ID         |         |                   |
-|D1B             |Bzone     |Year  |compound  |PRSN/SQMI  |NA, < 0  |                   |
-|Bzone           |Household |Year  |character |ID         |         |                   |
-|Workers         |Household |Year  |people    |PRSN       |NA, < 0  |                   |
-|Drivers         |Household |Year  |people    |PRSN       |NA, < 0  |                   |
-|Income          |Household |Year  |currency  |USD.2001   |NA, < 0  |                   |
-|HouseType       |Household |Year  |character |category   |         |SF, MF, GQ         |
-|HhSize          |Household |Year  |people    |PRSN       |NA, <= 0 |                   |
-|Age65Plus       |Household |Year  |people    |PRSN       |NA, < 0  |                   |
-|IsUrbanMixNbrhd |Household |Year  |integer   |binary     |NA       |0, 1               |
-|LocType         |Household |Year  |character |category   |NA       |Urban, Town, Rural |
+|NAME                   |TABLE     |GROUP |TYPE      |UNITS      |PROHIBIT |ISELEMENTOF        |
+|:----------------------|:---------|:-----|:---------|:----------|:--------|:------------------|
+|Marea                  |Marea     |Year  |character |ID         |         |                   |
+|TranRevMiPC            |Marea     |Year  |compound  |MI/PRSN/YR |NA, < 0  |                   |
+|Marea                  |Bzone     |Year  |character |ID         |         |                   |
+|Bzone                  |Bzone     |Year  |character |ID         |         |                   |
+|D1B                    |Bzone     |Year  |compound  |PRSN/SQMI  |NA, < 0  |                   |
+|Bzone                  |Household |Year  |character |ID         |         |                   |
+|Azone                  |Household |Year  |character |ID         |         |                   |
+|Workers                |Household |Year  |people    |PRSN       |NA, < 0  |                   |
+|Drivers                |Household |Year  |people    |PRSN       |NA, < 0  |                   |
+|Drv65Plus              |Household |Year  |people    |PRSN       |NA, < 0  |                   |
+|Income                 |Household |Year  |currency  |USD.2001   |NA, < 0  |                   |
+|HouseType              |Household |Year  |character |category   |         |SF, MF, GQ         |
+|HhSize                 |Household |Year  |people    |PRSN       |NA, <= 0 |                   |
+|Age65Plus              |Household |Year  |people    |PRSN       |NA, < 0  |                   |
+|IsUrbanMixNbrhd        |Household |Year  |integer   |binary     |NA       |0, 1               |
+|LocType                |Household |Year  |character |category   |NA       |Urban, Town, Rural |
+|Azone                  |Azone     |Year  |character |ID         |         |                   |
+|AveVehPerDriver        |Azone     |Year  |compound  |VEH/DRV    |NA, < 0  |                   |
+|AveVehPerElderlyDriver |Azone     |Year  |compound  |VEH/DRV    |NA, < 0  |                   |
 
 ## Datasets Produced by the Module
-The following table documents each dataset that is retrieved from the datastore and used by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
+The following table documents each dataset that is placed in the datastore by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
 
 NAME - The dataset name.
 
-TABLE - The table in the datastore that the data is retrieved from.
+TABLE - The table in the datastore that the data is placed in.
 
 GROUP - The group in the datastore where the table is located. Note that the datastore has a group named 'Global' and groups for every model run year. For example, if the model run years are 2010 and 2050, then the datastore will have a group named '2010' and a group named '2050'. If the value for 'GROUP' is 'Year', then the dataset will exist in each model run year. If the value for 'GROUP' is 'BaseYear' then the dataset will only exist in the base year group (e.g. '2010'). If the value for 'GROUP' is 'Global' then the dataset will only exist in the 'Global' group.
 
 TYPE - The data type. The framework uses the type to check units and inputs. Refer to the model system design and users guide for information on allowed types.
 
-UNITS - The units that input values need to represent. Some data types have defined units that are represented as abbreviations or combinations of abbreviations. For example 'MI/HR' means miles per hour. Many of these abbreviations are self evident, but the VisionEval model system design and users guide should be consulted.
+UNITS - The native units that are created in the datastore. Some data types have defined units that are represented as abbreviations or combinations of abbreviations. For example 'MI/HR' means miles per hour. Many of these abbreviations are self evident, but the VisionEval model system design and users guide should be consulted.
 
 PROHIBIT - Values that are prohibited. Values in the datastore do not meet any of the listed conditions.
 

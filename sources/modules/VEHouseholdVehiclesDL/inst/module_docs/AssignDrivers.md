@@ -1,6 +1,6 @@
 
 # AssignDrivers Module
-### September 6, 2018
+### July 8, 2020
 
 This module assigns drivers by age group to each household as a function of the numbers of persons and workers by age group, the household income, land use characteristics, and public transit availability. Users may specify the relative driver licensing rate relative to the model estimation data year in order to account for observed or projected changes in licensing rates.
 
@@ -16,33 +16,33 @@ glm(formula = makeFormula(StartTerms_), family = binomial, data = EstData_df[Tra
 
 Deviance Residuals: 
     Min       1Q   Median       3Q      Max  
--3.2917   0.1313   0.2100   0.4020   3.0662  
+-3.2774   0.1320   0.2098   0.4015   2.6995  
 
 Coefficients:
                   Estimate Std. Error z value Pr(>|z|)    
-(Intercept)     -1.801e+01  1.066e+02  -0.169    0.866    
-Age15to19        1.717e+01  1.066e+02   0.161    0.872    
-Age20to29        1.947e+01  1.066e+02   0.183    0.855    
-Age30to54        1.987e+01  1.066e+02   0.186    0.852    
-Age55to64        1.972e+01  1.066e+02   0.185    0.853    
-Age65Plus        1.914e+01  1.066e+02   0.180    0.858    
-Worker           1.294e+00  5.110e-02  25.326  < 2e-16 ***
-HhSize          -2.731e-01  1.657e-02 -16.480  < 2e-16 ***
-Income           4.473e-05  1.985e-06  22.533  < 2e-16 ***
-IncomeSq        -1.876e-10  1.184e-11 -15.851  < 2e-16 ***
-IsSF             4.083e-01  5.080e-02   8.038  9.1e-16 ***
-PopDensity      -4.197e-05  3.143e-06 -13.354  < 2e-16 ***
-IsUrbanMixNbrhd -6.038e-01  5.913e-02 -10.211  < 2e-16 ***
-TranRevMiPC     -7.470e-03  7.466e-04 -10.005  < 2e-16 ***
+(Intercept)     -1.812e+01  1.056e+02  -0.172    0.864    
+Age15to19        1.717e+01  1.056e+02   0.163    0.871    
+Age20to29        1.960e+01  1.056e+02   0.186    0.853    
+Age30to54        1.986e+01  1.056e+02   0.188    0.851    
+Age55to64        1.974e+01  1.056e+02   0.187    0.852    
+Age65Plus        1.916e+01  1.056e+02   0.181    0.856    
+Worker           1.303e+00  5.105e-02  25.521   <2e-16 ***
+HhSize          -2.610e-01  1.650e-02 -15.811   <2e-16 ***
+Income           4.475e-05  1.989e-06  22.494   <2e-16 ***
+IncomeSq        -1.895e-10  1.185e-11 -15.988   <2e-16 ***
+IsSF             4.788e-01  5.094e-02   9.399   <2e-16 ***
+PopDensity      -3.851e-05  3.170e-06 -12.148   <2e-16 ***
+IsUrbanMixNbrhd -6.248e-01  5.921e-02 -10.553   <2e-16 ***
+TranRevMiPC     -7.731e-03  7.517e-04 -10.285   <2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 (Dispersion parameter for binomial family taken to be 1)
 
-    Null deviance: 26672  on 31339  degrees of freedom
-Residual deviance: 15024  on 31326  degrees of freedom
-  (10222 observations deleted due to missingness)
-AIC: 15052
+    Null deviance: 26706  on 31234  degrees of freedom
+Residual deviance: 14980  on 31221  degrees of freedom
+  (10327 observations deleted due to missingness)
+AIC: 15008
 
 Number of Fisher Scoring iterations: 16
 
@@ -58,31 +58,31 @@ glm(formula = makeFormula(StartTerms_), family = binomial, data = EstData_df[Tra
 
 Deviance Residuals: 
     Min       1Q   Median       3Q      Max  
--3.2820   0.1214   0.1762   0.3449   2.5895  
+-3.2938   0.1237   0.1786   0.3492   2.5657  
 
 Coefficients:
               Estimate Std. Error z value Pr(>|z|)    
-(Intercept) -1.944e+01  1.152e+02  -0.169    0.866    
-Age15to19    1.852e+01  1.152e+02   0.161    0.872    
-Age20to29    2.086e+01  1.152e+02   0.181    0.856    
-Age30to54    2.103e+01  1.152e+02   0.183    0.855    
-Age55to64    2.110e+01  1.152e+02   0.183    0.855    
-Age65Plus    2.036e+01  1.152e+02   0.177    0.860    
-Worker       1.601e+00  4.615e-02  34.682   <2e-16 ***
-HhSize      -2.301e-01  1.474e-02 -15.607   <2e-16 ***
-Income       4.395e-05  1.812e-06  24.253   <2e-16 ***
-IncomeSq    -2.004e-10  1.139e-11 -17.593   <2e-16 ***
-IsSF         4.287e-01  4.346e-02   9.864   <2e-16 ***
-PopDensity  -6.144e-05  3.710e-06 -16.562   <2e-16 ***
+(Intercept) -1.945e+01  1.154e+02  -0.169    0.866    
+Age15to19    1.853e+01  1.154e+02   0.161    0.872    
+Age20to29    2.085e+01  1.154e+02   0.181    0.857    
+Age30to54    2.101e+01  1.154e+02   0.182    0.856    
+Age55to64    2.108e+01  1.154e+02   0.183    0.855    
+Age65Plus    2.035e+01  1.154e+02   0.176    0.860    
+Worker       1.600e+00  4.594e-02  34.837   <2e-16 ***
+HhSize      -2.263e-01  1.460e-02 -15.502   <2e-16 ***
+Income       4.317e-05  1.799e-06  24.003   <2e-16 ***
+IncomeSq    -1.966e-10  1.132e-11 -17.367   <2e-16 ***
+IsSF         4.430e-01  4.307e-02  10.286   <2e-16 ***
+PopDensity  -6.016e-05  3.693e-06 -16.290   <2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 (Dispersion parameter for binomial family taken to be 1)
 
-    Null deviance: 43128  on 57737  degrees of freedom
-Residual deviance: 21623  on 57726  degrees of freedom
-  (16608 observations deleted due to missingness)
-AIC: 21647
+    Null deviance: 43339  on 57808  degrees of freedom
+Residual deviance: 21920  on 57797  degrees of freedom
+  (16537 observations deleted due to missingness)
+AIC: 21944
 
 Number of Fisher Scoring iterations: 17
 
@@ -112,17 +112,17 @@ UNLIKELY - Values that are unlikely. Values that meet any of the listed conditio
 
 DESCRIPTION - A description of the data.
 
-### region_hh_driver_adjust_prop.csv
+### region_hh_ave_driver_per_capita.csv
 This input file is OPTIONAL.
 
-|NAME             |TYPE   |UNITS      |PROHIBIT |ISELEMENTOF |UNLIKELY |DESCRIPTION                                                                                    |
-|:----------------|:------|:----------|:--------|:-----------|:--------|:----------------------------------------------------------------------------------------------|
-|Year             |       |           |         |            |         |Must contain a record for each model run year                                                  |
-|Drv15to19AdjProp |double |proportion |NA, < 0  |            |> 1.5    |Target proportion of unadjusted model number of drivers 15 to 19 years old (1 = no adjustment) |
-|Drv20to29AdjProp |double |proportion |NA, < 0  |            |> 1.5    |Target proportion of unadjusted model number of drivers 20 to 29 years old (1 = no adjustment) |
-|Drv30to54AdjProp |double |proportion |NA, < 0  |            |> 1.5    |Target proportion of unadjusted model number of drivers 30 to 54 years old (1 = no adjustment) |
-|Drv55to64AdjProp |double |proportion |NA, < 0  |            |> 1.5    |Target proportion of unadjusted model number of drivers 55 to 64 years old (1 = no adjustment) |
-|Drv65PlusAdjProp |double |proportion |NA, < 0  |            |> 1.5    |Target proportion of unadjusted model number of drivers 65 or older (1 = no adjustment)        |
+|NAME             |TYPE     |UNITS    |PROHIBIT     |ISELEMENTOF |UNLIKELY |DESCRIPTION                                                            |
+|:----------------|:--------|:--------|:------------|:-----------|:--------|:----------------------------------------------------------------------|
+|Year             |         |         |             |            |         |Must contain a record for each model run year                          |
+|DrvPerPrsn15to19 |compound |DRV/PRSN |NA, < 0, > 1 |            |         |Target ratio of drivers to persons in the 15 to 19 years old age group |
+|DrvPerPrsn20to29 |compound |DRV/PRSN |NA, < 0, > 1 |            |         |Target ratio of drivers to persons in the 20 to 29 years old age group |
+|DrvPerPrsn30to54 |compound |DRV/PRSN |NA, < 0, > 1 |            |         |Target ratio of drivers to persons in the 30 to 54 years old age group |
+|DrvPerPrsn55to64 |compound |DRV/PRSN |NA, < 0, > 1 |            |         |Target ratio of drivers to persons in the 55 to 64 years old age group |
+|DrvPerPrsn65Plus |compound |DRV/PRSN |NA, < 0, > 1 |            |         |Target ratio of drivers to persons in the 65 or older age group        |
 
 ## Datasets Used by the Module
 The following table documents each dataset that is retrieved from the datastore and used by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
@@ -141,48 +141,48 @@ PROHIBIT - Values that are prohibited. Values in the datastore do not meet any o
 
 ISELEMENTOF - Categorical values that are permitted. Values in the datastore are one or more of the listed values.
 
-|NAME             |TABLE     |GROUP |TYPE      |UNITS      |PROHIBIT |ISELEMENTOF        |
-|:----------------|:---------|:-----|:---------|:----------|:--------|:------------------|
-|Drv15to19AdjProp |Region    |Year  |double    |proportion |NA, < 0  |                   |
-|Drv20to29AdjProp |Region    |Year  |double    |proportion |NA, < 0  |                   |
-|Drv30to54AdjProp |Region    |Year  |double    |proportion |NA, < 0  |                   |
-|Drv55to64AdjProp |Region    |Year  |double    |proportion |NA, < 0  |                   |
-|Drv65PlusAdjProp |Region    |Year  |double    |proportion |NA, < 0  |                   |
-|Marea            |Marea     |Year  |character |ID         |         |                   |
-|TranRevMiPC      |Marea     |Year  |compound  |MI/PRSN/YR |NA, < 0  |                   |
-|Bzone            |Bzone     |Year  |character |ID         |         |                   |
-|D1B              |Bzone     |Year  |compound  |PRSN/SQMI  |NA, < 0  |                   |
-|Marea            |Household |Year  |character |ID         |         |                   |
-|Bzone            |Household |Year  |character |ID         |         |                   |
-|HhId             |Household |Year  |character |ID         |         |                   |
-|Age15to19        |Household |Year  |people    |PRSN       |NA, < 0  |                   |
-|Age20to29        |Household |Year  |people    |PRSN       |NA, < 0  |                   |
-|Age30to54        |Household |Year  |people    |PRSN       |NA, < 0  |                   |
-|Age55to64        |Household |Year  |people    |PRSN       |NA, < 0  |                   |
-|Age65Plus        |Household |Year  |people    |PRSN       |NA, < 0  |                   |
-|Wkr15to19        |Household |Year  |people    |PRSN       |NA, < 0  |                   |
-|Wkr20to29        |Household |Year  |people    |PRSN       |NA, < 0  |                   |
-|Wkr30to54        |Household |Year  |people    |PRSN       |NA, < 0  |                   |
-|Wkr55to64        |Household |Year  |people    |PRSN       |NA, < 0  |                   |
-|Wkr65Plus        |Household |Year  |people    |PRSN       |NA, < 0  |                   |
-|Income           |Household |Year  |currency  |USD.2001   |NA, < 0  |                   |
-|HhSize           |Household |Year  |people    |PRSN       |NA, <= 0 |                   |
-|HouseType        |Household |Year  |character |category   |         |SF, MF, GQ         |
-|IsUrbanMixNbrhd  |Household |Year  |integer   |binary     |NA       |0, 1               |
-|LocType          |Household |Year  |character |category   |NA       |Urban, Town, Rural |
+|NAME             |TABLE     |GROUP |TYPE      |UNITS      |PROHIBIT     |ISELEMENTOF        |
+|:----------------|:---------|:-----|:---------|:----------|:------------|:------------------|
+|DrvPerPrsn15to19 |Region    |Year  |compound  |DRV/PRSN   |NA, < 0, > 1 |                   |
+|DrvPerPrsn20to29 |Region    |Year  |compound  |DRV/PRSN   |NA, < 0, > 1 |                   |
+|DrvPerPrsn30to54 |Region    |Year  |compound  |DRV/PRSN   |NA, < 0, > 1 |                   |
+|DrvPerPrsn55to64 |Region    |Year  |compound  |DRV/PRSN   |NA, < 0, > 1 |                   |
+|DrvPerPrsn65Plus |Region    |Year  |compound  |DRV/PRSN   |NA, < 0, > 1 |                   |
+|Marea            |Marea     |Year  |character |ID         |             |                   |
+|TranRevMiPC      |Marea     |Year  |compound  |MI/PRSN/YR |NA, < 0      |                   |
+|Bzone            |Bzone     |Year  |character |ID         |             |                   |
+|D1B              |Bzone     |Year  |compound  |PRSN/SQMI  |NA, < 0      |                   |
+|Marea            |Household |Year  |character |ID         |             |                   |
+|Bzone            |Household |Year  |character |ID         |             |                   |
+|HhId             |Household |Year  |character |ID         |             |                   |
+|Age15to19        |Household |Year  |people    |PRSN       |NA, < 0      |                   |
+|Age20to29        |Household |Year  |people    |PRSN       |NA, < 0      |                   |
+|Age30to54        |Household |Year  |people    |PRSN       |NA, < 0      |                   |
+|Age55to64        |Household |Year  |people    |PRSN       |NA, < 0      |                   |
+|Age65Plus        |Household |Year  |people    |PRSN       |NA, < 0      |                   |
+|Wkr15to19        |Household |Year  |people    |PRSN       |NA, < 0      |                   |
+|Wkr20to29        |Household |Year  |people    |PRSN       |NA, < 0      |                   |
+|Wkr30to54        |Household |Year  |people    |PRSN       |NA, < 0      |                   |
+|Wkr55to64        |Household |Year  |people    |PRSN       |NA, < 0      |                   |
+|Wkr65Plus        |Household |Year  |people    |PRSN       |NA, < 0      |                   |
+|Income           |Household |Year  |currency  |USD.2001   |NA, < 0      |                   |
+|HhSize           |Household |Year  |people    |PRSN       |NA, <= 0     |                   |
+|HouseType        |Household |Year  |character |category   |             |SF, MF, GQ         |
+|IsUrbanMixNbrhd  |Household |Year  |integer   |binary     |NA           |0, 1               |
+|LocType          |Household |Year  |character |category   |NA           |Urban, Town, Rural |
 
 ## Datasets Produced by the Module
-The following table documents each dataset that is retrieved from the datastore and used by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
+The following table documents each dataset that is placed in the datastore by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
 
 NAME - The dataset name.
 
-TABLE - The table in the datastore that the data is retrieved from.
+TABLE - The table in the datastore that the data is placed in.
 
 GROUP - The group in the datastore where the table is located. Note that the datastore has a group named 'Global' and groups for every model run year. For example, if the model run years are 2010 and 2050, then the datastore will have a group named '2010' and a group named '2050'. If the value for 'GROUP' is 'Year', then the dataset will exist in each model run year. If the value for 'GROUP' is 'BaseYear' then the dataset will only exist in the base year group (e.g. '2010'). If the value for 'GROUP' is 'Global' then the dataset will only exist in the 'Global' group.
 
 TYPE - The data type. The framework uses the type to check units and inputs. Refer to the model system design and users guide for information on allowed types.
 
-UNITS - The units that input values need to represent. Some data types have defined units that are represented as abbreviations or combinations of abbreviations. For example 'MI/HR' means miles per hour. Many of these abbreviations are self evident, but the VisionEval model system design and users guide should be consulted.
+UNITS - The native units that are created in the datastore. Some data types have defined units that are represented as abbreviations or combinations of abbreviations. For example 'MI/HR' means miles per hour. Many of these abbreviations are self evident, but the VisionEval model system design and users guide should be consulted.
 
 PROHIBIT - Values that are prohibited. Values in the datastore do not meet any of the listed conditions.
 

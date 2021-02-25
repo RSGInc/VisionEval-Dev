@@ -6,7 +6,7 @@ This module determines whether a household vehicle is driverless or not. It also
 
 ## How the Module Works
 
-The module randomly assigns  value of 1 for driverless vehicle owned by the household and 0 for other household vehicles.
+The module randomly assigns  value of 1 for driverless vehicle owned by the household and 0 for other household vehicles. Additionaly, the module identifies household that owns driverless vehicles and update the elderly population as eligible drivers.
 
 
 ## User Inputs
@@ -73,22 +73,25 @@ ISELEMENTOF - Categorical values that are permitted. Values in the datastore are
 |VehicleAccess            |Vehicle               |Year   |character |category   |             |Own, LowCarSvc, HighCarSvc |
 |Type                     |Vehicle               |Year   |character |category   |NA           |Auto, LtTrk                |
 |HhId                     |Household             |Year   |character |ID         |NA           |                           |
+|Age65Plus                |Household             |Year   |people    |PRSN       |NA, < 0      |                           |
+|Drv65Plus                |Household             |Year   |people    |PRSN       |NA, < 0      |                           |
+|Drivers                  |Household             |Year   |people    |PRSN       |NA, < 0      |                           |
 |NumLtTrk                 |Household             |Year   |vehicles  |VEH        |NA, < 0      |                           |
 |NumAuto                  |Household             |Year   |vehicles  |VEH        |NA, < 0      |                           |
 |NumHighCarSvc            |Household             |Year   |vehicles  |VEH        |NA, < 0      |                           |
 
 ## Datasets Produced by the Module
-The following table documents each dataset that is retrieved from the datastore and used by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
+The following table documents each dataset that is placed in the datastore by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
 
 NAME - The dataset name.
 
-TABLE - The table in the datastore that the data is retrieved from.
+TABLE - The table in the datastore that the data is placed in.
 
 GROUP - The group in the datastore where the table is located. Note that the datastore has a group named 'Global' and groups for every model run year. For example, if the model run years are 2010 and 2050, then the datastore will have a group named '2010' and a group named '2050'. If the value for 'GROUP' is 'Year', then the dataset will exist in each model run year. If the value for 'GROUP' is 'BaseYear' then the dataset will only exist in the base year group (e.g. '2010'). If the value for 'GROUP' is 'Global' then the dataset will only exist in the 'Global' group.
 
 TYPE - The data type. The framework uses the type to check units and inputs. Refer to the model system design and users guide for information on allowed types.
 
-UNITS - The units that input values need to represent. Some data types have defined units that are represented as abbreviations or combinations of abbreviations. For example 'MI/HR' means miles per hour. Many of these abbreviations are self evident, but the VisionEval model system design and users guide should be consulted.
+UNITS - The native units that are created in the datastore. Some data types have defined units that are represented as abbreviations or combinations of abbreviations. For example 'MI/HR' means miles per hour. Many of these abbreviations are self evident, but the VisionEval model system design and users guide should be consulted.
 
 PROHIBIT - Values that are prohibited. Values in the datastore do not meet any of the listed conditions.
 
@@ -98,5 +101,7 @@ DESCRIPTION - A description of the data.
 
 |NAME               |TABLE     |GROUP |TYPE   |UNITS       |PROHIBIT     |ISELEMENTOF |DESCRIPTION                                                                                 |
 |:------------------|:---------|:-----|:------|:-----------|:------------|:-----------|:-------------------------------------------------------------------------------------------|
+|Drv65Plus          |Household |Year  |people |PRSN        |NA, < 0      |            |Number of drivers that are 65+ in a household.                                              |
+|Drivers            |Household |Year  |people |PRSN        |NA, < 0      |            |Number of drivers in a household.                                                           |
 |DriverlessDvmtProp |Household |Year  |double |proportion  |NA, < 0      |            |The proportion of household DVMT that is in driverless vehicles.                            |
 |Driverless         |Vehicle   |Year  |double |proportions |NA, < 0, > 1 |            |Driverless vehicle identifier. A value of 1 indicates that the owned vehicle is driverless. |

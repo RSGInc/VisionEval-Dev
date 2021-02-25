@@ -11,7 +11,7 @@
 #
 ### How the Module Works
 #
-#The module randomly assigns  value of 1 for driverless vehicle owned by the household and 0 for other household vehicles.
+#The module randomly assigns  value of 1 for driverless vehicle owned by the household and 0 for other household vehicles. Additionaly, the module identifies household that owns driverless vehicles and update the elderly population as eligible drivers.
 #
 #</doc>
 
@@ -269,7 +269,9 @@ AssignDriverlessVehiclesSpecifications <- list(
       TYPE = "people",
       UNITS = "PRSN",
       PROHIBIT = c("NA", "< 0"),
-      ISELEMENTOF = ""
+      ISELEMENTOF = "",
+      DESCRIPTION = items("Number of drivers that are 65+ in a household.",
+                          "Number of drivers in a household.")
     ),
     item(
       NAME = "DriverlessDvmtProp",
@@ -317,7 +319,7 @@ AssignDriverlessVehiclesSpecifications <- list(
 #' }
 #' @source AssignDriverlessVehicles.R script.
 "AssignDriverlessVehiclesSpecifications"
-usethis::use_data(AssignDriverlessVehiclesSpecifications, overwrite = TRUE)
+visioneval::savePackageDataset(AssignDriverlessVehiclesSpecifications, overwrite = TRUE)
 
 
 #=======================================================
@@ -349,6 +351,7 @@ usethis::use_data(AssignDriverlessVehiclesSpecifications, overwrite = TRUE)
 #' @name AssignDriverlessVehicles
 #' @import visioneval stats
 #' @export
+#' 
 AssignDriverlessVehicles <- function(L) {
 
   #Set up
@@ -440,7 +443,9 @@ AssignDriverlessVehicles <- function(L) {
   NumChangeDriverAge65Plus_ <- integer(length(L$Year$Household$HhId))
   names(NumChangeDriverAge65Plus_) <- L$Year$Household$HhId
   NumDriverlessVehByHh_ <- NumDriverlessVehByHh_[L$Year$Household$HhId]
-
+  NumDriverlessVehByHh_[is.na(NumDriverlessVehByHh_)] <- 0
+  names(NumDriverlessVehByHh_) <- L$Year$Household$HhId
+  
   isHhOwnDriverless_ <- NumDriverlessVehByHh_ > 0
   NumChangeDriverAge65Plus_[isHhOwnDriverless_] <- NumPersonAge65Plus_[isHhOwnDriverless_] -
     NumDriverAge65Plus_[isHhOwnDriverless_]

@@ -31,3 +31,15 @@ Encoding: UTF-8
 VignetteBuilder: knitr
 Roxygen: list(load='source')
 RoxygenNote: 7.1.1
+Collate: 
+    'AdjustVehicleOwnership.R'
+    'AssignDriverlessVehicles.R'
+    'AssignDrivers.R'
+    'AssignVehicleAge.R'
+    'AssignVehicleFeatures.R'
+    'AssignVehicleFeaturesFuture.R'
+    'AssignVehicleOwnership.R'
+    'AssignVehicleType.R'
+    'CalculateVehicleOwnCost.R'
+    'CreateVehicleTable.R'
+    'Finalize.R'

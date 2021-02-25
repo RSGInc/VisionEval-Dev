@@ -31,7 +31,7 @@
 #
 ### How the Module Works
 #
-#For each household, the metropolitan or non-metropolitan binary logit model is run to predict the probability that the household owns no vehicles. A random number is drawn from a uniform distribution in the interval from 0 to 1 and if the result is less than the probability of zero-vehicle ownership, the household is assigned no vehicles. Households that have no drivers are also assigned 0 vehicles. The metropolitan or non-metropolitan ordered logit model is run to predict the number of vehicles owned by the household if they own any.
+#For each household, the metropolitan or non-metropolitan binary logit model is run to predict the probability that the household owns no vehicles. A random number is drawn from a uniform distribution in the interval from 0 to 1 and if the result is less than the probability of zero-vehicle ownership, the household is assigned no vehicles. Households that have no drivers are also assigned 0 vehicles. The metropolitan or non-metropolitan ordered logit model is run to predict the number of vehicles owned by the household if they own any. The number of vehicles per driver are adjusted to target data if provided.
 #
 #</doc>
 
@@ -229,6 +229,22 @@ AssignVehicleOwnershipSpecifications <- list(
       DESCRIPTION =
         "Average number of household vehicles per licensed driver by Azone",
       OPTIONAL = TRUE
+    ),
+    item(
+      NAME = "AveVehPerElderlyDriver",
+      FILE = "azone_hh_ave_veh_per_driver.csv",
+      TABLE = "Azone",
+      GROUP = "Year",
+      TYPE = "compound",
+      UNITS = "VEH/DRV",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      UNLIKELY = "> 2",
+      TOTAL = "",
+      DESCRIPTION =
+        "Average number of household vehicles per licensed elderly driver by Azone",
+      OPTIONAL = TRUE
     )
   ),
   #Specify data to be loaded from data store
@@ -315,6 +331,15 @@ AssignVehicleOwnershipSpecifications <- list(
       ISELEMENTOF = ""
     ),
     item(
+      NAME = "Drv65Plus",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "people",
+      UNITS = "PRSN",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = ""
+    ),
+    item(
       NAME = "Income",
       TABLE = "Household",
       GROUP = "Year",
@@ -386,7 +411,17 @@ AssignVehicleOwnershipSpecifications <- list(
       PROHIBIT = c("NA", "< 0"),
       ISELEMENTOF = "",
       OPTIONAL = TRUE
-      )
+      ),
+    item(
+      NAME = "AveVehPerElderlyDriver",
+      TABLE = "Azone",
+      GROUP = "Year",
+      TYPE = "compound",
+      UNITS = "VEH/DRV",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      OPTIONAL = TRUE
+    )
   ),
   #Specify data to saved in the data store
   Set = items(
@@ -555,17 +590,52 @@ AssignVehicleOwnership <- function(L) {
     #Iterate by Azone to adjust vehicle predictions to match Azone target
     for (az in Az) {
       IsAzone <- Hh_df$Azone == az
-      TargetRatio <- with(L$Year$Azone, AveVehPerDriver[Azone == az])
-      NumDvr <- with(Hh_df, sum(Drivers[Azone == az]))
-      TargetNumVeh <- round(TargetRatio * NumDvr)
-      NumChgVeh <- TargetNumVeh - sum(Vehicles_[IsAzone])
-      #Calculate changes if the number of vehicles to change is not 0
-      if (NumChgVeh != 0) {
-        Vehicles_[IsAzone] <- adjVehicles(
-          NumChgVeh = NumChgVeh,
-          Vehicles_ = Vehicles_[IsAzone],
-          Hh_df = Hh_df[IsAzone,],
-          VehicleProb_mx = VehicleProb_mx[IsAzone,])
+      IsElderlyDrvHh <- Hh_df$Drv65Plus > 0
+      if (!all(is.null(L$Year$Azone$AveVehPerElderlyDriver))) {
+        # Match Elderly first
+        TargetRatioElderly <-
+          with(L$Year$Azone, AveVehPerElderlyDriver[Azone == az])
+        NumDvrElderly <-
+          with(Hh_df, sum(Drv65Plus[Azone == az & Drv65Plus > 0]))
+        TargetNumVehElderly <-
+          round(TargetRatioElderly * NumDvrElderly)
+        NumChgVehElderly <-
+          TargetNumVehElderly - sum(Vehicles_[IsAzone & IsElderlyDrvHh])
+        #Calculate changes if the number of vehicles to change for elderly drivers is not 0
+        if (NumChgVehElderly != 0) {
+          Vehicles_[IsAzone & IsElderlyDrvHh] <- adjVehicles(
+            NumChgVeh = NumChgVehElderly,
+            Vehicles_ = Vehicles_[IsAzone & IsElderlyDrvHh],
+            Hh_df = Hh_df[IsAzone & IsElderlyDrvHh, ],
+            VehicleProb_mx = VehicleProb_mx[IsAzone & IsElderlyDrvHh, ]
+          )
+        }
+        # Match overall Azone
+        TargetRatio <- with(L$Year$Azone, AveVehPerDriver[Azone == az])
+        NumDvr <- with(Hh_df, sum(Drivers[Azone == az]))
+        TargetNumVeh <- round(TargetRatio * NumDvr)
+        NumChgVeh <- TargetNumVeh - sum(Vehicles_[IsAzone])
+        #Calculate changes if the number of vehicles to change is not 0
+        if (NumChgVeh != 0) {
+          Vehicles_[IsAzone & !IsElderlyDrvHh] <- adjVehicles(
+            NumChgVeh = NumChgVeh,
+            Vehicles_ = Vehicles_[IsAzone & !IsElderlyDrvHh],
+            Hh_df = Hh_df[IsAzone & !IsElderlyDrvHh,],
+            VehicleProb_mx = VehicleProb_mx[IsAzone & !IsElderlyDrvHh,])
+        }
+      } else {
+        TargetRatio <- with(L$Year$Azone, AveVehPerDriver[Azone == az])
+        NumDvr <- with(Hh_df, sum(Drivers[Azone == az]))
+        TargetNumVeh <- round(TargetRatio * NumDvr)
+        NumChgVeh <- TargetNumVeh - sum(Vehicles_[IsAzone])
+        #Calculate changes if the number of vehicles to change is not 0
+        if (NumChgVeh != 0) {
+          Vehicles_[IsAzone] <- adjVehicles(
+            NumChgVeh = NumChgVeh,
+            Vehicles_ = Vehicles_[IsAzone],
+            Hh_df = Hh_df[IsAzone,],
+            VehicleProb_mx = VehicleProb_mx[IsAzone,])
+        }
       }
     }
   }
