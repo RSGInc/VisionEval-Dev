@@ -412,6 +412,8 @@ ISELEMENTOF - Categorical values that are permitted. Values in the datastore are
 |PevSurchgTaxProp        |Azone     |Year   |double    |proportion  |NA, < 0, > 1 |                           |
 |HighCarSvcCost          |Azone     |Year   |currency  |USD.2010    |NA, < 0      |                           |
 |LowCarSvcCost           |Azone     |Year   |currency  |USD.2010    |NA, < 0      |                           |
+|ShdCarSvcCost           |Azone     |Year   |currency  |USD.2010    |NA, < 0      |                           |
+|UnShdCarSvcCost         |Azone     |Year   |currency  |USD.2010    |NA, < 0      |                           |
 |Marea                   |Household |Year   |character |ID          |             |                           |
 |Azone                   |Household |Year   |character |ID          |             |                           |
 |HhId                    |Household |Year   |character |ID          |             |                           |

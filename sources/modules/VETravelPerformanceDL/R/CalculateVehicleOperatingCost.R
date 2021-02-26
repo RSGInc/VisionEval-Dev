@@ -895,7 +895,9 @@ CalculateVehicleOperatingCostSpecifications <- list(
       NAME =
         items(
           "HighCarSvcCost",
-          "LowCarSvcCost"),
+          "LowCarSvcCost",
+          "ShdCarSvcCost",
+          "UnShdCarSvcCost"),
       TABLE = "Azone",
       GROUP = "Year",
       TYPE = "currency",
@@ -1553,8 +1555,12 @@ CalculateVehicleOperatingCost <- function(L) {
   CarSvcCostRate_Bz <- 1/SharedCarSvcCostRate_Bz + 1/UnSharedCarSvcCostRate_Bz
   SharedCarSvcDvmtProp_Bz <- (1/SharedCarSvcCostRate_Bz) / CarSvcCostRate_Bz
   UnSharedCarSvcDvmtProp_Bz <- (1/UnSharedCarSvcCostRate_Bz) / CarSvcCostRate_Bz
+  # Fix all the NAs because of no car service assigned to households in Bzone
+  SharedCarSvcDvmtProp_Bz[is.na(SharedCarSvcDvmtProp_Bz)] <- 0
+  UnSharedCarSvcDvmtProp_Bz[is.na(UnSharedCarSvcDvmtProp_Bz)] <- 0
+  # Transfer to unshared car service if shared car service not available
   SharedCarSvcDvmtProp_Bz[!isShdSvcAvail_Bz] <- 0
-  UnSharedCarSvcDvmtProp_Bz[!isShdSvcAvail_Bz] <- 0
+  UnSharedCarSvcDvmtProp_Bz[SharedCarSvcDvmtProp_Bz==0] <- 1
   
   #Car service cost
   CarSvcCostRate_Ve <- local({
@@ -1659,28 +1665,36 @@ CalculateVehicleOperatingCost <- function(L) {
                             "CarSvc" = rowSums(Price_HhAccess[,c("LowCarSvc", "HighCarSvc")]))
     Price_HhAccess <- Price_HhAccess[,c("Own", "CarSvc")]
     Prop_HhAccess <- t(apply(Price_HhAccess, 1, splitDvmt))
+    Prop_HhAccess[Price_HhAccess[,"Own"]==0,"Own"] <- 0
+    Prop_HhAccess[Price_HhAccess[,"Own"]==0,"CarSvc"] <- 1
+    Prop_HhAccess[Price_HhAccess[,"CarSvc"]==0,"Own"] <- 1
+    Prop_HhAccess[Price_HhAccess[,"CarSvc"]==0,"CarSvc"] <- 0
     
     #Calculate DVMT proportions by owned household vehicles
     PriceOwned_Ve <- Price_Ve
     PriceOwned_Ve[L$Year$Vehicle$VehicleAccess != "Own"] <- 0
     names(PriceOwned_Ve) <- L$Year$Vehicle$VehId
     PriceOwned_Hh_Ve <- lapply(split(PriceOwned_Ve, L$Year$Vehicle$HhId), splitDvmt)
+    PriceOwned_Hh_Ve <- lapply(PriceOwned_Hh_Ve, function(val_){if(any(is.na(val_))){val_[val_==0]<-(1/sum(val_==0, na.rm = TRUE));val_[is.na(val_)]<-0; val_} else val_})
     names(PriceOwned_Hh_Ve) <- NULL
     PriceOwned_Hh_Ve <- unlist(PriceOwned_Hh_Ve, use.names = TRUE)[L$Year$Vehicle$VehId]
+    PriceOwned_Hh_Ve[L$Year$Vehicle$VehicleAccess != "Own"] <- 0
     
-    #Calculate DVMT proportions by owned household vehicles
+    #Calculate DVMT proportions by car service household vehicles
     PriceCarSvc_Ve <- Price_Ve
     PriceCarSvc_Ve[L$Year$Vehicle$VehicleAccess == "Own"] <- 0
     names(PriceCarSvc_Ve) <- L$Year$Vehicle$VehId
     PriceCarSvc_Hh_Ve <- lapply(split(PriceCarSvc_Ve, L$Year$Vehicle$HhId), splitDvmt)
+    PriceCarSvc_Hh_Ve <- lapply(PriceCarSvc_Hh_Ve, function(val_){if(any(is.na(val_))){val_[val_==0]<-(1/sum(val_==0, na.rm = TRUE));val_[is.na(val_)]<-0; val_} else val_})
     names(PriceCarSvc_Hh_Ve) <- NULL
     PriceCarSvc_Hh_Ve <- unlist(PriceCarSvc_Hh_Ve, use.names = TRUE)[L$Year$Vehicle$VehId]
+    PriceCarSvc_Hh_Ve[L$Year$Vehicle$VehicleAccess == "Own"] <- 0
     
     #Calculate DVMT proportions by household vehicle
     Price_Hh_Ve <- PriceOwned_Hh_Ve[L$Year$Vehicle$VehId] * 
-      Price_HhAccess[,"Own"][L$Year$Vehicle$HhId] +
+      Prop_HhAccess[,"Own"][L$Year$Vehicle$HhId] +
       PriceCarSvc_Hh_Ve[L$Year$Vehicle$VehId] * 
-      Price_HhAccess[,"CarSvc"][L$Year$Vehicle$HhId]
+      Prop_HhAccess[,"CarSvc"][L$Year$Vehicle$HhId]
     Price_Hh_Ve
   })
   # DvmtProp_Ve <- local({
@@ -1704,13 +1718,13 @@ CalculateVehicleOperatingCost <- function(L) {
   #---------------------------------------
   #Calculate the DVMT adjustment for change in average occupancy
   CarSvcDvmtAdjFactor_Ve <- local({
-    isCarSvc_ <- L$Year$Vehicle$VehicleAccess != "Own"
+    IsCarSvc_ <- L$Year$Vehicle$VehicleAccess != "Own"
     SharedCarSvcDvmtProp_Ve <- SharedCarSvcDvmtProp_Bz[BzToVehIdx_Ve]
     UnSharedCarSvcDvmtProp_Ve <- UnSharedCarSvcDvmtProp_Bz[BzToVehIdx_Ve]
     AvgOccpInc_Ve <- (SharedCarSvcDvmtProp_Ve * L$Year$Region$ShdCarSvcAveOccup) +
       (1 * UnSharedCarSvcDvmtProp_Ve)
     DvmtAdjFactor_Ve <- 1/AvgOccpInc_Ve
-    DvmtAdjFactor_Ve[!isCarSvc_] <- 1
+    DvmtAdjFactor_Ve[!IsCarSvc_] <- 1
     DvmtAdjFactor_Ve
   })
 
