@@ -61,7 +61,9 @@ CreateVehicleTableSpecifications <- list(
       NAME =
         items(
           "HighCarSvcCost",
-          "LowCarSvcCost"),
+          "LowCarSvcCost",
+          "ShdCarSvcCost",
+          "UnShdCarSvcCost"),
       FILE = "azone_carsvc_characteristics.csv",
       TABLE = "Azone",
       GROUP = "Year",
@@ -76,7 +78,9 @@ CreateVehicleTableSpecifications <- list(
       DESCRIPTION =
         items(
           "Average cost in dollars per mile for travel by high service level car service exclusive of the cost of fuel, road use taxes, and carbon taxes (and any other social costs charged to vehicle use).",
-          "Average cost in dollars per mile for travel by low service level car service exclusive of the cost of fuel, road use taxes, and carbon taxes (and any other social costs charged to vehicle use)."
+          "Average cost in dollars per mile for travel by low service level car service exclusive of the cost of fuel, road use taxes, and carbon taxes (and any other social costs charged to vehicle use).",
+          "Average cost in dollars per mile for travel by shared car service exclusive of the cost of fuel, road use taxes, and carbon taxes (and any other social costs charged to vehicle use).",
+          "Average cost in dollars per mile for travel by unshared car service exclusive of the cost of fuel, road use taxes, and carbon taxes (and any other social costs charged to vehicle use)."
         )
     ),
     item(
@@ -120,7 +124,9 @@ CreateVehicleTableSpecifications <- list(
       NAME =
         items(
           "LowCarSvcDeadheadProp",
-          "HighCarSvcDeadheadProp"),
+          "HighCarSvcDeadheadProp",
+          "ShdCarSvcDeadheadProp",
+          "UnShdCarSvcDeadheadProp"),
       FILE = "azone_carsvc_characteristics.csv",
       TABLE = "Azone",
       GROUP = "Year",
@@ -135,7 +141,9 @@ CreateVehicleTableSpecifications <- list(
       DESCRIPTION =
         items(
           "The deadhead proportion for low service level car service calculated using deadhead mileage divided by fare mileage",
-          "The deadhead proportion for high service level car service calculated using deadhead mileage divided by fare mileage"
+          "The deadhead proportion for high service level car service calculated using deadhead mileage divided by fare mileage",
+          "The deadhead proportion for shared car service calculated using deadhead mileage divided by fare mileage",
+          "The deadhead proportion for unshared car service calculated using deadhead mileage divided by fare mileage"
         )
     )
   ),
