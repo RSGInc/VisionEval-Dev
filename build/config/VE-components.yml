@@ -197,6 +197,17 @@ Components:
       - VESimHouseholds
       - VETransportSupply
       - VETravelPerformance
+  VEFHWAAV:
+    Type: module
+    Path: sources/modules
+    Test: { Script: tests/scripts/test.R, Group: 2 }
+    CRAN:
+      - dplyr
+      - purrr
+      - tidyr
+    VE:
+      - VEHouseholdTravel
+      - VEHouseholdVehicles
   VERPAT:
     Type: module
     Path: sources/modules

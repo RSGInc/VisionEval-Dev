@@ -14,7 +14,10 @@
 #
 ### How the Module Works
 #
-#
+# * The module calculates the likelihood of a household owning a level 5
+#   autonomous vehicle. A random draw then decides whether the household
+#   chooses to own a level 5 AV
+# * 
 #
 #
 #
@@ -46,9 +49,27 @@ CVAVOrientationSpecifications <- list(
   #Specify input data
   #Specify data to be loaded from data store
   Get = items(
+    item(
+      NAME = "HhId",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "character",
+      UNITS = "ID",
+      PROHIBIT = "",
+      ISELEMENTOF = ""
+    )
   ),
   #Specify data to saved in the data store
   Set = items(
+    item(
+      NAME = "HhId",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "character",
+      UNITS = "ID",
+      PROHIBIT = "",
+      ISELEMENTOF = ""
+    )
   )
 )
 
