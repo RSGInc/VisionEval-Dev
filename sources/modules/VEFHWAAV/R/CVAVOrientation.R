@@ -47,6 +47,74 @@ CVAVOrientationSpecifications <- list(
   RunBy = "Region",
   #Specify new tables to be created by Inp if any
   #Specify input data
+  Inp = item(
+    item(
+      NAME = item(
+        "CSConstant",
+        "CSFracAge20to29Coef",
+        "CSFracAge55to64Coef",
+        "CSFracAge65pCoef",
+        "CSLowCarSvcFlagCoef",
+        "CSHHIncBelow50KFlagCoef",
+        "CSHHIncAbove100KFlagCoef",
+        "CSD1BCoef"
+      ),
+      FILE = "region_car_svc_propensity_coef.csv",
+      TABLE = "Region",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "numeric",
+      NAVALUE = "NA",
+      SIZE = 0,
+      PROHIBIT = c("NA"),
+      ISELEMENTOF = "",
+      UNLIKELY = "",
+      TOTAL = "",
+      DESCRIPTION = item(
+        "Constant for car service propensity model",
+        "Age 20 to 29 household fraction coefficient for car service propensity model",
+        "Age 55 to 64 household fraction coefficient for car service propensity model",
+        "Age 65+ household fraction coefficient for car service propensity model",
+        "Low car service level flag coefficient for car service propensity model",
+        "Household income below 50K USD 2010 coefficient for car service propensity model",
+        "Household income aboce 100K USD 2010 coefficient for car service propensity model",
+        "D1B coefficient for car service propensity model"
+      )
+    ),
+    item(
+      NAME = item(
+        "AVConstant",
+        "AVFracAge20to29Coef",
+        "AVFracAge55to64Coef",
+        "AVFracAge65pCoef",
+        "AVKidsCoef",
+        "AVHHIncBelow50KCoef",
+        "AVHHIncAboce100KCoef",
+        "AVDistToWrkCoef"
+      ),
+      FILE = "region_av_lev5_propensity_coef.csv",
+      TABLE = "Region",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "numeric",
+      NAVALUE = "NA",
+      SIZE = 0,
+      PROHIBIT = c("NA"),
+      ISELEMENTOF = "",
+      UNLIKELY = "",
+      TOTAL = "",
+      DESCRIPTION = item(
+        "Constant for AV level 5 propensity model",
+        "Age 20 to 29 household fraction coefficient for AV level 5 propensity model",
+        "Age 55 to 64 household fraction coefficient for AV level 5 propensity model",
+        "Age 65+ household fraction coefficient for AV level 5 propensity model",
+        "Transformed kids number coefficient for car service propoensity model",
+        "Household income below 50K USD 2010 coefficient for AV level 5 propensity model",
+        "Household income aboce 100K USD 2010 coefficient for AV level 5 propensity model",
+        "Distance to work coefficient for AV level 5 propensity model"
+      )
+    )
+  ),
   #Specify data to be loaded from data store
   Get = items(
     item(
@@ -57,18 +125,158 @@ CVAVOrientationSpecifications <- list(
       UNITS = "ID",
       PROHIBIT = "",
       ISELEMENTOF = ""
-    )
-  ),
-  #Specify data to saved in the data store
-  Set = items(
+    ),
     item(
-      NAME = "HhId",
+      NAME = "Bzone",
       TABLE = "Household",
       GROUP = "Year",
       TYPE = "character",
       UNITS = "ID",
       PROHIBIT = "",
       ISELEMENTOF = ""
+    ),
+    item(
+      NAME = "CarSvcLevel",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "character",
+      UNITS = "category",
+      PROHIBIT = "",
+      ISELEMENTOF = c("Low", "High")
+    ),
+    item(
+      NAME =
+        items("Age0to14",
+              "Age15to19",
+              "Age20to29",
+              "Age30to54",
+              "Age55to64",
+              "Age65Plus"),
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "people",
+      UNITS = "PRSN",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0
+      ),
+    item(
+      NAME = "Income",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD.2010",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0
+      ),
+    item(
+      NAME = "Bzone",
+      TABLE = "Bzone",
+      GROUP = "Year",
+      TYPE = "character",
+      UNITS = "ID",
+      PROHIBIT = "",
+      ISELEMENTOF = ""
+    ),
+    item(
+      NAME = "D1B",
+      TABLE = "Bzone",
+      GROUP = "Year",
+      TYPE = "compound",
+      UNITS = "PRSN/SQMI",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = ""
+      ),
+    item(
+      NAME = "HhId",
+      TABLE = "Worker",
+      GROUP = "Year",
+      TYPE = "character",
+      UNITS = "ID",
+      PROHIBIT = "",
+      ISELEMENTOF = ""
+    ),
+    item(
+      NAME = "DistanceToWork",
+      TABLE = "Worker",
+      GROUP = "Year",
+      TYPE = "distance",
+      UNITS = "MI",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "<= 0"),
+      ISELEMENTOF = "",
+      SIZE = 0
+      ),
+    item(
+      NAME = item(
+        "CSConstant",
+        "CSFracAge20to29Coef",
+        "CSFracAge55to64Coef",
+        "CSFracAge65pCoef",
+        "CSLowCarSvcFlagCoef",
+        "CSHHIncBelow50KFlagCoef",
+        "CSHHIncAbove100KFlagCoef",
+        "CSD1BCoef"
+      ),
+      TABLE = "Region",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "numeric",
+      NAVALUE = "NA",
+      SIZE = 0,
+      PROHIBIT = c("NA"),
+      ISELEMENTOF = "",
+      UNLIKELY = ""
+    ),
+    
+    item(
+      NAME = item(
+        "AVConstant",
+        "AVFracAge20to29Coef",
+        "AVFracAge55to64Coef",
+        "AVFracAge65pCoef",
+        "AVKidsCoef",
+        "AVHHIncBelow50KCoef",
+        "AVHHIncAboce100KCoef",
+        "AVDistToWrkCoef"
+      ),
+      FILE = "region_av_lev5_propensity_coef.csv",
+      TABLE = "Region",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "numeric",
+      NAVALUE = "NA",
+      SIZE = 0,
+      PROHIBIT = c("NA"),
+      ISELEMENTOF = ""
+    )
+    ),
+  #Specify data to saved in the data store
+  Set = items(
+    item(
+      NAME = "AVLvl5Propensity",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      PROHIBIT = c("NA", "<0", ">1"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Probability of household to own level 5 autonomous vehicles."
+    ),
+    item(
+      NAME = "CarSvcPropensity",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      PROHIBIT = c("NA", "<0", ">1"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Probability of household to use car service"
     )
   )
 )
@@ -112,7 +320,7 @@ visioneval::savePackageDataset(CVAVOrientationSpecifications, overwrite = TRUE)
 #' @return A list containing data produced by the function consistent with the
 #' module specifications.
 #' @name CVAVOrientation
-#' @import visioneval
+#' @import visioneval dplyr tidyr
 #' @export
 CVAVOrientation <- function(L) {
   
@@ -120,14 +328,86 @@ CVAVOrientation <- function(L) {
   #------
   #Copy portions of inputs list to outputs so that outputs exist to meet Set
   #specifications regardless of whether base year or other year
-  Out_ls <- list(
-  )
+  Out_ls <- initDataList()
   #Function to remove attributes
   unattr <- function(X_) {
     attributes(X_) <- NULL
     X_
   }
   
+  # Function to find inverse of logit
+  invlogit <- function(U_){
+    return(exp(U_)/(1+exp(U_)))
+  }
+  
+  # Create input data frame
+  Hh_df <- as.data.frame(L$Year$Household)
+  Bzone_df <- as.data.frame(L$Year$Bzone)
+  Worker_df <- as.data.frame(L$Year$Worker)
+  Hh_Worker_df <- Worker_df %>% group_by(HhId) %>% 
+    summarise(TotalDistToWork = sum(DistanceToWork, na.rm = TRUE))
+  
+  
+  D_df <- Hh_df %>% left_join(Bzone_df, by = c("Bzone")) %>%
+    left_join(Hh_Worker_df, by="HhId")
+  D_df <- D_df %>% mutate(
+    Constant = 1L,
+    HHSize = pmax(1, 
+                  Age0to14 + Age15to19 + Age20to29 + 
+                    Age30to54 + Age55to64 + Age65Plus),
+    FracAge20to29 = Age20to29/HHSize,
+    FracAge55to64 = Age55to64/HHSize,
+    FracAge65Plus = Age65Plus/HHSize,
+    NKids = log1p(Age0to14),
+    IncomeBelow50K = as.integer(Income < 50E3),
+    IncomeAbove100K = as.integer(Income >= 100E3),
+    TotalDistToWork = ifelse(is.na(TotalDistToWork), 0, TotalDistToWork),
+    LowCarSvcLevel = as.integer(CarSvcLevel == "Low")
+  ) %>% select(
+    c("HhId", "Constant", "FracAge20to29", "FracAge55to64",
+      "FracAge65Plus", "NKids", "IncomeBelow50K", "IncomeAbove100K",
+      "D1B", "TotalDistToWork", "LowCarSvcLevel")
+  )
+  
+  # Apply propensity models
+  # AV Propensity model
+  av_propensity_coef <- unlist(L$Year$Region[c("AVConstant", 
+                                               "AVFracAge20to29Coef",
+                                               "AVFracAge55to64Coef", 
+                                               "AVFracAge65pCoef",
+                                               "AVKidsCoef", 
+                                               "AVHHIncBelow50KCoef",
+                                               "AVHHIncAboce100KCoef",
+                                               "AVDistToWrkCoef")])
+  
+  Hh_df$AVPropensity <- D_df %>% select("Constant", "FracAge20to29", 
+                                       "FracAge55to64", "FracAge65Plus", 
+                                       "NKids", "IncomeBelow50K", 
+                                       "IncomeAbove100K", "TotalDistToWork") %>% 
+    as.matrix(.) %*% av_propensity_coef %>%
+    invlogit() %>% as.vector()
+  
+  # Car service propensity model
+  carsvc_propensity_coef <- unlist(L$Year$Region[c("CSConstant", 
+                                               "CSFracAge20to29Coef",
+                                               "CSFracAge55to64Coef", 
+                                               "CSFracAge65pCoef",
+                                               "CSLowCarSvcFlagCoef",
+                                               "CSHHIncBelow50KFlagCoef",
+                                               "CSHHIncAbove100KFlagCoef",
+                                               "CSD1BCoef")])
+  
+  Hh_df$CarSvcPropensity <- D_df %>% select("Constant", "FracAge20to29", 
+                                        "FracAge55to64", "FracAge65Plus", 
+                                        "LowCarSvcLevel", "IncomeBelow50K", 
+                                        "IncomeAbove100K", "D1B") %>% 
+    as.matrix(.) %*% carsvc_propensity_coef %>%
+    invlogit() %>% as.vector()
+  
+  Out_ls$Year$Household <- list(
+    AVLvl5Propensity = Hh_df$AVPropensity,
+    CarSvcPropensity = Hh_df$CarSvcPropensity
+  )
   
   #Return the results
   #------------------

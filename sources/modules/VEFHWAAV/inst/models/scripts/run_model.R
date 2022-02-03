@@ -15,7 +15,7 @@ for(Year in getYears()) {
   runModule("AssignRoadMiles",                 "VETransportSupply",     RunFor = "AllYears",    RunYear = Year)
   runModule("AssignDrivers",                   "VEHouseholdVehicles",   RunFor = "AllYears",    RunYear = Year)
   runModule("CVAVOrientation",                 "VEFHWAAV",              RunFor = "AllYears",    RunYear = Year)
-  runModule("AssignVehicleOwnership",          "VEHouseholdVehicles",   RunFor = "AllYears",    RunYear = Year)
+  runModule("AssignVehicleOwnership",          "VEFHWAAV",              RunFor = "AllYears",    RunYear = Year)
   runModule("AssignVehicleType",               "VEHouseholdVehicles",   RunFor = "AllYears",    RunYear = Year)
   runModule("CreateVehicleTable",              "VEHouseholdVehicles",   RunFor = "AllYears",    RunYear = Year)
   runModule("AssignVehicleAge",                "VEHouseholdVehicles",   RunFor = "AllYears",    RunYear = Year)
