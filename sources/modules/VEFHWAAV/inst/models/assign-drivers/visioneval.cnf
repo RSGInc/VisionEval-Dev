@@ -18,10 +18,9 @@ resultsPath    : results
 Model          : VERSPM 3.0 AV
 Region         : RVMPO
 State          : OR
-ModelStages : # specify explicitly to avoid processing base scenario
-    "AssignDrivers":
-      Dir: assign-drivers
-      Reportable: true
-    "AVModel":
-      Dir: av-folder
-      Reportable: true
+
+# Scenario description (using default or runtime Seed parameter)
+Scenario       : VERSPM RVMPO AV
+Description    : Base Year 2010 + Future 2038
+BaseYear       : 2010
+Years          : [2010, 2038]
