@@ -229,6 +229,28 @@ AssignVehicleOwnershipSpecifications <- list(
       DESCRIPTION =
         "Average number of household vehicles per licensed driver by Azone",
       OPTIONAL = TRUE
+    ),
+    item(
+      NAME =
+        items(
+          "AVLvl0Prop",
+          "AVLvl3Prop",
+          "AVLvl5Prop"
+      ),
+      FILE = "region_av_prop.csv",
+      TABLE = "Region",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = "",
+      UNLIKELY = "",
+      TOTAL = "",
+      DESCRIPTION = item(
+        "Proportion of vehicles with no autonomous driving capability",
+        "Proportion of vehicles with level 3 autonomous driving capability",
+        "Proportion of vehicles with level 5 autonomous driving capability"
+      )
     )
   ),
   #Specify data to be loaded from data store
@@ -379,6 +401,18 @@ AssignVehicleOwnershipSpecifications <- list(
       SIZE = 0
     ),
     item(
+      NAME = items(
+        "AVLvl0Prop",
+        "AVLvl3Prop",
+        "AVLvl5Prop"),
+      TABLE = "Region",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = ""
+    ),
+    item(
       NAME = "CarSvcPropensity",
       TABLE = "Household",
       GROUP = "Year",
@@ -424,6 +458,18 @@ AssignVehicleOwnershipSpecifications <- list(
     ),
     item(
       NAME = "AVLvl5Candidate",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "integer",
+      UNITS = "binary",
+      NAVALUE = -1,
+      PROHIBIT = c("NA"),
+      ISELEMENTOF = c(0, 1),
+      SIZE = 0,
+      DESCRIPTION = "A value of 1 sugests that the household is an ideal candidate to own level 5 autonomous vehicle"
+    ),
+    item(
+      NAME = "AVLvl3Candidate",
       TABLE = "Household",
       GROUP = "Year",
       TYPE = "integer",
@@ -511,8 +557,9 @@ AssignVehicleOwnership <- function(L) {
   Hh_df$LogDensity <- log(Density_)
   TranRevMiPC_Bz <- L$Year$Marea$TranRevMiPC[match(L$Year$Bzone$Marea, L$Year$Marea$Marea)]
   Hh_df$TranRevMiPC <- TranRevMiPC_Bz[match(L$Year$Household$Bzone, L$Year$Bzone$Bzone)]
-  Hh_df$AVLvl5Candidate <- as.integer(runif(nrow(Hh_df)) < Hh_df$AVLvl5Propensity)
   Hh_df$CarSvcCandidate <- as.integer(runif(nrow(Hh_df)) < Hh_df$CarSvcPropensity)
+  Hh_df$AVLvl5Candidate <- 0
+  Hh_df$AVLvl3Candidate <- 0
 
   #Make a vehicle probability matrix
   #---------------------------------
@@ -555,7 +602,6 @@ AssignVehicleOwnership <- function(L) {
               newdata = Hh_df[IsUrban,],
               type = "linear.predictor")$eta1
     VehiclePredict_mx <- VehiclePredict_mx + 
-      NumVehAVLvl5Coef * Hh_df[IsUrban,"AVLvl5Candidate"] +
       NumVehCarSvcCoef * Hh_df[IsUrban,"CarSvcCandidate"]
     VehicleProb_mx[IsUrban,1] <- plogis(VehiclePredict_mx[,1],0,1,1)
     for(i in 2:6){
@@ -570,7 +616,6 @@ AssignVehicleOwnership <- function(L) {
               newdata = Hh_df[!IsUrban,],
               type = "linear.predictor")$eta1
     VehiclePredict_mx <- VehiclePredict_mx + 
-      NumVehAVLvl5Coef * Hh_df[!IsUrban,"AVLvl5Candidate"] +
       NumVehCarSvcCoef * Hh_df[!IsUrban,"CarSvcCandidate"]
     VehicleProb_mx[!IsUrban,1] <- plogis(VehiclePredict_mx[,1],0,1,1)
     for(i in 2:6){
@@ -579,6 +624,28 @@ AssignVehicleOwnership <- function(L) {
         plogis(VehiclePredict_mx[,i-1],0,1,1)
     }
   }
+  
+  #Identify number of households for AV candidacy based on target proportions
+  #--------------------------------------------------------------------------
+  TargetPropLvl5 <- L$Year$Region$AVLvl5Prop[[1]]
+  TargetPropLvl3 <- L$Year$Region$AVLvl3Prop[[1]]
+  TargetNumHhLvl5 <- round(nrow(Hh_df) * TargetPropLvl5)
+  TargetNumHhLvl3 <- round(nrow(Hh_df) * (TargetPropLvl5 + TargetPropLvl3))
+  #Assign households AV candidacy in order of AV propensity                         
+  AVPropensity <- sort(Hh_df$AVLvl5Propensity, decreasing = TRUE, index.return = TRUE)
+  AVPropensityLvl5Idx <- head(AVPropensity$ix, n = TargetNumHhLvl5)
+  AVPropensityLvl3Idx <- head(AVPropensity$ix, n = TargetNumHhLvl3)
+  for (i in 1:nrow(Hh_df)) {
+    if (isTRUE(i %in% AVPropensityLvl5Idx)) {
+      Hh_df$AVLvl5Candidate[i] <- 1
+    }
+  }
+  for (i in 1:nrow(Hh_df)) {
+    if (isTRUE(i %in% AVPropensityLvl3Idx && Hh_df$AVLvl5Candidate[i] != 1)) {
+      Hh_df$AVLvl3Candidate[i] <- 1
+    }
+  }  
+  
   #Combine no-vehicle and vehicle count probabilities
   VehicleProb_HhNv <- cbind(
     NoVehicleProb_,
@@ -654,6 +721,7 @@ AssignVehicleOwnership <- function(L) {
   Out_ls$Year$Household <-
     list(Vehicles = Vehicles_,
          AVLvl5Candidate = Hh_df$AVLvl5Candidate,
+         AVLvl3Candidate = Hh_df$AVLvl3Candidate,
          CarSvcCandidate = Hh_df$CarSvcCandidate)
   #Return the outputs list
   Out_ls
