@@ -9,76 +9,72 @@
 
 source("setup.R")
 # Establishes VisionEval runtime environment for walkthrough
+# Only needs to be run when setting up a new runtime
 
 #########################
 # INSTALL BUILT-IN MODELS
 #########################
 
 source("../install.R")
-# Demonstrates installing built-in models, runs one of them, caches results
+# Demonstrates installing built-in models that you can
+# use as the basis for your own models
+
+#########################
+# INSTALL BUILT-IN MODELS
+#########################
+
+source("../running.R")   # Basic elements of running models
 
 ################################
 # FIRST VIEW OF MODEL STRUCTURES
 ################################
 
-# Tour the model structures in file explorer
-shell.exec("models")
-
-# inspecting model inputs
-vrb <- openModel("VERSPM-base") # See Install.R for installation
-
-inputs <- vrb$list(inputs=TRUE,details=c("FILE","INPUTDIR"))
-print(inputs[1:10,])
-required.files <- unique(file.path(inputs$INPUTDIR,inputs$FILE))
-print(required.files[1:10]) # full paths
-
-# Hack for shortening model paths:
-print(sub( getRuntimeDirectory(),"",required.files ))
-
-# inspecting model stages
-# VERSPM-base model (one stage, new structure)
-print(vrb)  # list of stage objects - only one in "base" model
-
-# VERSPM-pop model (three stages, new structure)
-vrs <- openModel("VERSPM-pop") # see Install.R for installation
-print(vrs) # Three stages - see Stages.R below for stage walkthrough
+source("../structure.R")
+# Shows some basic elements of the model structures
+# Also see "run-parameters.R" below for understanding
+# how VisionEval and its models are configured.
 
 ##########################
 # EXTRACTING MODEL RESULTS
 ##########################
 
 source("../extract.R")
-# Expects "VERSPM-run" to be present and "Run Complete"
-
-############################################
-# BUILD AND RUN A NEXT-GENERATION MINI-MODEL
-############################################
-
-source("../mini-model.R")
-
-#########################################
-# MANIPULATE MODEL CONFIGURATIONS USING R
-#########################################
-
-source("../run-parameters.R")
+# Shows how to extract raw results from a model into
+# tabular form that you can analyze in another system
+# (or continue to analyze in R)
+#
+# Expects "VERSPM-run" model to be present and "Run Complete"
 
 ##########################
 # ADDING STAGES TO A MODEL
 ##########################
 
-source("../model-stages.R")
+source("../mini-model.R")    # Create a minimal model to illustrate
+source("../model-stages.R")  # Explore model stages in detail
 
 ####################################
 # BUILDING AND RUNNING MODEL QUERIES
 ####################################
 
-source("../queries.R")
+source("../queries.R")       # Develop and run queries
 
-#######################
-# LOADING ANOTHER MODEL
-#######################
+#################
+# USING SCENARIOS
+#################
 
-source("../load-model.R")
+source("../scenarios.R")     # Use model stages as scenarios
+
+################
+# MODEL SETTINGS
+################
+
+source("../run-parameters.R") # Explore visioneval.cnf and parameters programmatically
+
+##########################
+# DEBUGGING A FAILED MODEL
+##########################
+
+source("../debugging.R")      # How to work with partial model runs
 # Illustrating how to copy a Datastore from an earlier model into a new one
 # Applications include post-mortem debugging and pre-building a Datastore to
 #   test a module under development.

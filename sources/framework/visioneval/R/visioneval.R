@@ -577,10 +577,29 @@ loadModel <- function(
         ))
       }
 
-      #Check that geography, units, deflators and base year are consistent
-      BadGeography <- !isTRUE(all.equal(envir$ModelState_ls$Geo_df, LoadDstore$ModelState_ls$Geo_df))
-      BadUnits <- !isTRUE(all.equal(envir$ModelState_ls$Units, LoadDstore$ModelState_ls$Units))
-      BadDeflators <- !isTRUE(all.equal(envir$ModelState_ls$Deflators, LoadDstore$ModelState_ls$Deflators))
+      #Check that geography, units, deflators and base year are
+      #consistent
+      BadGeography <- !isTRUE(
+        all.equal(
+          envir$ModelState_ls$Geo_df,
+          LoadDstore$ModelState_ls$Geo_df,
+          check.attributes=FALSE
+        )
+      )
+      BadUnits <- !isTRUE(
+        all.equal(
+          envir$ModelState_ls$Units,
+          LoadDstore$ModelState_ls$Units,
+          check.attrbutes=FALSE
+        )
+      )
+      BadDeflators <- !isTRUE(
+        all.equal(
+          envir$ModelState_ls$Deflators,
+          LoadDstore$ModelState_ls$Deflators,
+          check.attrbutes=FALSE
+        )
+      )
       BadBaseYear <- ! (envir$ModelState_ls$BaseYear == LoadDstore$ModelState_ls$BaseYear)
 
       if ( BadGeography || BadUnits || BadDeflators || BadBaseYear) {
@@ -856,6 +875,116 @@ prepareModelRun <- function(
 #' @export
 requirePackage <- function(Package) TRUE
 
+#==============
+#GET MODULE "L"
+#==============
+#' Get Module Data
+#'
+#' \code{getModuleL} a visioneval framework module developer function
+#' that extracts the module's required data from the Datastore.
+#'
+#' This function gets the required Datastore elements to run a
+#' module. It is available for testing a module's inputs.
+#'
+#' @param ModuleName A string identifying the name of a module object.
+#' @param PackageName A string identifying the name of the package the module is
+#'   a part of.
+#' @param RunYear A string identifying the run year.
+#' @param envir An environment containing a pre-built or loaded ModelState_ls
+#' @return the list of Datastore inputs for this module ("L")
+#' @export
+getModuleL <- function(ModuleName, PackageName, RunYear, envir=modelEnvironment()) {
+
+  writeLog(paste0("Getting Module 'L' data for ",PackageName,"::",ModuleName," in Year",RunYear),Level="info")
+
+  #Load the package and module
+  #---------------------------
+  ModuleSpecs <- paste0(PackageName, "::", ModuleName, "Specifications")
+
+  M <- list()
+  M$Specs <- processModuleSpecs(eval(parse(text = ModuleSpecs)))
+
+  #Get the ModelState_ls
+  # the ModelState_ls in the "envir" parameter must already contain the parsed model script
+  # (e.g. from visioneval::loadModel or from a VEModel stage)
+  G <- getModelState(envir=envir)
+
+  #Load any modules identified by 'Call' spec if any
+  if (is.list(M$Specs$Call)) {
+    Call <- list(
+      Func = list(),
+      Specs = list()
+    )
+    for (Alias in names(M$Specs$Call)) {
+      #Called module function when specified as package::module
+      CallFunction <- M$Specs$Call[[Alias]]
+      #Called module function when only module is specified
+      if (length(unlist(strsplit(CallFunction, "::"))) == 1) {
+        Pkg_df <- G$ModuleCalls_df
+        if (sum (Pkg_df$Module == CallFunction) != 0  ) {
+          Pkg_df <- G$ModuleCalls_df
+          CallFunction <-
+            paste(Pkg_df$Package[Pkg_df$Module == CallFunction], CallFunction, sep = "::")
+          
+          rm(Pkg_df)          
+        } else {
+          Pkg_df <- G$ModulesByPackage_df
+          CallFunction <-
+            paste(Pkg_df$Package[Pkg_df$Module == CallFunction], CallFunction, sep = "::")
+          
+          rm(Pkg_df)
+        }
+      }
+      #Called module specifications
+      CallSpecs <- paste0(CallFunction, "Specifications")
+      #Assign the function and specifications of called module to alias
+      Call$Func[[Alias]] <- eval(parse(text = CallFunction))
+      Call$Specs[[Alias]] <- processModuleSpecs(eval(parse(text = CallSpecs)))
+      Call$Specs[[Alias]]$RunBy <- M$Specs$RunBy
+    }
+  }
+  #Get module data
+  #---------------
+  if (M$Specs$RunBy == "Region") {
+    #Get data from datastore
+    L <- getFromDatastore(M$Specs, RunYear = RunYear)
+    if (exists("Call")) {
+      for (Alias in names(Call$Specs)) {
+        L[[Alias]] <-
+          getFromDatastore(Call$Specs[[Alias]], RunYear = RunYear)
+      }
+    }
+  } else {
+    #Identify the units of geography to iterate over
+    GeoCategory <- M$Specs$RunBy
+    #Create the geographic index list
+    GeoIndex_ls <- createGeoIndexList(c(M$Specs$Get, M$Specs$Set), GeoCategory, RunYear)
+    if (exists("Call")) {
+      for (Alias in names(Call$Specs)) {
+        GeoIndex_ls[[Alias]] <-
+          createGeoIndexList(Call$Specs[[Alias]]$Get, GeoCategory, RunYear)
+      }
+    }
+    #Run module for each geographic area
+    Geo_ <- readFromTable(GeoCategory, GeoCategory, RunYear)
+    L <- list()
+    for (Geo in Geo_) {
+      #Get data from datastore for geographic area
+      L$Geo <-
+        getFromDatastore(M$Specs, RunYear, Geo, GeoIndex_ls)
+      if (exists("Call")) {
+        for (Alias in names(Call$Specs)) {
+          L[[Alias]] <-
+            getFromDatastore(Call$Specs[[Alias]], RunYear = RunYear, Geo, GeoIndex_ls = GeoIndex_ls[[Alias]])
+        }
+      }
+    }
+  }
+  #Return L
+  #--------
+  L
+}
+
 #==========
 #RUN MODULE
 #==========
@@ -894,7 +1023,7 @@ runModule <- function(ModuleName, PackageName, RunFor, RunYear, StopOnErr = TRUE
   #------------------------------
   ModuleFunction <- paste0(PackageName, "::", ModuleName)
   ModuleSpecs <- paste0(ModuleFunction, "Specifications")
-  Msg <- paste0("Start  module '", ModuleFunction, "' for year '", RunYear, "'.")
+  Msg <- paste0("Start  module '", ModuleFunction, "' for year '", RunYear, "'. ",memory.size(),"Mb")
   writeLog(Msg,Level="warn")
   #Load the package and module
   #---------------------------
@@ -1036,8 +1165,9 @@ runModule <- function(ModuleName, PackageName, RunFor, RunYear, StopOnErr = TRUE
   }
   #Log and print ending message
   #----------------------------
-  Msg <- paste0("Finish module '", ModuleFunction, "' for year '", RunYear, "'.")
+  Msg <- paste0("Finish module '", ModuleFunction, "' for year '", RunYear, "'. ",memory.size(),"Mb")
   writeLog(Msg,Level="warn")
+  gc()
 
   if ( length(Warnings_) > 0 ) {
     writeLog(Warnings_,Level="warn")

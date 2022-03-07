@@ -39,7 +39,7 @@ stopTest <- function(msg) {
 # or to blow away what is already there (runs and all).
 
 # Check that we can source run_model.R to run a classic model
-test_classic <- function(modelName="VERSPM-Classic",clear=TRUE,log="info") {
+test_classic <- function(modelName="VERSPM-classic",clear=TRUE,log="info") {
 
   if ( ! missing(log) ) logLevel(log)
 
@@ -56,7 +56,7 @@ test_classic <- function(modelName="VERSPM-Classic",clear=TRUE,log="info") {
 
   if ( ! dir.exists(modelPath) ) {
     testStep(paste("Installing classic VERSPM model from package as",modelName))
-    rs <- installModel("VERSPM",variant="classic",installAs=modelName,log=log,confirm=FALSE)
+    rs <- installModel("VERSPM",variant="classic",modelPath=modelName,log=log,confirm=FALSE)
     modelName <- rs$modelName
     rm(rs)  # Don't keep the VEModel around
   }
@@ -94,8 +94,8 @@ test_install <- function(modelName="VERSPM",variant="base",installAs="",log="inf
       unlink(file.path("models",installAs), recursive=TRUE)
     }
 
-    testStep(paste("Installing",modelName,"model from package as",installAs))
-    rs <- installModel(modelName,installAs,variant,log=log,confirm=FALSE,overwrite=TRUE)
+    testStep(paste("Installing",modelName,"model variant",variant,"from package as",installAs))
+    rs <- installModel(modelName,variant=variant,modelPath=installAs,log=log,confirm=FALSE,overwrite=TRUE)
   } else {
     if ( nzchar(modelName) ) {
       testStep(paste0("Directory of available variants for ",modelName))
@@ -153,6 +153,9 @@ test_all_install <- function(overwrite=FALSE,log="warn") {
 test_flatten <- function(log="info") {
   testStep("run staged model with database path")
   vr <- openModel("VERSPM-pop")
+  if ( ! vr$valid() ) {
+    stop("Install and run VERSPM, variant='pop'")
+  }
   vr$run(log=log) # use "continue" - won't re-run if already ucla luskin ocnference center
   print(vr)
   testStep("prepare receiving directory")
@@ -178,7 +181,7 @@ test_run <- function(modelName="VERSPM-base",baseModel="VERSPM",variant="base",r
   }
   if ( ! modelName %in% model.dir ) {
     reset <- TRUE
-    rs <- test_install(modelName=baseModel,variant=variant,installAs=modelName,log="info")
+    rs <- test_install(modelName=baseModel,variant=variant,modelPath=modelName,log="info")
   }
 
   if ( ! reset ) {
@@ -208,7 +211,7 @@ test_run <- function(modelName="VERSPM-base",baseModel="VERSPM",variant="base",r
 #  be a version of VERSPM since we use its first two modules to create the "Bare" model
 # log="warn" will confine to a streamlined list of log messages like what a regular user
 #  would see. "info" gives lots of gory details.
-test_model <- function(modelName="JRSPM", oldstyle=FALSE, reset=FALSE, log="info", brief=FALSE) {
+test_model <- function(modelName="Test-VERSPM", oldstyle=FALSE, reset=FALSE, log="info", brief=FALSE) {
 
   if ( ! missing(log) ) logLevel(log)
 
@@ -218,10 +221,10 @@ test_model <- function(modelName="JRSPM", oldstyle=FALSE, reset=FALSE, log="info
   testStep("open (and maybe run) the full test version of VERSPM")
   due.to <- "reset request"
   if ( modelName %in% openModel() ) {
-    jr <- openModel(modelName)
-    if ( ! jr$overallStatus == codeStatus("Run Complete") ) {
+    mod <- openModel(modelName)
+    if ( ! mod$overallStatus == codeStatus("Run Complete") ) {
       reset = TRUE
-      due.to = paste("status",jr$printStatus())
+      due.to = paste("status",mod$printStatus())
     }
   } else {
     reset = TRUE
@@ -229,19 +232,19 @@ test_model <- function(modelName="JRSPM", oldstyle=FALSE, reset=FALSE, log="info
   }
   if ( isTRUE(reset) ) {
     cat("Re-running model due to",due.to,"\n")
-    jr <- test_run(modelName=modelName,baseModel="VERSPM",variant="base",reset=TRUE,log=log)
+    mod <- test_run(modelName=modelName,baseModel="VERSPM",variant="base",reset=TRUE,log=log)
   }
-  if (! "VEModel" %in% class(jr) ) {
-    return(jr)
-  } else print(jr,details=TRUE)
+  if (! "VEModel" %in% class(mod) ) {
+    return(mod)
+  } else print(mod,details=TRUE)
 
   testStep("Gather base model parameters")
-  base.dir <- jr$modelPath
+  base.dir <- mod$modelPath
   cat("Base Model directory:\n")
   print(base.dir)
 
   cat("Base model structural directories - including stages\n")
-  for ( stage in jr$modelStages ) {
+  for ( stage in mod$modelStages ) {
     cat("Stage:",stage$Name,"\n")
     jrParam_ls <- stage$RunParam_ls
     cat("  ParamPath    :",visioneval::getRunParameter("ParamPath",Param_ls=jrParam_ls),"\n")
@@ -312,7 +315,7 @@ test_model <- function(modelName="JRSPM", oldstyle=FALSE, reset=FALSE, log="info
 
   testStep("Copy other configuration files (geo, units, deflators)")
 
-  base.defs <- jr$setting("ParamPath",shorten=FALSE)
+  base.defs <- mod$setting("ParamPath",shorten=FALSE)
   from <- file.path(base.defs,c("units.csv","deflators.csv","geo.csv"))
   file.copy(from=from,to=bare.defs)
   print(bare.defs)
@@ -327,9 +330,9 @@ test_model <- function(modelName="JRSPM", oldstyle=FALSE, reset=FALSE, log="info
   #   if the file does not exist on the model's InputPath (which is the case
   #   for the bare model).
 
-  base.inputs <- unique(jr$dir(inputs=TRUE)) # List short names of input paths for each stage
+  base.inputs <- unique(mod$dir(inputs=TRUE,showRootDir=FALSE)) # List short names of input paths for each stage
   cat("Base Inputs",base.inputs,"\n")
-  base.inputs <- unique(jr$dir(inputs=TRUE,shorten=FALSE)) # Now get the full path name for inputs
+  base.inputs <- unique(mod$dir(inputs=TRUE,shorten=FALSE)) # Now get the full path name for inputs
   inputs <- bare$list(inputs=TRUE,details=c("FILE","INPUTDIR"))
   cat("Input Directories (should be NA - files don't exist yet):\n")
   print( unique(inputs[,"INPUTDIR"]) )
@@ -350,7 +353,7 @@ test_model <- function(modelName="JRSPM", oldstyle=FALSE, reset=FALSE, log="info
   file.copy(from=from,to=bare.inputs) # or copy to bare.defs...
   print(dir(bare.inputs))
 
-  testStep(paste("Copy required input files from",jr$modelName))
+  testStep(paste("Copy required input files from",mod$modelName))
 
   print(required.files)
   from <- required.files
@@ -591,7 +594,8 @@ test_load <- function(model=NULL, log="info" ) {
   testStep("Copy model...")
   modelPath <- file.path("models","LOAD-test")
   if ( dir.exists(modelPath) ) unlink(modelPath,recursive=TRUE)
-  loadModel <- model$copy("LOAD-test",copyResults=FALSE)
+  loadModelName <- "LOAD-test"
+  loadModel <- model$copy(loadModelName,copyResults=FALSE)
   print(loadModel)
   testStep("Set up load script...")
   baseModelPath <- loadModel$setting("ModelDir",shorten=FALSE)
@@ -628,15 +632,13 @@ test_load <- function(model=NULL, log="info" ) {
   configFile <- file.path(baseModelPath,"visioneval.cnf")
   yaml::write_yaml(runConfig_ls,configFile)
 
-  testStep("Reload model with LoadDatastore")
-  loadModel <- openModel(basename(loadModel$modelPath),log=log)
+  testStep(paste("Reload model",loadModelName," with LoadDatastore"))
+  loadModel <- openModel(loadModelName,log=log)
 
   testStep("Copy additional inputs")
   base.model <- openModel("JRSPM")
-  base.inputs <- file.path(
-    base.model$setting("InputPath",shorten=FALSE),
-    base.model$setting("InputDir")
-  )
+  base.inputs <- base.model$setting("InputPath",shorten=FALSE)
+  
   cat("Base Inputs",base.inputs,"\n")
   inputs <- loadModel$list(inputs=TRUE,details=c("FILE","INPUTDIR"))
   required.files <- unique(file.path(base.inputs,inputs[,"FILE"]))
@@ -645,10 +647,7 @@ test_load <- function(model=NULL, log="info" ) {
   print(basename(required.files))
 
   testStep("Copying additional input files")
-  bare.inputs <- file.path(
-    loadModel$setting("InputPath",shorten=FALSE),
-    loadModel$setting("InputDir")
-  )
+  bare.inputs <- file.path(loadModel$setting("InputPath",shorten=FALSE))
   testStep("Remove base model inputs - will just have new ones")
   unlink(bare.inputs,recursive=TRUE)
   dir.create(bare.inputs)
@@ -660,9 +659,38 @@ test_load <- function(model=NULL, log="info" ) {
   file.copy(from=from,to=bare.inputs) # or copy to bare.defs...
   print(dir(bare.inputs))
 
-  testStep("Run model, loading datasore")
+  testStep("Run model, loading datastore")
   loadModel$run("reset",log=log)
   return(loadModel)
+}
+
+test_select <- function( log="info" ) {
+  testStep("Manipulate model selection to pick and retrieve fields")
+  mod <- openModel("VERSPM-pop") # use staged model to exercise DatastorePath
+  if ( ! mod$valid() ) {
+    stop("Install and run VERSPM, variant='pop'")
+  }
+  rs <- mod$results("stage-pop-future")
+  if ( "VEResultsList" %in% class(rs) ) {
+    rs <- rs$results()
+    rs <- rs[length(rs)]
+  }
+  testStep("Directly access results using 'find'")
+  cat("Result has",length(find <- rs$find()),"fields\n") # All the fields...
+  print(head(find$fields(),n=10)) # First 10 or so field descriptors
+  testStep("Access the selection")
+  sl <- rs$select()
+  cat("Fields to select from:",length(sl$fields()),"\n")
+  testStep("Finding Worker table for 2038")
+  print(sl$find(Group="2038",Table="Worker"))
+  testStep("Finding Worker table for 2038 straight from the results")
+  wkr <- sl$find(Group="2038",Table="Worker") 
+  print(wkr)
+  testStep("Selecting Worker table and extracting to a data.frame")
+  rs$select(wkr)
+  wrk.table <- rs$extract(saveTo=FALSE)[[1]] # only one table returned in a list
+  print(wrk.table[sample(nrow(wrk.table),10),])
+  return(rs)
 }
 
 test_results <- function (log="info") {
@@ -672,9 +700,12 @@ test_results <- function (log="info") {
   testStep("Manipulate Model Results in Detail")
 
   testStep("Copy model and get 'results' and 'selection' from empty model...")
-  jr <- openModel("JRSPM")
+  mod <- openModel("VERSPM-pop") # use staged model to exercise DatastorePath
+  if ( ! mod$valid() ) {
+    stop("Install and run VERSPM, variant='pop'")
+  }
   if ( "COPY" %in% dir("models") ) unlink("models/COPY",recursive=TRUE)
-  cp <- jr$copy("COPY")
+  cp <- mod$copy("COPY")
   cat("Directory before clearing...\n")
   print(cp$dir())
   cp$clear(force=TRUE,outputOnly=FALSE)
@@ -688,13 +719,13 @@ test_results <- function (log="info") {
   print(sl)
   rm(cp)
 
-  testStep("Pull out results and selection from jr (head 12)...")
+  testStep("Pull out results and selection from mod (head 12)...")
   cat("Results...\n")
-  rs <- jr$results()  # Gets results for final Reportable stage (only)
+  rs <- mod$results()  # Gets results for final Reportable stage (only)
 
   # TODO: rs may be a list of VEResults (not just a single object)?
   # Use case is mostly for doing queries over a set of scenarios...
-  # Return a list if jr$results(all.stages=TRUE) or jr$results(stages=c(stage1,stage2)) with
+  # Return a list if mod$results(all.stages=TRUE) or mod$results(stages=c(stage1,stage2)) with
   # length(stages)>1 : all reportable stages in that case.
   # An individual stage can also be called out explicitly (and in that case, it does not
   #   need to be Reportable).
@@ -737,9 +768,9 @@ test_results <- function (log="info") {
   spd$DisplayUnits <- "MI/HR"
   cat("Writing display_units.csv into ")
   display_units_file <- file.path(
-      jr$modelPath,
-      visioneval::getRunParameter("ParamDir",Param_ls=jr$RunParam_ls),
-      visioneval::getRunParameter("DisplayUnitsFile",Param_ls=jr$RunParam_ls)
+      mod$modelPath,
+      visioneval::getRunParameter("ParamDir",Param_ls=mod$RunParam_ls),
+      visioneval::getRunParameter("DisplayUnitsFile",Param_ls=mod$RunParam_ls)
     )
   cat(display_units_file,"\n")
   write.csv(spd,file=display_units_file)
@@ -767,25 +798,110 @@ test_results <- function (log="info") {
   sl$export(prefix="Datastore",convertUnits=FALSE)  # Using DATASTORE units
 
   testStep("Model directory")
-  print(jr$dir())
+  print(mod$dir())
 
   testStep("Model directory of results")
-  print(jr$dir(results=TRUE))
+  print(mod$dir(results=TRUE))
   
   testStep("Model directory of outputs")
-  print(jr$dir(outputs=TRUE))
+  print(mod$dir(outputs=TRUE))
   
   testStep("Interactively clear outputs but leave results")
-  jr$clear(outputOnly=TRUE, force=FALSE)
+  mod$clear(outputOnly=TRUE, force=FALSE)
 
   testStep("Directory after clearing")
-  jr$dir()
+  mod$dir()
 }
 
-# TODO: make separate functions (not flag) for
-#   (1) build/manipulate query object versus
-#   (2) run query
-test_query <- function(log="info",build.query=TRUE,break.query=TRUE,run.query=TRUE,reset=FALSE) {
+test_build_query <- function(log="info",break.query=TRUE,reset=FALSE) {
+  # Process the standard query list for the test model
+  # If multiple==TRUE, copy the test model and its results a few times, then submit the
+  # list of all the copies to VEQuery. Each column of results will be the same (see
+  # test_scenarios for a run that will generate different results in each column).
+
+  testStep("Set up Queries")
+  testStep("Opening test model and caching its results...")
+  mod <- test_run("VERSPM-query",baseModel="VERSPM",variant="pop",log=log,reset=reset)
+  rs <- mod$results()
+
+  testStep("Show query directory (may be empty)...")
+  print(mod$query())
+
+  testStep("Create an empty query object and print it...")
+  # create a query object
+  qry <- mod$query("Test-Query",load=FALSE) # Don't open it if file exists already
+  cat("Query valid:",qry$valid(),"\n")
+  cat("Print qry$checkResults:"); print(qry$checkResults)
+  cat("Print query\n")
+  print(qry)
+
+  testStep("Add a query specification formulated as a list element...")
+  spec <- list(
+    Name = "UrbanHhDvmt",
+    Summarize = list(
+      Expr = "sum(UrbanHhDvmt)",
+      Units = c(
+        UrbanHhDvmt = "MI/DAY",
+        Marea = ""
+      ),
+      By = "Marea",
+      Table = "Marea"
+    ),
+    Units = "Miles per day",
+    Description = "Daily vehicle miles traveled by households residing in the urban area"
+  )
+  qry$add(spec)
+  qry$print(details=TRUE)
+
+  testStep("Names of specifications in added query...")
+  print(qry$names())    # List names of QuerySpecifications in order
+  testStep("Print function for added queries...")
+  print(qry)
+
+  testStep("Re-add a query at the beginning of the list")
+  print(qry)
+  spec <- VEQuerySpec$new(spec)
+  spec <- spec$update(Name="UrbanHhDvmt_before")
+  cat("Adding spec:\n")
+  print(spec)
+  qry$add(spec,before=TRUE) # Should be placed at location=1 (first element); existing list after
+  cat("Before goes at beginning\n")
+  print(qry)
+  spec <- VEQuerySpec$new(spec)
+  spec <- spec$update(Name="UrbanHhDvmt_loc2")
+  qry$add(spec,location=2,before=TRUE) # should put loc2 in between "before" and original
+  cat("loc2 goes between 'before' and original\n")
+  print(qry)
+  spec <- VEQuerySpec$new(spec)
+  spec <- spec$update(Name="UrbanHhDvmt_loc45")
+  qry$add(spec,location=45) # should put loc45 at the end
+  cat("loc45 goes at end\n")
+  print(qry)
+  spec <- VEQuerySpec$new(spec)
+  spec <- spec$update(Name="UrbanHhDvmt_loc0")
+  qry$add(spec,location=2,before=TRUE)  # should put loc0 "after" first element: 2nd position
+  cat("loc0 goes after first element\n")
+  print(qry)
+
+  testStep("Remove test specifications...")
+  cat("Removing:\n")
+  print( nm <- qry$names()[1:3] )
+  qry$remove(nm) # remove by name (bye-bye before,loc2 and loc0)
+  print(qry)
+  cat("Removing:\n")
+  print(c("2",qry$names()[2]))
+  qry$remove(2) # remove by position (bye-bye loc45)
+  print(qry)
+
+  if ( break.query ) {
+    testStep("Make a new VEQuery and add various bad specifications to it (not implemented)...")
+    # TODO: Throw some additional specific broken queries at it to see if errors are correct.
+    # TODO: destroy that object once we're done abusing it.
+  }
+  return(qry)
+}
+
+test_query <- function(log="info",Force=TRUE,runModel=FALSE) {
   # Process the standard query list for the test model
   # If multiple==TRUE, copy the test model and its results a few times, then submit the
   # list of all the copies to VEQuery. Each column of results will be the same (see
@@ -793,28 +909,84 @@ test_query <- function(log="info",build.query=TRUE,break.query=TRUE,run.query=TR
 
   testStep("Set up Queries and Run on Model Results")
   testStep("Opening test model and caching its results...")
-  jr <- test_run("VERSPM-query",baseModel="VERSPM",variant="pop",log=log,reset=reset)
-  rs <- jr$results()
+  mod <- test_run("VERSPM-query",baseModel="VERSPM",variant="pop",log=log,reset=runModel)
+  rs <- mod$results()
 
   testStep("Show query directory (may be empty)...")
-  print(jr$query())
+  print(mod$query())
 
-  if ( ! ( build.query || break.query || run.query ) ) {
-    testStep("No query tests requested; returning VERSPM-query model")
-    return(jr)
-  }
+  qry <- mod$query("Test-Query",load=FALSE) # Don't open it if file exists already
 
-  if ( build.query ) {
-    testStep("Create an empty query object and print it...")
-    # create a query object
-    qry <- jr$query("Test-Query",load=FALSE) # Don't open it if file exists already
-    cat("Query valid:",qry$valid(),"\n")
-    cat("Print qry$checkResults:"); print(qry$checkResults)
-    cat("Print query\n")
-    print(qry)
+  # TODO: split into further testing of query construction
+  # plus second element to efficiently create a correct query and run it.
+  testStep("Build a query from scratch and run it.")
+  testStep("Construct bare query specification...")
+  spec <- VEQuerySpec$new()
+  cat("Bare query is valid (FALSE): ")
+  print(spec$valid())   # Should return FALSE
+  print(spec)
 
-    testStep("Add a query specification formulated as a list element...")
-    spec <- list(
+  testStep("Add spec details to bare query using $update...")
+  spec$update(
+    Name = "UrbanHhDvmt_MixNbrhd",
+    Description = "Daily vehicle miles traveled by households residing in mixed use in the urban area",
+    Units = "Miles per day", # Purely advisory...
+    Summarize = list(
+      Expr = "sum(Dvmt[LocType == 'Urban' & IsUrbanMixNbrhd == '1'])",
+      Units = c(
+        Dvmt = "MI/DAY",        # Will force to this unit, with conversion if needed
+        LocType = "",           # Leaving it blank says use Datastore default
+        IsUrbanMixNbrhd = "",
+        Marea = ""
+      ),
+      By = "Marea",
+      Table = "Household"
+    )
+  )
+  cat("Updated query is valid (TRUE): ")
+  print(spec$valid())   # Should return TRUE
+  print(spec)
+
+  testStep("Add updated spec to Query and print...")
+  qry$add(spec)
+  print(qry)
+
+  testStep("Print again with details...")
+  print(qry,details=TRUE)
+
+  testStep("Complete the initial query by adding more 'Summarize' specs...")
+
+  # Just load a list of specifications straight into the query
+  spec <- list(
+    list(
+      Name = "UrbanVanDvmt",
+      Summarize = list(
+        Expr = "sum(VanDvmt)",
+        Units = c(
+          VanDvmt = "MI/DAY",
+          Marea = ""
+        ),
+        By = "Marea",
+        Table = "Marea"
+      ),
+      Units = "Miles per day",
+      Description = "Daily vehicle miles traveled by on-demand transit vans in the Urban area."
+    ),
+    list(
+      Name = "UrbanComSvcDvmt",
+      Summarize = list(
+        Expr = "sum(ComSvcUrbanDvmt)",
+        Units = c(
+          ComSvcUrbanDvmt = "MI/DAY",
+          Marea = ""
+        ),
+        By = "Marea",
+        Table = "Marea"
+      ),
+      Units = "Miles per day",
+      Description = "Commercial service vehicle daily vehicle miles traveled attributable to the demand of households and businesses located in the urban area"
+    ),
+    list(
       Name = "UrbanHhDvmt",
       Summarize = list(
         Expr = "sum(UrbanHhDvmt)",
@@ -828,292 +1000,169 @@ test_query <- function(log="info",build.query=TRUE,break.query=TRUE,run.query=TR
       Units = "Miles per day",
       Description = "Daily vehicle miles traveled by households residing in the urban area"
     )
-    qry$add(spec)
-    qry$print(details=TRUE)
+  )
+  qry$add(spec)
 
-    testStep("Names of specifications in added query...")
-    print(qry$names())    # List names of QuerySpecifications in order
-    testStep("Print function for added queries...")
-    print(qry)
+  print(qry)
+  qry$add(spec,location=1,after=TRUE)
+  print(qry)
 
-    testStep("Re-add a query at the beginning of the list")
-    print(qry)
-    spec <- VEQuerySpec$new(spec)
-    spec <- spec$update(Name="UrbanHhDvmt_before")
-    cat("Adding spec:\n")
-    print(spec)
-    qry$add(spec,before=TRUE) # Should be placed at location=1 (first element); existing list after
-    cat("Before goes at beginning\n")
-    print(qry)
-    spec <- VEQuerySpec$new(spec)
-    spec <- spec$update(Name="UrbanHhDvmt_loc2")
-    qry$add(spec,location=2,before=TRUE) # should put loc2 in between "before" and original
-    cat("loc2 goes between 'before' and original\n")
-    print(qry)
-    spec <- VEQuerySpec$new(spec)
-    spec <- spec$update(Name="UrbanHhDvmt_loc45")
-    qry$add(spec,location=45) # should put loc45 at the end
-    cat("loc45 goes at end\n")
-    print(qry)
-    spec <- VEQuerySpec$new(spec)
-    spec <- spec$update(Name="UrbanHhDvmt_loc0")
-    qry$add(spec,location=2,before=TRUE)  # should put loc0 "after" first element: 2nd position
-    cat("loc0 goes after first element\n")
-    print(qry)
+  testStep("Create a 'Function' query specification...")
 
-    testStep("Remove test specifications...")
-    cat("Removing:\n")
-    print( nm <- qry$names()[1:3] )
-    qry$remove(nm) # remove by name (bye-bye before,loc2 and loc0)
-    print(qry)
-    cat("Removing:\n")
-    print(c("2",qry$names()[2]))
-    qry$remove(2) # remove by position (bye-bye loc45)
-    print(qry)
-  } else {
-    qry <- jr$query("Test-Query",load=FALSE) # Don't open it if file exists already
-  }
-  if ( build.query && break.query ) {
-    testStep("Make a new VEQuery and add various bad specifications to it (not implemented)...")
-    # TODO: Throw some additional specific broken queries at it to see if errors are correct.
-    # TODO: destroy that object once we're done abusing it.
-  }
-  if ( ! run.query ) {
-    testStep("Not running query - returning it for further exploration")
-    return(qry)
-  } else {
-    # TODO: split into further testing of query construction
-    # plus second element to efficiently create a correct query and run it.
-    testStep("Build a query from scratch and run it.")
-    testStep("Construct bare query specification...")
-    spec <- VEQuerySpec$new()
-    cat("Bare query is valid (FALSE): ")
-    print(spec$valid())   # Should return FALSE
-    print(spec)
-
-    testStep("Add spec details to bare query using $update...")
-    spec$update(
-      Name = "UrbanHhDvmt_MixNbrhd",
-      Description = "Daily vehicle miles traveled by households residing in mixed use in the urban area",
-      Units = "Miles per day", # Purely advisory...
-      Summarize = list(
-        Expr = "sum(Dvmt[LocType == 'Urban' & IsUrbanMixNbrhd == '1'])",
-        Units = c(
-          Dvmt = "MI/DAY",        # Will force to this unit, with conversion if needed
-          LocType = "",           # Leaving it blank says use Datastore default
-          IsUrbanMixNbrhd = "",
-          Marea = ""
-        ),
-        By = "Marea",
-        Table = "Household"
-      )
+  spec <- VEQuerySpec$new()
+  spec$update(QuerySpec=list(
+      Name = "UrbanLdvDvmt",
+      Function = "UrbanHhDvmt + UrbanVanDvmt + UrbanComSvcDvmt",
+      Units = "Miles per day",
+      Description = "Sum of daily vehicle miles traveled in the urban area"
     )
-    cat("Updated query is valid (TRUE): ")
-    print(spec$valid())   # Should return TRUE
-    print(spec)
+  )
+  cat("Function spec is valid (TRUE):"); print(spec$valid())
+  print(spec)
 
-    testStep("Add updated spec to Query and print...")
-    qry$add(spec)
-    print(qry)
+  testStep("Add the Function spec to the query...")
 
-    testStep("Print again with details...")
-    print(qry,details=TRUE)
+  print(qry)
+  qry$add(spec)
+  print(qry)
 
-    testStep("Complete the initial query by adding more 'Summarize' specs...")
+  testStep("Clear test queries, if any...")
+  qfiles <- mod$query()
 
-    # Just load a list of specifications straight into the query
-    spec <- list(
-      list(
-        Name = "UrbanVanDvmt",
-        Summarize = list(
-          Expr = "sum(VanDvmt)",
-          Units = c(
-            VanDvmt = "MI/DAY",
-            Marea = ""
-          ),
-          By = "Marea",
-          Table = "Marea"
-        ),
-        Units = "Miles per day",
-        Description = "Daily vehicle miles traveled by on-demand transit vans in the Urban area."
-      ),
-      list(
-        Name = "UrbanComSvcDvmt",
-        Summarize = list(
-          Expr = "sum(ComSvcUrbanDvmt)",
-          Units = c(
-            ComSvcUrbanDvmt = "MI/DAY",
-            Marea = ""
-          ),
-          By = "Marea",
-          Table = "Marea"
-        ),
-        Units = "Miles per day",
-        Description = "Commercial service vehicle daily vehicle miles traveled attributable to the demand of households and businesses located in the urban area"
-      ),
-      list(
-        Name = "UrbanHhDvmt",
-        Summarize = list(
-          Expr = "sum(UrbanHhDvmt)",
-          Units = c(
-            UrbanHhDvmt = "MI/DAY",
-            Marea = ""
-          ),
-          By = "Marea",
-          Table = "Marea"
-        ),
-        Units = "Miles per day",
-        Description = "Daily vehicle miles traveled by households residing in the urban area"
-      )
-    )
-    qry$add(spec)
+  print(qfiles <- file.path(mod$modelPath,"queries",qfiles))
+  unlink(qfiles)
+  print(mod$query())
 
-    print(qry)
-    qry$add(spec,location=1,after=TRUE)
-    print(qry)
+  testStep("Save the query and fix its extension...")
 
-    testStep("Create a 'Function' query specification...")
+  qry$save() # as Test-Query.VEqry
+  cat("Saved values in original query...\n")
+  cat("Name; "); print(qry$QuerydName)
+  cat("Path: "); print(qry$QueryFile)
+  cat("Directory: "); print(qry$QueryDir)
+  print(dir(qry$QueryDir))
 
-    spec <- VEQuerySpec$new()
-    spec$update(QuerySpec=list(
-        Name = "UrbanLdvDvmt",
-        Function = "UrbanHhDvmt + UrbanVanDvmt + UrbanComSvcDvmt",
-        Units = "Miles per day",
-        Description = "Sum of daily vehicle miles traveled in the urban area"
-      )
-    )
-    cat("Function spec is valid (TRUE):"); print(spec$valid())
-    print(spec)
+  testStep("Save a copy of the query and fix its extension...")
 
-    testStep("Add the Function spec to the query...")
+  qry2 <- qry$copy("Copy-Query.R") # .R will be removed from the name
+  qry2$save() # Essentially as "Save As"
+  cat("Saved values in renamed query...\n")
+  cat("Directory: "); print(qry2$QueryDir)
+  cat("Name; "); print(qry2$QueryName)
+  cat("Path: "); print(qry2$QueryFile)
+  cat("Contents of copied query...\n")
+  print(qry2)
 
-    print(qry)
-    qry$add(spec)
-    print(qry)
+  testStep("Model QueryDir contents...")
 
-    testStep("Clear test queries, if any...")
-    qfiles <- jr$query()
+  cat("Expecting "); print(c("Copy-Query.VEqry","Test-Query.VEqry"))
+  print(mod$query())
 
-    print(qfiles <- file.path(jr$modelPath,"queries",qfiles))
-    unlink(qfiles)
-    print(jr$query())
+  testStep("Save a query somewhere else...")
+  qfile <- file.path(mod$modelPath,"queries","Dump-Query.R")
+  qry2$save(qfile)
+  print(mod$query())
 
-    testStep("Save the query and fix its extension...")
+  testStep("Save a query without overwriting...")
+  actualFile <- qry2$save(overwrite=FALSE)
+  qfile <- c(qfile,actualFile)
+  print(mod$query())
+  unlink(qfile); rm(qry2)
 
-    qry$save() # as Test-Query.VEqry
-    cat("Saved values in original query...\n")
-    cat("Name; "); print(qry$QuerydName)
-    cat("Path: "); print(qry$QueryFile)
-    cat("Directory: "); print(qry$QueryDir)
-    print(dir(qry$QueryDir))
+  testStep("Open the query by short name in a different object from the file...")
 
-    if ( build.query ) { # Interior elaborate test of copying/ssving queries
-      testStep("Save a copy of the query and fix its extension...")
+  runqry <- mod$query("Test-Query")
+  cat("Loaded query...\n")
+  cat("Directory: "); print(runqry$QueryDir)
+  cat("Name; "); print(runqry$QueryName)
+  cat("Path: "); print(runqry$QueryFile)
+  print(runqry)
 
-      qry2 <- qry$copy("Copy-Query.R") # .R will be removed from the name
-      qry2$save() # Essentially as "Save As"
-      cat("Saved values in renamed query...\n")
-      cat("Directory: "); print(qry2$QueryDir)
-      cat("Name; "); print(qry2$QueryName)
-      cat("Path: "); print(qry2$QueryFile)
-      cat("Contents of copied query...\n")
-      print(qry2)
+  testStep("Open the query again from the file, using full file name...")
 
-      testStep("Model QueryDir contents...")
+  runqry <- mod$query("Test-Query.VEQry")
+  cat("Re-Loaded query with name extension...\n")
+  cat("Directory: "); print(runqry$QueryDir)
+  cat("Name: "); print(runqry$QueryName)
+  cat("Path: "); print(runqry$QueryFile)
+  print(runqry)
+  rm(runqry)
 
-      cat("Expecting "); print(c("Copy-Query.VEqry","Test-Query.VEqry"))
-      print(jr$query())
+  testStep("Run the query on the model...")
+  qry$run(mod,Force=Force) # using original query above
 
-      testStep("Save a query somewhere else...")
-      qfile <- file.path(jr$modelPath,"queries","Dump-Query.R")
-      qry2$save(qfile)
-      print(jr$query())
-
-      testStep("Save a query without overwriting...")
-      actualFile <- qry2$save(overwrite=FALSE)
-      qfile <- c(qfile,actualFile)
-      print(jr$query())
-      unlink(qfile); rm(qry2)
-
-      testStep("Open the query by short name in a different object from the file...")
-
-      runqry <- jr$query("Test-Query")
-      cat("Loaded query...\n")
-      cat("Directory: "); print(runqry$QueryDir)
-      cat("Name; "); print(runqry$QueryName)
-      cat("Path: "); print(runqry$QueryFile)
-      print(runqry)
-
-      testStep("Open the query again from the file, using full file name...")
-
-      runqry <- jr$query("Test-Query.VEQry")
-      cat("Re-Loaded query with name extension...\n")
-      cat("Directory: "); print(runqry$QueryDir)
-      cat("Name; "); print(runqry$QueryName)
-      cat("Path: "); print(runqry$QueryFile)
-      print(runqry)
-      rm(runqry)
-    }
-
-    testStep("Run the query on the model...")
-    qry$run(jr) # using original query above
-
-    testStep("Display query results...")
-    # TODO: put a class on the query results and push the following into a print method
-    rs <- qry$results()
-    cat("Number of query results:",length(rs),"\n")
-    for ( r in seq(length(rs)) ) {
-      cat("Result #",r,"\n")
-      result <- rs[[r]]
-      cat("  Path:",result$Path)
-      cat("  Results:",paste(names(result$Results),collapse=", "),"\n")
-      cat("  ModelStage Results:",result$Source$Name,"\n")
-    }
-
-    testStep("Extract query results into data.frame")
-    df <- query.results <- qry$extract() # Constructs the data.frame of query results
-    # TODO: should the data.frame be cached (not just the raw results?)
-    print(names(df))
-    print(df)
-
-    testStep("Extract query results into .csv file (default name)")
-    df <- qry$export(format="csv")
-    df <- qry$export() # Does the same thing again, possibly overwriting
-    # Each extract creates a new file with a different timestamp, but
-    # the timestamps only differ by minutes: figure out how that works.
-
-    testStep("Export query results into explicitly named .csv file")
-    qry$export(format="csv",SaveTo=paste0("TestQuery_%timestamp%",qry$Name))
-
-    testStep("Show output files, which will include exports and queries")
-    jr$dir(outputs=TRUE,all.files=TRUE)
-
-    testStep("Run the query again on the bare results (should do nothing)...")
-    rs <- jr$results()
-    qry$run(rs) # Won't re-run if query results are up to date with the scenario runs
-
-    testStep("Force the query to run on the bare results rather than the model...")
-    qry$run(rs,Force=TRUE) # Won't re-run if query is up to date
-
-    testStep("Returning extracted query data.frame for further exploration")
-    return(df)
+  testStep("Display query results...")
+  rs <- qry$results()
+  cat("Number of query results:",length(rs),"\n")
+  for ( r in seq(length(rs)) ) {
+    cat("Result #",r,"\n")
+    result <- rs[[r]]
+    cat("  Path:",result$Path)
+    cat("  Results:",paste(names(result$Results),collapse=", "),"\n")
+    cat("  ModelStage Results:",result$Source$Name,"\n")
   }
+
+  testStep("Extract query results into data.frame")
+  df <- query.results <- qry$extract() # Constructs the data.frame of query results
+  # TODO: should the data.frame be cached (not just the raw results?)
+  print(names(df))
+  print(df)
+
+  testStep("Extract query results into .csv file (default name)")
+  df <- qry$export(format="csv")
+  df <- qry$export() # Does the same thing again, possibly overwriting
+  # Each extract creates a new file with a different timestamp, but
+  # the timestamps only differ by minutes: figure out how that works.
+
+  testStep("Export query results into explicitly named .csv file")
+  qry$export(format="csv",SaveTo=paste0("TestQuery_%timestamp%",qry$Name))
+
+  testStep("Show output files, which will include exports and queries")
+  mod$dir(outputs=TRUE,all.files=TRUE)
+
+  testStep("Run the query again on the bare results (should do nothing)...")
+  rs <- mod$results()
+  qry$run(rs) # Won't re-run if query results are up to date with the scenario runs
+
+  testStep("Force the query to run on the bare results rather than the model...")
+  qry$run(rs,Force=TRUE) # Won't re-run if query is up to date
+
+  testStep("Returning extracted query data.frame for further exploration")
+  return(df)
 }
 
-#TODO: this function is probably obsolete (thought it is useful for describing
+# Torture test the query mechanism
+test_fullquery <- function(Force=TRUE,runModel=FALSE,log="info") {
+  testStep("Test Full-Query.VEqry")
+  testStep("Opening test model and caching its results...")
+  mod <- test_run("VERSPM-query",baseModel="VERSPM",variant="pop",log=log,reset=runModel)
+  qry <- mod$query("Full-Query",load=TRUE) # Don't open it if file exists already
+  testStep("Print Query")
+  print(qry)
+  testStep("Run Query")
+  logLevel(log)
+  qry$run(Force=Force)
+  testStep("Extract results (invisible data.frame)")
+  df <- qry$extract()
+  print(names(df))
+  print(nrow(df))
+  invisible(df)
+}
+
+#TODO: this function is probably obsolete (though it is useful for describing
 #  how to programmatically build scenarios...). Look at test_multicore function
 #  and perhaps update that.
 test_multiquery <- function(reset=FALSE,log="info") {
   # Merge this with test_scenario
   if ( ! missing(log) ) logLevel(log)
   testStep("Acquiring test model")
-  jr <- test_run("VERSPM-query",baseModel="VERSPM",variant="pop",reset=reset)
-  print(jr)
-  qry <- jr$query("Test-Query")
+  mod <- test_run("VERSPM-query",baseModel="VERSPM",variant="pop",reset=reset)
+  print(mod)
+  qry <- mod$query("Test-Query")
   print(qry)
 
   testStep("Query multiple scenarios...")
-  # Generate several copies of jr future year
+  # Generate several copies of mod future year
   # Inputs will be sought up the "StartFrom" tree.
   # To customize inputs for Scenario-1 (as an actual scenario),
   #   create InputDir ("inputs") inside stagePath.1 and put in
@@ -1121,59 +1170,68 @@ test_multiquery <- function(reset=FALSE,log="info") {
   #   it just uses the inputs found in earlier stages. For the
   #   purposes of testing the query functionality, it suffices here
   #   to have all the scenarios be the same.
-  stagePath.1 <- file.path(jr$modelPath,"Scenario-1")
+  stagePath.1 <- file.path(mod$modelPath,"Scenario-1")
   if ( ! dir.exists( stagePath.1 ) ) dir.create(stagePath.1)
-  jr$addstage(
+  mod$addstage(
     Name="Scenario-1",
     Dir="Scenario-1",
-    ModelDir=jr$modelPath, # TODO: Why do we need this?
+    ModelDir=mod$modelPath, # TODO: Why do we need this?
     # TODO: InputPath = NULL, # from one of the category test scenarios
     Scenario="Scenario 1",
     Description="Same as original...",
     StartFrom="stage-pop-future",
-    BaseYear=jr$setting("BaseYear",stage="stage-pop-future"),
-    Years=jr$setting("Years",stage="stage-pop-future"),
-    ModelScript=jr$setting("ModelScript",stage="stage-pop-future")
+    BaseYear=mod$setting("BaseYear",stage="stage-pop-future"),
+    Years=mod$setting("Years",stage="stage-pop-future"),
+    ModelScript=mod$setting("ModelScript",stage="stage-pop-future")
   )
-  stagePath.2 <- file.path(jr$modelPath,"Scenario-2")
+  stagePath.2 <- file.path(mod$modelPath,"Scenario-2")
   if ( ! dir.exists( stagePath.2 ) ) dir.create(stagePath.2)
-  jr$addstage(
+  mod$addstage(
     Name="Scenario-2",
     Dir="Scenario-2",
-    ModelDir=jr$modelPath,
+    ModelDir=mod$modelPath,
     # TODO: InputPath = NULL, # from a different category test scenario
     Scenario="Scenario 2",
     Description="Same as original...",
     StartFrom="stage-pop-future",
-    BaseYear=jr$setting("BaseYear",stage="stage-pop-future"),
-    Years=jr$setting("Years",stage="stage-pop-future"),
-    ModelScript=jr$setting("ModelScript",stage="stage-pop-future")
+    BaseYear=mod$setting("BaseYear",stage="stage-pop-future"),
+    Years=mod$setting("Years",stage="stage-pop-future"),
+    ModelScript=mod$setting("ModelScript",stage="stage-pop-future")
   )
 
   # Force Reportable on stage-pop-future (auto-detect says no since
   # the other scenarios start from it).
-  jr$modelStages[["stage-pop-future"]]$Reportable=TRUE
+  mod$modelStages[["stage-pop-future"]]$Reportable=TRUE
 
   # NOTE: without an InputDir or a different InputPath or different Script, this will just re-run
   # the model using all the inputs from stage-pop-future and put the results in this stage's output
   # directory.
   testStep("Running two additional scenarios")
-  jr$run() # runs with "continue" - will just do the newly added stages
+  mod$run() # runs with "continue" - will just do the newly added stages
 
   # TODO: restructure multi-scenario model to push those scenarios into ModelStages and use
   #   the scenarios StartFrom to establish the default case.
 
   testStep("Query the model")
   # Make a list of VEResults objects from the VEModel list and run query on it
-  qry$run(jr,OutputFile="%queryname%_FromModel_%timestamp%")
+  qry$run(mod,Force=TRUE) # might be leftovers from another query test
+  extract <- qry$extract()
+  qry$export()
+
+  print(mod$dir(outputs=TRUE))
 
   testStep("Query the results list explicitly (should use cached query results)")
   # Make a list of ResultsDir path names (i.e. list of character strings) from the
   # VEResults and query that (Note difference between a character vector - list of
   # model names and a list of character strings, which are the result paths).
-  qry$run(jr$results(),OutputRoot=jr$modelResults,OutputFile="%queryname%_FromResultList_%timestamp%.csv")
+  qry$run(mod$results())
+  qry$extract()
+  qry$export()
+
+  print(mod$dir(outputs=TRUE))
 
   testStep("Done with multiple queries")
+  return(qry)
 }
 
 # TODO: once scenario testing is complete, add a test for the visualizer (writing to file
@@ -1186,7 +1244,7 @@ test_rpat <- function(run=TRUE) {
   verpat <- openModel("JRPAT")
   if ( ! verpat$valid() ) {
     testStep("Installing VERPAT as JRPAT")
-    verpat <- installModel("VERPAT",installAs="JRPAT")
+    verpat <- installModel("VERPAT",modelPath="JRPAT")
   }
   if ( run || ! verpat$results()$valid() ) {
     testStep("Clearing previous extracts")
@@ -1199,7 +1257,7 @@ test_rpat <- function(run=TRUE) {
 }
 
 # Test the setup management functions
-test_setup <- function(model=NULL) {
+test_setup <- funqction(model=NULL) {
   testStep("Parameter defaults...")
   visioneval::defaultVERunParameters()
 
@@ -1340,7 +1398,7 @@ test_visual <- function(categories=TRUE,popup=FALSE,reset=FALSE,log="info") {
   jsonvars <- qr$visual(QueryResults=extract) # pure extraction return jsonvars
   if ( popup ) {
     testStep("Launching jrc visualizer")
-    qr$visual(SaveTo=NULL) # save to sub-directory of ResultsDir/OutputDir
+    qr$visual(SaveTo=NULL) # Popup visualizer
   } else {
     testStep("Writing file-system visualizer")
     qr$visual(SaveTo=TRUE) # save to sub-directory of ResultsDir/OutputDir

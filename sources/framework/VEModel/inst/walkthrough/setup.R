@@ -1,3 +1,9 @@
+### setup.R
+#   Set up the walkthrough environment
+#   It's harmless to run this again, but generally you should just
+#   let it auto-run by using "ve.test()" - no parameters on ve.test
+#   will load the walkthrough.
+
 # Establish the VisionEval environment (VEModel comes afterwards)
 
 # Locate ve-lib
@@ -46,7 +52,3 @@ local( {
   Sys.setenv(VE_RUNTIME=ve.runtime)
   setwd(ve.runtime)
 } )
-
-# create helper function to switch logLevel
-# ("info" gives a lot more details, "trace" is overwhelming)
-logLevel <- function(log="warn") visioneval::initLog(Save=FALSE,Threshold=log)
