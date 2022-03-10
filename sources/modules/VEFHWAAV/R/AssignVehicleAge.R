@@ -369,6 +369,15 @@ AssignVehicleAgeSpecifications <- list(
       ISELEMENTOF = c("L0", "L3", "L5"),
       SIZE = 2,
       DESCRIPTION = "Identifier for vehicle level of automation"
+    ),
+    item(
+      NAME = "AVAvailability",
+      TABLE = "Model",
+      GROUP = "Global",
+      TYPE = "time",
+      UNITS = "YR",
+      PROHIBIT = c("<= 0"),
+      ISELEMENTOF = ""
     )
   ),
   #Specify data to saved in the data store
@@ -676,6 +685,7 @@ AssignVehicleAge <- function(L) {
   
   #Assign age for automated vehicles
   #---------------------------------
+  AvAgeModel_ls <- loadPackageDataset("AvAgeModel_ls","VEFHWAAV")
   UseAv <- with(L$Year$Vehicle, VehicleAccess == "Own" & AVLvl != "L0")
   if (TRUE %in% UseAv) {
     #Create data frame of data to use
@@ -703,14 +713,47 @@ AssignVehicleAge <- function(L) {
     Age_Ve[Av_df$VehId] <- Av_df$Age
   }
   
-  #Return the results
-  #------------------
-  #Initialize output list
-  Out_ls <- initDataList()
-  Out_ls$Year$Vehicle$Age <- unname(Age_Ve)
-  #Return the outputs list
-  Out_ls
-}
+  #Reassign age for automated vehicles based on earliest availability
+  #------------------------------------------------------------------
+  if (TRUE %in% UseAv) {
+    AVAvail <- as.numeric(L$Global$Model$AVAvailability)
+    AvAgeLimit <- as.numeric(L$G$Year) - AVAvail
+    if (AvAgeLimit < 0) {
+      Age_Ve[Av_df$VehId] <- 0
+      writeLog("Model parameter for AV availability is not consistent with AV market share input.", Level="warning")
+    } else if (AvAgeLimit == 0) {
+      Age_Ve[Av_df$VehId] <- 0
+    } else if (AvAgeLimit > 15) {
+      AvAgeLimit <- 15 
+    } else {
+      AvAges <-
+        sample(
+          0:AvAgeLimit,
+          Av_Ty[["Auto"]],
+          replace = TRUE,
+          prob = AvAgeModel_ls[["Auto"]][1:(AvAgeLimit + 1)])
+      Av_df$Age[Av_df$Type == "Auto"] <- AvAges
+      #Assign ages for AV light trucks
+      AvAges <-
+        sample(
+          0:AvAgeLimit,
+          Av_Ty[["LtTrk"]],
+          replace = TRUE,
+          prob = AvAgeModel_ls[["LtTrk"]][1:(AvAgeLimit + 1)])
+      Av_df$Age[Av_df$Type == "LtTrk"] <- AvAges
+      #Add vehicle age for owned automated vehicles
+      Age_Ve[Av_df$VehId] <- Av_df$Age
+    }
+  }
+    
+    #Return the results
+    #------------------
+    #Initialize output list
+    Out_ls <- initDataList()
+    Out_ls$Year$Vehicle$Age <- unname(Age_Ve)
+    #Return the outputs list
+    Out_ls
+  }
 
 
 #===============================================================

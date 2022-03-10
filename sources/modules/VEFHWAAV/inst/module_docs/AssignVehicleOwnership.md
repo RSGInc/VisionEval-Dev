@@ -167,6 +167,13 @@ This input file is OPTIONAL.
 |Geo             |         |        |         |Azones      |         |Must contain a record for each Azone and model run year.          |
 |Year            |         |        |         |            |         |Must contain a record for each Azone and model run year.          |
 |AveVehPerDriver |compound |VEH/DRV |NA, < 0  |            |> 2      |Average number of household vehicles per licensed driver by Azone |
+### region_av_market_share.csv
+|NAME        |TYPE   |UNITS      |PROHIBIT     |ISELEMENTOF |UNLIKELY |DESCRIPTION                                                         |
+|:-----------|:------|:----------|:------------|:-----------|:--------|:-------------------------------------------------------------------|
+|Year        |       |           |             |            |         |Must contain a record for each model run year                       |
+|AVLvl0Share |double |proportion |NA, < 0, > 1 |            |         |Market share of vehicles with no autonomous driving capability      |
+|AVLvl3Share |double |proportion |NA, < 0, > 1 |            |         |Market share of vehicles with level 3 autonomous driving capability |
+|AVLvl5Share |double |proportion |NA, < 0, > 1 |            |         |Market share of vehicles with level 5 autonomous driving capability |
 
 ## Datasets Used by the Module
 The following table documents each dataset that is retrieved from the datastore and used by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
@@ -185,27 +192,30 @@ PROHIBIT - Values that are prohibited. Values in the datastore do not meet any o
 
 ISELEMENTOF - Categorical values that are permitted. Values in the datastore are one or more of the listed values.
 
-|NAME             |TABLE     |GROUP |TYPE      |UNITS      |PROHIBIT   |ISELEMENTOF        |
-|:----------------|:---------|:-----|:---------|:----------|:----------|:------------------|
-|Marea            |Marea     |Year  |character |ID         |           |                   |
-|TranRevMiPC      |Marea     |Year  |compound  |MI/PRSN/YR |NA, < 0    |                   |
-|Marea            |Bzone     |Year  |character |ID         |           |                   |
-|Bzone            |Bzone     |Year  |character |ID         |           |                   |
-|D1B              |Bzone     |Year  |compound  |PRSN/SQMI  |NA, < 0    |                   |
-|Bzone            |Household |Year  |character |ID         |           |                   |
-|Azone            |Household |Year  |character |ID         |           |                   |
-|Workers          |Household |Year  |people    |PRSN       |NA, < 0    |                   |
-|Drivers          |Household |Year  |people    |PRSN       |NA, < 0    |                   |
-|Income           |Household |Year  |currency  |USD.2001   |NA, < 0    |                   |
-|HouseType        |Household |Year  |character |category   |           |SF, MF, GQ         |
-|HhSize           |Household |Year  |people    |PRSN       |NA, <= 0   |                   |
-|Age65Plus        |Household |Year  |people    |PRSN       |NA, < 0    |                   |
-|IsUrbanMixNbrhd  |Household |Year  |integer   |binary     |NA         |0, 1               |
-|LocType          |Household |Year  |character |category   |NA         |Urban, Town, Rural |
-|AVLvl5Propensity |Household |Year  |double    |proportion |NA, <0, >1 |                   |
-|CarSvcPropensity |Household |Year  |double    |proportion |NA, <0, >1 |                   |
-|Azone            |Azone     |Year  |character |ID         |           |                   |
-|AveVehPerDriver  |Azone     |Year  |compound  |VEH/DRV    |NA, < 0    |                   |
+|NAME             |TABLE     |GROUP |TYPE      |UNITS      |PROHIBIT     |ISELEMENTOF        |
+|:----------------|:---------|:-----|:---------|:----------|:------------|:------------------|
+|Marea            |Marea     |Year  |character |ID         |             |                   |
+|TranRevMiPC      |Marea     |Year  |compound  |MI/PRSN/YR |NA, < 0      |                   |
+|Marea            |Bzone     |Year  |character |ID         |             |                   |
+|Bzone            |Bzone     |Year  |character |ID         |             |                   |
+|D1B              |Bzone     |Year  |compound  |PRSN/SQMI  |NA, < 0      |                   |
+|Bzone            |Household |Year  |character |ID         |             |                   |
+|Azone            |Household |Year  |character |ID         |             |                   |
+|Workers          |Household |Year  |people    |PRSN       |NA, < 0      |                   |
+|Drivers          |Household |Year  |people    |PRSN       |NA, < 0      |                   |
+|Income           |Household |Year  |currency  |USD.2001   |NA, < 0      |                   |
+|HouseType        |Household |Year  |character |category   |             |SF, MF, GQ         |
+|HhSize           |Household |Year  |people    |PRSN       |NA, <= 0     |                   |
+|Age65Plus        |Household |Year  |people    |PRSN       |NA, < 0      |                   |
+|IsUrbanMixNbrhd  |Household |Year  |integer   |binary     |NA           |0, 1               |
+|LocType          |Household |Year  |character |category   |NA           |Urban, Town, Rural |
+|AVLvl5Propensity |Household |Year  |double    |proportion |NA, <0, >1   |                   |
+|AVLvl0Share      |Region    |Year  |double    |proportion |NA, < 0, > 1 |                   |
+|AVLvl3Share      |Region    |Year  |double    |proportion |NA, < 0, > 1 |                   |
+|AVLvl5Share      |Region    |Year  |double    |proportion |NA, < 0, > 1 |                   |
+|CarSvcPropensity |Household |Year  |double    |proportion |NA, <0, >1   |                   |
+|Azone            |Azone     |Year  |character |ID         |             |                   |
+|AveVehPerDriver  |Azone     |Year  |compound  |VEH/DRV    |NA, < 0      |                   |
 
 ## Datasets Produced by the Module
 The following table documents each dataset that is placed in the datastore by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
@@ -230,4 +240,5 @@ DESCRIPTION - A description of the data.
 |:---------------|:---------|:-----|:--------|:------|:--------|:-----------|:--------------------------------------------------------------------------------------------------------------------------------------------------|
 |Vehicles        |Household |Year  |vehicles |VEH    |NA, < 0  |            |Number of automobiles and light trucks owned or leased by the household including high level car service vehicles available to driving-age persons |
 |AVLvl5Candidate |Household |Year  |integer  |binary |NA       |0, 1        |A value of 1 sugests that the household is an ideal candidate to own level 5 autonomous vehicle                                                    |
+|AVLvl3Candidate |Household |Year  |integer  |binary |NA       |0, 1        |A value of 1 sugests that the household is an ideal candidate to own level 5 autonomous vehicle                                                    |
 |CarSvcCandidate |Household |Year  |integer  |binary |NA       |0, 1        |A value of 1 sugests that the household is an ideal candidate to use car services                                                                  |

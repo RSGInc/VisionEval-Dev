@@ -69,21 +69,22 @@ PROHIBIT - Values that are prohibited. Values in the datastore do not meet any o
 
 ISELEMENTOF - Categorical values that are permitted. Values in the datastore are one or more of the listed values.
 
-|NAME                |TABLE     |GROUP |TYPE      |UNITS    |PROHIBIT |ISELEMENTOF                |
-|:-------------------|:---------|:-----|:---------|:--------|:--------|:--------------------------|
-|Azone               |Azone     |Year  |character |ID       |         |                           |
-|AutoMeanAge         |Azone     |Year  |time      |YR       |NA, <= 0 |                           |
-|LtTrkMeanAge        |Azone     |Year  |time      |YR       |NA, <= 0 |                           |
-|Azone               |Household |Year  |character |ID       |         |                           |
-|HhId                |Household |Year  |character |ID       |         |                           |
-|Income              |Household |Year  |currency  |USD.2001 |NA, < 0  |                           |
-|Azone               |Vehicle   |Year  |character |ID       |         |                           |
-|HhId                |Vehicle   |Year  |character |ID       |NA       |                           |
-|VehId               |Vehicle   |Year  |character |ID       |NA       |                           |
-|VehicleAccess       |Vehicle   |Year  |character |category |         |Own, LowCarSvc, HighCarSvc |
-|Type                |Vehicle   |Year  |character |category |NA       |Auto, LtTrk                |
-|AveCarSvcVehicleAge |Azone     |Year  |time      |YR       |NA, < 0  |                           |
-|AVLvl               |Vehicle   |Year  |character |category |         |L0, L3, L5                 |
+|NAME                |TABLE     |GROUP  |TYPE      |UNITS    |PROHIBIT |ISELEMENTOF                |
+|:-------------------|:---------|:------|:---------|:--------|:--------|:--------------------------|
+|Azone               |Azone     |Year   |character |ID       |         |                           |
+|AutoMeanAge         |Azone     |Year   |time      |YR       |NA, <= 0 |                           |
+|LtTrkMeanAge        |Azone     |Year   |time      |YR       |NA, <= 0 |                           |
+|Azone               |Household |Year   |character |ID       |         |                           |
+|HhId                |Household |Year   |character |ID       |         |                           |
+|Income              |Household |Year   |currency  |USD.2001 |NA, < 0  |                           |
+|Azone               |Vehicle   |Year   |character |ID       |         |                           |
+|HhId                |Vehicle   |Year   |character |ID       |NA       |                           |
+|VehId               |Vehicle   |Year   |character |ID       |NA       |                           |
+|VehicleAccess       |Vehicle   |Year   |character |category |         |Own, LowCarSvc, HighCarSvc |
+|Type                |Vehicle   |Year   |character |category |NA       |Auto, LtTrk                |
+|AveCarSvcVehicleAge |Azone     |Year   |time      |YR       |NA, < 0  |                           |
+|AVLvl               |Vehicle   |Year   |character |category |         |L0, L3, L5                 |
+|AVAvailability      |Model     |Global |time      |YR       |<= 0     |                           |
 
 ## Datasets Produced by the Module
 The following table documents each dataset that is placed in the datastore by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
