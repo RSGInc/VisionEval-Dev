@@ -236,9 +236,11 @@ ISELEMENTOF - Categorical values that are permitted. Values in the datastore are
 
 DESCRIPTION - A description of the data.
 
-|NAME            |TABLE     |GROUP |TYPE     |UNITS  |PROHIBIT |ISELEMENTOF |DESCRIPTION                                                                                                                                        |
-|:---------------|:---------|:-----|:--------|:------|:--------|:-----------|:--------------------------------------------------------------------------------------------------------------------------------------------------|
-|Vehicles        |Household |Year  |vehicles |VEH    |NA, < 0  |            |Number of automobiles and light trucks owned or leased by the household including high level car service vehicles available to driving-age persons |
-|AVLvl5Candidate |Household |Year  |integer  |binary |NA       |0, 1        |A value of 1 sugests that the household is an ideal candidate to own level 5 autonomous vehicle                                                    |
-|AVLvl3Candidate |Household |Year  |integer  |binary |NA       |0, 1        |A value of 1 sugests that the household is an ideal candidate to own level 5 autonomous vehicle                                                    |
-|CarSvcCandidate |Household |Year  |integer  |binary |NA       |0, 1        |A value of 1 sugests that the household is an ideal candidate to use car services                                                                  |
+|NAME              |TABLE     |GROUP |TYPE     |UNITS  |PROHIBIT |ISELEMENTOF |DESCRIPTION                                                                                                                                                           |
+|:-----------------|:---------|:-----|:--------|:------|:--------|:-----------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|Vehicles          |Household |Year  |vehicles |VEH    |NA, < 0  |            |Number of automobiles and light trucks owned or leased by the household including high level car service vehicles available to driving-age persons                    |
+|NumAVLvl5Vehicles |Household |Year  |vehicles |VEH    |NA, < 0  |            |Number of automation level 5 automobiles and light trucks owned or leased by the household including high level car service vehicles available to driving-age persons |
+|NumAVLvl3Vehicles |Household |Year  |vehicles |VEH    |NA, < 0  |            |Number of automation level 3 automobiles and light trucks owned or leased by the household including high level car service vehicles available to driving-age persons |
+|AVLvl5Candidate   |Household |Year  |integer  |binary |NA       |0, 1        |A value of 1 sugests that the household is an ideal candidate to own level 5 autonomous vehicle                                                                       |
+|AVLvl3Candidate   |Household |Year  |integer  |binary |NA       |0, 1        |A value of 1 sugests that the household is an ideal candidate to own level 5 autonomous vehicle                                                                       |
+|CarSvcCandidate   |Household |Year  |integer  |binary |NA       |0, 1        |A value of 1 sugests that the household is an ideal candidate to use car services                                                                                     |

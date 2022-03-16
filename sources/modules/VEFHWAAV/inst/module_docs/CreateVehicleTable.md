@@ -58,18 +58,18 @@ PROHIBIT - Values that are prohibited. Values in the datastore do not meet any o
 
 ISELEMENTOF - Categorical values that are permitted. Values in the datastore are one or more of the listed values.
 
-|NAME            |TABLE     |GROUP |TYPE      |UNITS    |PROHIBIT |ISELEMENTOF |
-|:---------------|:---------|:-----|:---------|:--------|:--------|:-----------|
-|HhId            |Household |Year  |character |ID       |         |            |
-|Azone           |Household |Year  |character |ID       |         |            |
-|Marea           |Household |Year  |character |ID       |         |            |
-|NumLtTrk        |Household |Year  |vehicles  |VEH      |NA, < 0  |            |
-|NumAuto         |Household |Year  |vehicles  |VEH      |NA, < 0  |            |
-|Vehicles        |Household |Year  |vehicles  |VEH      |NA, < 0  |            |
-|DrvAgePersons   |Household |Year  |people    |PRSN     |NA, < 0  |            |
-|CarSvcLevel     |Household |Year  |character |category |         |Low, High   |
-|AVLvl5Candidate |Household |Year  |integer   |binary   |NA       |0, 1        |
-|AVLvl3Candidate |Household |Year  |integer   |binary   |NA       |0, 1        |
+|NAME              |TABLE     |GROUP |TYPE      |UNITS    |PROHIBIT |ISELEMENTOF |
+|:-----------------|:---------|:-----|:---------|:--------|:--------|:-----------|
+|HhId              |Household |Year  |character |ID       |         |            |
+|Azone             |Household |Year  |character |ID       |         |            |
+|Marea             |Household |Year  |character |ID       |         |            |
+|NumLtTrk          |Household |Year  |vehicles  |VEH      |NA, < 0  |            |
+|NumAuto           |Household |Year  |vehicles  |VEH      |NA, < 0  |            |
+|NumAVLvl3Vehicles |Household |Year  |vehicles  |VEH      |NA, < 0  |            |
+|NumAVLvl5Vehicles |Household |Year  |vehicles  |VEH      |NA, < 0  |            |
+|Vehicles          |Household |Year  |vehicles  |VEH      |NA, < 0  |            |
+|DrvAgePersons     |Household |Year  |people    |PRSN     |NA, < 0  |            |
+|CarSvcLevel       |Household |Year  |character |category |         |Low, High   |
 
 ## Datasets Produced by the Module
 The following table documents each dataset that is placed in the datastore by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
@@ -98,4 +98,4 @@ DESCRIPTION - A description of the data.
 |Marea         |Vehicle |Year  |character |ID       |         |                           |Marea ID                                                                                                                                                      |
 |VehicleAccess |Vehicle |Year  |character |category |         |Own, LowCarSvc, HighCarSvc |Identifier whether vehicle is owned by household (Own), if vehicle is low level car service (LowCarSvc), or if vehicle is high level car service (HighCarSvc) |
 |Type          |Vehicle |Year  |character |category |NA       |Auto, LtTrk                |Vehicle body type: Auto = automobile, LtTrk = light trucks (i.e. pickup, SUV, Van)                                                                            |
-|AVLvl         |Vehicle |Year  |character |category |         |L0, L3, L5                 |Identifier for vehicle level of automation                                                                                                                    |
+|AVLvl         |Vehicle |Year  |character |category |         |L0, L3, L5                 |Identifier for level of automation of vehicles                                                                                                                |

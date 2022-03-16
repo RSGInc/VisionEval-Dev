@@ -141,6 +141,17 @@ CreateVehicleTableSpecifications <- list(
       ISELEMENTOF = ""
     ),
     item(
+      NAME = items(
+        "NumAVLvl3Vehicles",
+        "NumAVLvl5Vehicles"),
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "vehicles",
+      UNITS = "VEH",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = ""
+    ),
+    item(
       NAME = "Vehicles",
       TABLE = "Household",
       GROUP = "Year",
@@ -166,30 +177,6 @@ CreateVehicleTableSpecifications <- list(
       UNITS = "category",
       PROHIBIT = "",
       ISELEMENTOF = c("Low", "High")
-    ),
-    item(
-      NAME = "AVLvl5Candidate",
-      TABLE = "Household",
-      GROUP = "Year",
-      TYPE = "integer",
-      UNITS = "binary",
-      NAVALUE = -1,
-      PROHIBIT = c("NA"),
-      ISELEMENTOF = c(0, 1),
-      SIZE = 0,
-      DESCRIPTION = "A value of 1 sugests that the household is an ideal candidate to own level 5 autonomous vehicle"
-    ),
-    item(
-      NAME = "AVLvl3Candidate",
-      TABLE = "Household",
-      GROUP = "Year",
-      TYPE = "integer",
-      UNITS = "binary",
-      NAVALUE = -1,
-      PROHIBIT = c("NA"),
-      ISELEMENTOF = c(0, 1),
-      SIZE = 0,
-      DESCRIPTION = "A value of 1 sugests that the household is an ideal candidate to own level 5 autonomous vehicle"
     )
   ),
   #Specify data to saved in the data store
@@ -247,7 +234,7 @@ CreateVehicleTableSpecifications <- list(
       PROHIBIT = "",
       ISELEMENTOF = c("L0", "L3", "L5"),
       SIZE = 2,
-      DESCRIPTION = "Identifier for vehicle level of automation"
+      DESCRIPTION = "Identifier for level of automation of vehicles"
     )
   )
 )
@@ -313,6 +300,9 @@ CreateVehicleTable <- function(L) {
   NumVeh_Hh <- NumOwned_Hh + NumCarSvc_Hh
   NumLtTrk_Hh <- L$Year$Household$NumLtTrk
   NumAuto_Hh <- L$Year$Household$NumAuto
+  NumAVLvl5_Hh <- L$Year$Household$NumAVLvl5Vehicles
+  NumAVLvl3_Hh <- L$Year$Household$NumAVLvl3Vehicles
+  NumAVLvl0_Hh <- NumVeh_Hh - NumAVLvl5_Hh - NumAVLvl3_Hh
   #Create a vehicle table
   Out_ls$Year$Vehicle <- list()
   attributes(Out_ls$Year$Vehicle)$LENGTH <- sum(NumVeh_Hh)
@@ -330,23 +320,7 @@ CreateVehicleTable <- function(L) {
   #Add Marea ID to table
   Out_ls$Year$Vehicle$Marea <- rep(L$Year$Household$Marea, NumVeh_Hh)
   attributes(Out_ls$Year$Vehicle$Marea)$SIZE <- max(nchar(Out_ls$Year$Vehicle$Marea))
-  #Add AV level
-  NumAv_Hh <- data.frame(AvLvl5 = L$Year$Household$AVLvl5Candidate,
-                         AvLvl3 = L$Year$Household$AVLvl3Candidate, 
-                         Veh = NumVeh_Hh)
-  NumAv_Hh$AvLvl <- rep(NA, nrow(NumAv_Hh))
-  for (i in 1:nrow(NumAv_Hh)) {
-    if (isTRUE(NumAv_Hh$AvLvl5[i] == 1)) {
-      NumAv_Hh$AvLvl[i] <- list(rep("L5", times = NumAv_Hh$Veh[i]))
-    }
-    else if (isTRUE(NumAv_Hh$AvLvl3[i] == 1)) {
-      NumAv_Hh$AvLvl[i] <- list(rep("L3", times = NumAv_Hh$Veh[i]))
-    }
-    else {
-      NumAv_Hh$AvLvl[i] <- list(rep("L0", times = NumAv_Hh$Veh[i]))
-    }
-  }
-  Out_ls$Year$Vehicle$AVLvl <- unlist(NumAv_Hh$AvLvl)
+  
   #Add vehicle ownership or car service designation
   assignVehAccess <- function(NumOwn, NumCarSvc, CarSvcLevel) {
     c(rep("Own", NumOwn), rep(CarSvcLevel, NumCarSvc))
@@ -360,6 +334,12 @@ CreateVehicleTable <- function(L) {
   }
   Out_ls$Year$Vehicle$Type <-
     unlist(mapply(assignVehType, NumLtTrk_Hh, NumAuto_Hh, NumCarSvc_Hh))
+  #Assign automation level designation
+  assignVehAutomation <- function(NumLvl5, NumLvl3, NumLvl0) {
+    c(rep("L5", NumLvl5), rep("L3", NumLvl3), rep("L0", NumLvl0))
+  }
+  Out_ls$Year$Vehicle$AVLvl <-
+    unlist(mapply(assignVehAutomation, NumAVLvl5_Hh, NumAVLvl3_Hh, NumAVLvl0_Hh))
   #Return the outputs list
   Out_ls
 }
