@@ -7,8 +7,18 @@
 ## CalculateHhVehicleOperatingCosts Module
 #### June 5, 2020
 #
-#This module calculates vehicle operating costs per mile of travel and uses those costs to determine the proportional split of DVMT among household vehicles. The module also calculates the average out-of-pocket costs per mile of vehicle travel by household, as well as the cost of social and environmental impacts, and road use taxes per mile of vehicle travel.
+#This module calculates vehicle operating costs per mile of travel and uses those costs to determine the proportional split of DVMT among household vehicles. The module also calculates the average out-of-pocket costs per mile of vehicle travel by household, as well as the cost of social and environmental impacts, and road use taxes per mile of vehicle travel. Three operating costs are calculated:
 #
+#* *Out-of-pocket cost* to use the vehicle including fuel (energy), maintenance/tires/repairs, road use taxes, pollution taxes (e.g. carbon tax), parking charges, and pay-as-you-drive insurance cost;
+#* *Social/environmental costs* including air pollution, water pollution, and energy security costs; and,
+#* *Composite cost* which is the sum of the out-of-pocket cost and the monetary equivalent for the time spend accessing and traveling in the vehicle. The module reflects the presence of driverless vehicles by adjusting these costs.
+#
+# The effect of driverless vehicles on these costs are accounted by allowing the following for driverless vehicles:
+#* lower travel time disutility;
+#* lower access time;
+#* parking fee avoidance;
+#* additional DVMT; and
+#* deadhead mileage for car services.
 #
 ### Model Parameter Estimation
 #
@@ -62,6 +72,31 @@
 #*  *DVMT* is the average daily vehicle miles traveled of the household
 #*  *VOT* is the value-of-time (a model parameter)
 #
+# The equivalent travel time unit cost for driverless vehicles are calculated by making following adjustments to the above equation
+#
+#* Adjusting the utility of travel time
+#
+#![](driverless_run_time_utility.png)
+#
+#**Equation 4. Adjustment of travel time utility for driverless vehicles**
+#
+#Where:
+#*  *AveSpeed* is the average vehicle travel speed (miles per hour) calculated for the household
+#*  *RunTimeUtilityAdj* is the travel time utility adjustment for driverless vehicles provided by user as input in *region_driverless_vehicle_parameters.csv*
+#
+#* Adjusting the access time utility
+#
+#![](driverless_access_time_utility.png)
+#
+#**Equation 5. Adjustment of access time utility for driverless vehicles**
+#
+#Where:
+#*  *AccessTime* is the average amount of time spent on each end of the vehicle trip to get from the origin to the vehicle and from the vehicle to the destination (user input for household vehicles and car service vehicles by service level)
+#*  *Trips* is the average number of daily vehicle trips of the household
+#*  *DVMT* is the average daily vehicle miles traveled of the household
+#*  *PropRemoteAccess* is the proportion of trips in driverless vehicles that are remotely controlled provided by user as input in *region_driverless_vehicle_parameters.csv*
+#*  *AccessTimeUtilityAdj* is the access time utility adjustment for driverless vehicles provided by user as input in *region_driverless_vehicle_parameters.csv*
+#
 #The values of *X* and *Y*, the miles traveled by each vehicle, are calculated by determining the values that maximize utility subject to the budget constraint. The calculation is simplified by assuming that the values of *a* and *b* are 1. In other words, it is assumed that all household vehicles provide that same travel utility to the household independent of price. Factors like comfort, convenience, performance, dependability, and style that may affect percieved utility are not considered for the following reasons:
 #
 #*  The model includes a limited number of vehicle characteristics (auto or light truck, age, powertrain) that may be weakly related to the vehicle attributes that affect perceived vehicle utility; and,
@@ -74,41 +109,41 @@
 #
 #![](mrs_eq4.png)
 #
-#**Equation 4. Marginal Rate of Substitution and Price Ratio**
+#**Equation 6. Marginal Rate of Substitution and Price Ratio**
 #
 #The implication of Equation 4 is that the utility of using the 2 household vehicles will be maximized when the value of *X* times the price of *X* is equal to the value of *Y* times the price of *Y*:
 #
 #![](quantity_price_relationship_eq5.png)
 #
-#**Equation 5. Quantity-Price Relationship Which Maximizes Utility**
+#**Equation 7. Quantity-Price Relationship Which Maximizes Utility**
 #
 #The values of *X* and *Y* can be replaced by a constant *K* times the reciprocal of the price so that the equality is shown in Equation 6 and Equation 7:
 #
 #![](reciprocal_price_relation_eq6.png)
 #
-#**Equation 6. Utility Maximizing Quantity Replaced by Constant and Reciprocal of Price**
+#**Equation 8. Utility Maximizing Quantity Replaced by Constant and Reciprocal of Price**
 #
 #![](reciprocal_price_relation_eq7.png)
 #
-#**Equation 7. Replacing Reciprocal of Price**
+#**Equation 9. Replacing Reciprocal of Price**
 #
 #Given that the DVMT of each vehicle can be calculated as a constant multiplied by a reciprocal of price, total DVMT (*T*) is calculated as follows:
 #
 #![](total_dvmt_eq8.png)
 #
-#**Equation 8. Total DVMT of 2-Vehicle Household**
+#**Equation 10. Total DVMT of 2-Vehicle Household**
 #
 #The proportion of DVMT allocated to each vehicle is therefore the ratio of *K* and *T* times the reciprocal of price.
 #
 #![](dvmt_proportions_eq9.png)
 #
-#**Equation 9. Proportional Allocation of DVMT**
+#**Equation 11. Proportional Allocation of DVMT**
 #
 #Finally since the ratio of *K* and *T* is equal to the inverse of the sum of the price reciprocals, the utility maximixing proportion of household DVMT allocated to a household vehicle is the reciprocal of the the price (i.e. unit cost) of using that vehicle divided by the sum of the price reciprocals of all household vehicles. This relationship holds for any number of household vehicles.
 #
 #![](dvmt_proportions_eq10.png)
 #
-#**Equation 10. Utility Maximizing Proportion of Household DVMT Allocated to a Vehicle**
+#**Equation 12. Utility Maximizing Proportion of Household DVMT Allocated to a Vehicle**
 #
 #### Models for Calculating Out-of-pocket Costs
 #
@@ -171,6 +206,8 @@
 #
 #Following are the steps for calculating vehicle costs, allocating household DVMT among household vehicles, and calculating related performance measures.
 #
+#* **Revise household DVMT**: Remove added driverless DVMT and the car service deadhead DVMT, if any, were added in previous iterations to household DVMT.
+#
 #* **Calculate maintenance, repair, and tire (MRT) cost**: The MRT cost for each vehicle is selected from Table 3 based on the vehicle type, powertrain, and age.
 #
 #* **Fuel and energy cost**: The fuel energy cost per mile is calculated by multiplying the fuel cost ($/gallon) by the fuel consumption rate (gallons/mile). The electric energy cost per mile is calculated similarly; electricity cost ($/KWH) times electricity consumption rate (KWH/mile). The composite cost for each vehicle is calculated as a weighted average where the fuel and electricity costs per mile are weighted by the proportions of vehicle DVMT powered by fuel and electricity respectively.
@@ -181,21 +218,33 @@
 #
 #* **Other social costs**: The 'energy security' cost component (dollars/gallon) is multiplied by the vehicle fuel consumption rate (gallons/mile) and the proportion of the vehicle DVMT powered by fuel to calculate an equivalent rate per mile. This cost rate and the other social cost component rates are summed to calculate a total other social cost rate per mile. This value is multiplied by the user input for the proportion of other social costs paid by the user to calculate the user cost per mile.
 #
-#* **Parking cost**: Parking cost is calculated from the household work parking cost and other parking cost. The residential parking cost is not counted because it is included in the vehicle ownership cost calculations. The total daily work parking cost for each household is the sum of parking costs of workers who pay for parking (see AssignParkingRestrictions module). The other parking cost (i.e. cost of parking for shopping) is the average daily rate assigned each household (see AssignParkingRestrictions) normalized by the ratio of household vehicle trips and the average number of trips of all households. The daily work and other parking costs for the household are summed and divided by the household DVMT to get the average cost per mile. This is applied to all household vehicles.
+#* **Parking cost**: Parking cost is calculated from the household work parking cost and other parking cost. The residential parking cost is not counted because it is included in the vehicle ownership cost calculations. The total daily work parking cost for each household is the sum of parking costs of workers who pay for parking (see AssignParkingRestrictions module). The other parking cost (i.e. cost of parking for shopping) is the average daily rate assigned each household (see AssignParkingRestrictions) normalized by the ratio of household vehicle trips and the average number of trips of all households. The daily work and other parking costs for the household are summed and divided by the household DVMT to get the average cost per mile. This is applied to all household vehicles.The parking fee for driverless vehicles is then calculated by multiplying the ParkingFeeAvoidance parameter with parking costs calculated in the earlier step.
 #
 #* **Pay-as-you-drive (PAYD) insurance**: For households who have PAYD insurance, the average rate (dollars/mile) for the household is calculated by summing the annual insurance cost for all the household vehicles and dividing by the annual VMT for the household. This rate is applied uniformly to all of the household's vehicles.
 #
 #* **Car-service cost**: The cost of using a car service (dollars/mile) is a user input by car service level (low, high).
 #
-#* **Cost equivalent of travel time**: An average vehicle travel rate (hours/mile) is calculated and converted into an equivalent dollar value using Equation 3.
+#* **Cost equivalent of travel time (driverless effect)**: An average vehicle travel rate (hours/mile) is calculated and converted into an equivalent dollar value using Equation 3 with the modification detailed in Equation 4 and Equation 5.
 #
 #* **Calculate composite cost rate**: The out-of-pocket cost rates are summed with the cost equivalent travel time to arrive at a composite cost rate.
 #
 #* **Allocate household DVMT to vehicles**: The proportion of household DVMT allocated to each vehicle is calculated using Equation 10.
 #
+#* **Cost equivalent of travel time (w/o driverless effect)**: An average vehicle travel rate (hours/mile) is calculated and converted into an equivalent dollar value using Equation 3.
+#
+#* **Calculate added passenger DVMT**: The increase in DVMT for driverless vehicle is equivalent to percentage increase in cost equivalent of travel time w/o utility adjustment for driverless vehicles when compared to one with the adjustments for driverless vehicles.
+#
+#* **Calculate remote access DVMT**: For driverless vehicles the remote access DVMT is calculated as a product of vehicle DVMT, PropRemoteAccess, and RemoteAccessDvmtAdj.
+#
+#* **Calculate car service deadhead DVMT**: For driverless vehicle with access type either low or high the deadhead DVMT is calculated by using respective deadhead proportions provided as input by user in *region_driverless_vehicle_parameters.csv*.
+#
+#* **Re-calculate vehicle DVMT**: The vehicle DVMT is adjusted by summing initial allocation of DVMT and the driverless vehicle and car service deadhead adjustments.
+#
+#* **Re-calculate DVMT split between household vehicles**: The DVMT split between household vehicles is re-calculated using vehicle DVMT calculated in the previous step.
+#
 #* **Calculate household averages**: Once household DVMT proportions have been computed for each vehicle, household average values can be computed. These include:
 #
-#   * Average out-of-pocket travel cost rate (dollars/mile): this is used in the household travel budget model
+#   * Average out-of-pocket travel cost rate (dollars/mile): this is used in the household travel budget model which adjust for deadhead mileage
 #
 #   * Average social impacts cost (dollars/mile): this is a performance measure
 #
@@ -206,6 +255,8 @@
 #   * Average electric energy consumption rate (KWH/mile): this is a performance measure
 #
 #   * Average carbon emissions rate (grams CO2e/mile): this is a performance measure
+#
+#* **Re-calculate total household DVMT**: The DVMT for the households is re-calculated by summing up the household vehicles DVMT calculated in the earlier step.
 #
 #</doc>
 
@@ -604,6 +655,48 @@ CalculateVehicleOperatingCostSpecifications <- list(
       TOTAL = "",
       DESCRIPTION = "Environmental and social cost of CO2e emissions per metric ton",
       OPTIONAL = TRUE
+    ),
+    item(
+      NAME = items(
+        "DeadheadProp",
+        "RunTimeUtilityAdj",
+        "AccessTimeUtilityAdj",
+        "RemoteAccessDvmtAdj"),
+      FILE = "region_av_parameter.csv",
+      TABLE = "Region",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "multiplier",
+      NAVALUE = -1,
+      SIZE = 0,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      UNLIKELY = "",
+      TOTAL = "",
+      DESCRIPTION = items("Proportion of vehicle DVMT that is deadhead mileage",
+                          "Adjustment factor that is used to adjust the travel time component of composite vehicle operating cost of driverless vehicles",
+                          "Adjustment factor that is used to adjust the access time component of composite vehicle operating cost of driverless vehicles when vehicle access is remotely controlled.",
+                          "Adjustment factor that specifies the proportional adjustment to driverless vehicle DVMT assumed to occur as a result of remote vehicle access for convenience, avoiding parking, and/or avoiding/reducing parking charges."),
+      OPTIONAL = TRUE
+    ),
+    item(
+      NAME = items(
+        "PropRemoteAccess",
+        "PropParkingFeeAvoid"),
+      FILE = "region_av_parameter.csv",
+      TABLE = "Region",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      NAVALUE = -1,
+      SIZE = 0,
+      PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = "",
+      UNLIKELY = "",
+      TOTAL = "",
+      DESCRIPTION = items("The proportion of trips in driverless vehicles for which travelers use capabilities of driverless vehicles to remotely control their vehicles to avoid having to park their vehicle and retrieve their vehicle from parking.",
+                          "The proportion of parking fees avoided for travel in owned driverless vehicles."),
+      OPTIONAL = TRUE
     )
   ),
   #Specify new tables to be created by Set if any
@@ -617,6 +710,32 @@ CalculateVehicleOperatingCostSpecifications <- list(
       UNITS = "USD.2010",
       PROHIBIT = c("<= 0"),
       ISELEMENTOF = ""
+    ),
+    item(
+      NAME = items(
+        "DeadheadProp",
+        "RunTimeUtilityAdj",
+        "AccessTimeUtilityAdj",
+        "RemoteAccessDvmtAdj"),
+      TABLE = "Region",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "multiplier",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      OPTIONAL = TRUE
+    ),
+    item(
+      NAME = items(
+        "PropRemoteAccess",
+        "PropParkingFeeAvoid"),
+      TABLE = "Region",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = "",
+      OPTIONAL = TRUE
     ),
     item(
       NAME = "CO2eCost",
@@ -791,6 +910,26 @@ CalculateVehicleOperatingCostSpecifications <- list(
       ISELEMENTOF = ""
     ),
     item(
+      NAME = "DriverlessDvmtAdjProp",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = "",
+      OPTIONAL = TRUE
+    ),
+    item(
+      NAME = "DeadheadDvmtAdjProp",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = "",
+      OPTIONAL = TRUE
+    ),
+    item(
       NAME = "HasPaydIns",
       TABLE = "Household",
       GROUP = "Year",
@@ -955,6 +1094,18 @@ CalculateVehicleOperatingCostSpecifications <- list(
       UNITS = "binary",
       PROHIBIT = "",
       ISELEMENTOF = c(0, 1)
+    ),
+    item(
+      NAME = "AVLvl",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "character",
+      UNITS = "category",
+      NAVALUE = "NA",
+      PROHIBIT = "",
+      ISELEMENTOF = c("L0", "L3", "L5"),
+      SIZE = 2,
+      DESCRIPTION = "Identifier for vehicle level of automation"
     )
   ),
   #Specify data to saved in the data store
@@ -996,18 +1147,6 @@ CalculateVehicleOperatingCostSpecifications <- list(
       DESCRIPTION = "Average road use taxes in dollars collected per mile of vehicle travel"
     ),
     item(
-      NAME = "DvmtProp",
-      TABLE = "Vehicle",
-      GROUP = "Year",
-      TYPE = "double",
-      UNITS = "proportion",
-      NAVALUE = -1,
-      PROHIBIT = c("NA", "< 0", "> 1"),
-      ISELEMENTOF = "",
-      SIZE = 0,
-      DESCRIPTION = "Proportion of household DVMT allocated to vehicle"
-    ),
-    item(
       NAME = "AveGPM",
       TABLE = "Household",
       GROUP = "Year",
@@ -1042,6 +1181,80 @@ CalculateVehicleOperatingCostSpecifications <- list(
       ISELEMENTOF = "",
       SIZE = 0,
       DESCRIPTION = "Average grams of carbon-dioxide equivalents produced per mile of household vehicle travel"
+    ),
+    item(
+      NAME = "Dvmt",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "compound",
+      UNITS = "MI/DAY",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Average daily vehicle miles traveled by the household in autos or light trucks"
+    ),
+    item(
+      NAME = "DriverlessDvmtProp",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      NAVALUE = -1,
+      SIZE = 0,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      UNLIKELY = c("> 1.5"),
+      TOTAL = "",
+      DESCRIPTION ="Proportion of household DVMT by driverless vehicles."
+    ),
+    item(
+      NAME = "DriverlessDvmtAdjProp",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Proportion of total DVMT that is the added driverless DVMT"
+    ),
+    item(
+      NAME = "DeadheadDvmtAdjProp",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Proportion of total DVMT that is the added car service deadhead mileage"
+    ),
+    item(
+      NAME = "DvmtProp",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Proportion of household DVMT allocated to vehicle"
+    ),
+    item(
+      NAME = "HhDriverlessDvmtProp",
+      TABLE = "Marea",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Proportion of household DVMT that is driverless"
     )
   )
 )
@@ -1091,7 +1304,20 @@ visioneval::savePackageDataset(CalculateVehicleOperatingCostSpecifications, over
 #' @export
 #'
 CalculateVehicleOperatingCost <- function(L) {
-
+  
+  #Adjust household total DVMT if the module has been called earlier
+  if(!is.null(L$Year$Household[["DriverlessDvmtAdjProp"]]) &
+     !is.null(L$Year$Household[["DeadheadDvmtAdjProp"]])){
+    DvmtHh_ <- L$Year$Household$Dvmt
+    DriverlessDvmtAdjProp <- L$Year$Household[["DriverlessDvmtAdjProp"]]
+    DeadheadDvmtAdjProp <-  L$Year$Household[["DeadheadDvmtAdjProp"]]
+    DvmtHh_ <- DvmtHh_ * (1 - (DriverlessDvmtAdjProp + DeadheadDvmtAdjProp))
+    L$Year$Household$Dvmt <- DvmtHh_
+    rm(DvmtHh_, DriverlessDvmtAdjProp, DeadheadDvmtAdjProp)
+  }
+  
+  #Define vector of Mareas
+  Ma <- L$Year$Marea$Marea
   #Index to match household data with vehicle data
   HhToVehIdx_Ve <- match(L$Year$Vehicle$HhId, L$Year$Household$HhId)
   #Index to match household data with worker data
@@ -1103,7 +1329,7 @@ CalculateVehicleOperatingCost <- function(L) {
   #Proportion of vehicle DVMT on urban roads
   UrbanVmtProp_Ve <- L$Year$Household$UrbanDvmtProp[HhToVehIdx_Ve]
 
-  OpCosts_ls <- loadPackageDataset("OpCosts_ls","VETravelPerformance")
+  OpCosts_ls <- VEFHWAAV::OpCosts_ls
 
   #Calculate vehicle cost components
   #---------------------------------
@@ -1213,6 +1439,9 @@ CalculateVehicleOperatingCost <- function(L) {
     PkgCostRate_Hh[PkgCostRate_Hh > MaxPkgCostRate] <- MaxPkgCostRate
     #Assign values to owned household vehicles
     ParkingCostRate_Ve <- PkgCostRate_Hh[HhToVehIdx_Ve]
+    #Adjust parking cost rate for driverless vehicles by the proportion of fees avoided
+    IsDriverless_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$Driverless == 1
+    ParkingCostRate_Ve[IsDriverless_] <- ParkingCostRate_Ve[IsDriverless_] * (1 - L$Year$Region$PropParkingFeeAvoid)
     ParkingCostRate_Ve[L$Year$Vehicle$VehicleAccess != "Own"] <- 0
     unname(ParkingCostRate_Ve)
   })
@@ -1244,7 +1473,8 @@ CalculateVehicleOperatingCost <- function(L) {
   })
 
   #Calculate value of time per mile
-  TTCostRate_Ve <- local({
+  #Function to calculate TTCostRate for household vehicles
+  calcTTCostRateVe <- function(AdjustDriverlessUtility = FALSE){
     #Running time rate of travel
     Ma <- L$Year$Marea$Marea
     UrbanRunTimeRate_Ve <- (1 / L$Year$Marea$LdvAveSpeed)[MaToVehIdx_Ve]
@@ -1268,10 +1498,29 @@ CalculateVehicleOperatingCost <- function(L) {
     AccToVehIdx_Ve <- match(L$Year$Vehicle$VehicleAccess, colnames(AccTimePerTrip_AzAt))
     AccTimePerTrip_Ve <- AccTimePerTrip_AzAt[cbind(AzToVehIdx_Ve, AccToVehIdx_Ve)]
     AccTimeRate_Ve <- TripsPerDvmt_Ve * AccTimePerTrip_Ve
+    if(AdjustDriverlessUtility){
+      #Adjust the running time cost rate and access time rate due to the effect of
+      #driverless vehicles
+      RunTimeUtilityAdj <- L$Year$Region$RunTimeUtilityAdj
+      PropRemoteAccess <- L$Year$Region$PropRemoteAccess
+      AccessTimeUtilityAdj <- L$Year$Region$AccessTimeUtilityAdj
+      IsDriverless_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$Driverless == 1
+      RunTimeRate_Ve[IsDriverless_] <- RunTimeRate_Ve[IsDriverless_] * RunTimeUtilityAdj
+      AccTimeRate_Ve[IsDriverless_] <- AccTimeRate_Ve[IsDriverless_] * ((1 - PropRemoteAccess) + (AccessTimeUtilityAdj * PropRemoteAccess))
+    }
     #Calculate value of time per mile
     unname((RunTimeRate_Ve + AccTimeRate_Ve) * L$Global$Model$ValueOfTime)
-  })
-
+  }
+  TTCostRate_Ve <- calcTTCostRateVe(AdjustDriverlessUtility = TRUE)
+  AltTTCostRate_Ve <- calcTTCostRateVe(AdjustDriverlessUtility = FALSE)
+  
+  #Function to calculate composite cost
+  calcCompositeCost <- function(CostRate_Ve){
+    MRTCostRate_Ve + EnergyCostRate_Ve + RoadUseCostRate_Ve +
+      ClimateCostRate_Ve + SocialCostRate_Ve + ParkingCostRate_Ve +
+      PaydInsCostRate_Ve + CarSvcCostRate_Ve + CostRate_Ve
+  }
+  
   #Calculate the proportion of household DVMT of each vehicle
   #----------------------------------------------------------
   DvmtProp_Ve <- local({
@@ -1285,14 +1534,98 @@ CalculateVehicleOperatingCost <- function(L) {
     #Function to split travel among household vehicles in proportion to
     #the inverse of price
     splitDvmt <- function(Price_) {
-      (1 / Price_) / sum(1 / Price_)
+      (1 / Price_) / sum(1 / Price_, na.rm = TRUE)
     }
+    #Calculate DVMT proportions by household vehicle group
+    VehAccType_Ve <- factor(L$Year$Vehicle$VehicleAccess,
+                            levels = c("LowCarSvc", "HighCarSvc", "Own"))
+    Price_HhAccess <- tapply(Price_Ve, list(factor(L$Year$Vehicle$HhId,
+                                                   levels = L$Year$Household$HhId),
+                                            VehAccType_Ve),
+                             FUN = sum)
+    Price_HhAccess[is.na(Price_HhAccess)] <- 0
+    Price_HhAccess <- cbind(Price_HhAccess, 
+                            "CarSvc" = rowSums(Price_HhAccess[,c("LowCarSvc", "HighCarSvc")]))
+    Price_HhAccess <- Price_HhAccess[,c("Own", "CarSvc")]
+    Prop_HhAccess <- t(apply(Price_HhAccess, 1, splitDvmt))
+    Prop_HhAccess[Price_HhAccess[,"Own"]==0,"Own"] <- 0
+    Prop_HhAccess[Price_HhAccess[,"Own"]==0,"CarSvc"] <- 1
+    Prop_HhAccess[Price_HhAccess[,"CarSvc"]==0,"Own"] <- 1
+    Prop_HhAccess[Price_HhAccess[,"CarSvc"]==0,"CarSvc"] <- 0
+    
+    #Calculate DVMT proportions by owned household vehicles
+    PriceOwned_Ve <- Price_Ve
+    PriceOwned_Ve[L$Year$Vehicle$VehicleAccess != "Own"] <- 0
+    names(PriceOwned_Ve) <- L$Year$Vehicle$VehId
+    PriceOwned_Hh_Ve <- lapply(split(PriceOwned_Ve, L$Year$Vehicle$HhId), splitDvmt)
+    PriceOwned_Hh_Ve <- lapply(PriceOwned_Hh_Ve, function(val_){if(any(is.na(val_))){val_[val_==0]<-(1/sum(val_==0, na.rm = TRUE));val_[is.na(val_)]<-0; val_} else val_})
+    names(PriceOwned_Hh_Ve) <- NULL
+    PriceOwned_Hh_Ve <- unlist(PriceOwned_Hh_Ve, use.names = TRUE)[L$Year$Vehicle$VehId]
+    PriceOwned_Hh_Ve[L$Year$Vehicle$VehicleAccess != "Own"] <- 0
+    
+    #Calculate DVMT proportions by car service household vehicles
+    PriceCarSvc_Ve <- Price_Ve
+    PriceCarSvc_Ve[L$Year$Vehicle$VehicleAccess == "Own"] <- 0
+    names(PriceCarSvc_Ve) <- L$Year$Vehicle$VehId
+    PriceCarSvc_Hh_Ve <- lapply(split(PriceCarSvc_Ve, L$Year$Vehicle$HhId), splitDvmt)
+    PriceCarSvc_Hh_Ve <- lapply(PriceCarSvc_Hh_Ve, function(val_){if(any(is.na(val_))){val_[val_==0]<-(1/sum(val_==0, na.rm = TRUE));val_[is.na(val_)]<-0; val_} else val_})
+    names(PriceCarSvc_Hh_Ve) <- NULL
+    PriceCarSvc_Hh_Ve <- unlist(PriceCarSvc_Hh_Ve, use.names = TRUE)[L$Year$Vehicle$VehId]
+    PriceCarSvc_Hh_Ve[L$Year$Vehicle$VehicleAccess == "Own"] <- 0
+    
     #Calculate DVMT proportions by household vehicle
-    Price_Hh_Ve <- lapply(split(Price_Ve, L$Year$Vehicle$HhId), splitDvmt)
-    names(Price_Hh_Ve) <- NULL
-    unlist(Price_Hh_Ve, use.names = TRUE)[L$Year$Vehicle$VehId]
-   })
-
+    Price_Hh_Ve <- PriceOwned_Hh_Ve[L$Year$Vehicle$VehId] * 
+      Prop_HhAccess[,"Own"][L$Year$Vehicle$HhId] +
+      PriceCarSvc_Hh_Ve[L$Year$Vehicle$VehId] * 
+      Prop_HhAccess[,"CarSvc"][L$Year$Vehicle$HhId]
+    Price_Hh_Ve
+  })
+  
+  #Calculate driverless vehicle DVMT adjustments
+  #---------------------------------------------
+  Dvmt_Hh <- L$Year$Household$Dvmt
+  Dvmt_Ve <- DvmtProp_Ve * Dvmt_Hh[HhToVehIdx_Ve]
+  #Calculate the proportional increase in passenger DVMT due to lower disutility of
+  #travel in a driverless vehicle
+  PassengerDvmtAdj_Ve <- local({
+    IsDriverless_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$AVLvl == "L5"
+    DvmtAdj_Ve <- (calcCompositeCost(AltTTCostRate_Ve)/calcCompositeCost(TTCostRate_Ve)) - 1
+    DvmtAdj_Ve[!IsDriverless_] <- 0
+    DvmtAdj_Ve
+  })
+  AddPassengerDvmt_Ve <- Dvmt_Ve * PassengerDvmtAdj_Ve
+  #Calculate adjustments in DVMT due to remote access
+  RemoteAccessDvmtAdj_Ve <- local({
+    IsDriverless_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$AVLvl == "L5"
+    PropRemoteAccess <- L$Year$Region$PropRemoteAccess
+    RemoteAccessDvmtAdj <- L$Year$Region$RemoteAccessDvmtAdj
+    DvmtAdj_Ve <- array(PropRemoteAccess * RemoteAccessDvmtAdj, length(Dvmt_Ve))
+    DvmtAdj_Ve[!IsDriverless_] <- 0
+    DvmtAdj_Ve
+  })
+  AddRemoteAccessDvmt_Ve <- Dvmt_Ve * RemoteAccessDvmtAdj_Ve
+  
+  #Calculate household deadhead DVMT
+  #-----------------------------------
+  Dvmt_Ve <- with(L$Year$Household, Dvmt)[HhToVehIdx_Ve] * DvmtProp_Ve
+  DeadheadDvmt_Ve <- local({
+    VehAccType_Ve <- L$Year$Vehicle$VehicleAccess
+    IsDriverless_ <- (VehAccType_Ve != "Own") & L$Year$Vehicle$AVLvl == "L5"
+    DeadheadDvmt_Ve <- Dvmt_Ve * 0
+    DeadheadDvmt_Ve[IsDriverless_] <- Dvmt_Ve[IsDriverless_] * L$Year$Region$DeadheadProp
+    DeadheadDvmt_Ve
+  })
+  
+  #Recalculate DVMT allocation amongst household vehicles and total household DVMT
+  #-------------------------------------------------------------------------------
+  Dvmt_Ve <- Dvmt_Ve + AddPassengerDvmt_Ve + AddRemoteAccessDvmt_Ve + DeadheadDvmt_Ve
+  DvmtProp_Ve <- local({
+    names(Dvmt_Ve) <- L$Year$Vehicle$VehId
+    Dvmt_Hh_Ve <- lapply(split(Dvmt_Ve, L$Year$Vehicle$HhId), function(x) x / sum(x))
+    names(Dvmt_Hh_Ve) <- NULL
+    unlist(Dvmt_Hh_Ve, use.names = TRUE)[L$Year$Vehicle$VehId]
+  })
+  
   #Calculate average household costs, impacts, taxes per mile
   #----------------------------------------------------------
   #Calculate average out-of-pocket costs per mile by household
@@ -1301,7 +1634,10 @@ CalculateVehicleOperatingCost <- function(L) {
       MRTCostRate_Ve + EnergyCostRate_Ve + RoadUseCostRate_Ve +
       ClimateCostRate_Ve + SocialCostRate_Ve + ParkingCostRate_Ve +
       PaydInsCostRate_Ve + CarSvcCostRate_Ve
-    tapply(VehCostPM_Ve * DvmtProp_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
+    AdjDvmt_Ve <- Dvmt_Ve - DeadheadDvmt_Ve
+    TotCost_Hh <- tapply(VehCostPM_Ve * AdjDvmt_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
+    AdjDvmt_Hh <- tapply(AdjDvmt_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
+    TotCost_Hh / AdjDvmt_Hh
   })
   #Calculate average social and environmental impacts costs per mile by household
   AveSocEnvCostPM_Hh <- local({
@@ -1320,6 +1656,32 @@ CalculateVehicleOperatingCost <- function(L) {
   #Calculate average greenhouse gas emissions per mile
   AveCO2ePM_Hh <-
     tapply(CO2ePM_Ve * DvmtProp_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
+  #Recalculate total household DVMT
+  Dvmt_Hh <- local({
+    tapply(Dvmt_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
+  })
+  #Calculate proportion of household DVMT that is driverless DVMT adjustment
+  DriverlessDvmtAdj_Hh <-
+    tapply(AddPassengerDvmt_Ve + AddRemoteAccessDvmt_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
+  DriverlessDvmtAdjProp_Hh <- DriverlessDvmtAdj_Hh / Dvmt_Hh
+  #Calculate proportion of household Dvmt that is car service deadhead Dvmt
+  DeadheadDvmtAdj_Hh <- tapply(DeadheadDvmt_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
+  DeadheadDvmtAdjProp_Hh <- DeadheadDvmtAdj_Hh / Dvmt_Hh
+  #Calculate proportion of household Dvmt in driverless vehicles
+  DriverlessDvmt_Hh <- local({
+    IsDriverless_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$AVLvl == "L5"
+    tapply(Dvmt_Ve * IsDriverless_, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
+  })
+  DriverlessDvmtProp_Hh <- DriverlessDvmt_Hh / Dvmt_Hh
+  HhDriverlessDvmtProp_Ma <- setNames(numeric(length(Ma)), Ma)
+  for (ma in Ma) {
+    HhDriverlessDvmtProp_Ma[ma] <- local({
+      IsMa <- L$Year$Household$Marea == ma
+      Dvmt_Hh <- L$Year$Household$Dvmt[IsMa]
+      DriverlessDvmt_Hh <- DriverlessDvmt_Hh[IsMa]
+      sum(DriverlessDvmt_Hh) / sum(Dvmt_Hh)
+    })
+  }
 
   #Return the results
   #------------------
@@ -1330,10 +1692,17 @@ CalculateVehicleOperatingCost <- function(L) {
     AveRoadUseTaxPM = AveRoadUseTaxPM_Hh,
     AveGPM = GPM_Hh,
     AveKWHPM = KWHPM_Hh,
-    AveCO2ePM = AveCO2ePM_Hh
+    AveCO2ePM = AveCO2ePM_Hh,
+    Dvmt = Dvmt_Hh,
+    DriverlessDvmtProp = DriverlessDvmtProp_Hh,
+    DriverlessDvmtAdjProp = DriverlessDvmtAdjProp_Hh,
+    DeadheadDvmtAdjProp = DeadheadDvmtAdjProp_Hh
   )
   Out_ls$Year$Vehicle <- list(
     DvmtProp = DvmtProp_Ve
+  )
+  Out_ls$Year$Marea <- list(
+    HhDriverlessDvmtProp = HhDriverlessDvmtProp_Ma
   )
   Out_ls
 }
