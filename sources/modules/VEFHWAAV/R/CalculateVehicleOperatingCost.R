@@ -1440,8 +1440,8 @@ CalculateVehicleOperatingCost <- function(L) {
     #Assign values to owned household vehicles
     ParkingCostRate_Ve <- PkgCostRate_Hh[HhToVehIdx_Ve]
     #Adjust parking cost rate for driverless vehicles by the proportion of fees avoided
-    IsDriverless_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$Driverless == 1
-    ParkingCostRate_Ve[IsDriverless_] <- ParkingCostRate_Ve[IsDriverless_] * (1 - L$Year$Region$PropParkingFeeAvoid)
+    IsDriverlessL5_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$AVLvl == "L5"
+    ParkingCostRate_Ve[IsDriverlessL5_] <- ParkingCostRate_Ve[IsDriverlessL5_] * (1 - L$Year$Region$PropParkingFeeAvoid)
     ParkingCostRate_Ve[L$Year$Vehicle$VehicleAccess != "Own"] <- 0
     unname(ParkingCostRate_Ve)
   })
@@ -1504,9 +1504,9 @@ CalculateVehicleOperatingCost <- function(L) {
       RunTimeUtilityAdj <- L$Year$Region$RunTimeUtilityAdj
       PropRemoteAccess <- L$Year$Region$PropRemoteAccess
       AccessTimeUtilityAdj <- L$Year$Region$AccessTimeUtilityAdj
-      IsDriverless_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$Driverless == 1
-      RunTimeRate_Ve[IsDriverless_] <- RunTimeRate_Ve[IsDriverless_] * RunTimeUtilityAdj
-      AccTimeRate_Ve[IsDriverless_] <- AccTimeRate_Ve[IsDriverless_] * ((1 - PropRemoteAccess) + (AccessTimeUtilityAdj * PropRemoteAccess))
+      IsDriverlessL5_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$AVLvl == "L5"
+      RunTimeRate_Ve[IsDriverlessL5_] <- RunTimeRate_Ve[IsDriverlessL5_] * RunTimeUtilityAdj
+      AccTimeRate_Ve[IsDriverlessL5_] <- AccTimeRate_Ve[IsDriverlessL5_] * ((1 - PropRemoteAccess) + (AccessTimeUtilityAdj * PropRemoteAccess))
     }
     #Calculate value of time per mile
     unname((RunTimeRate_Ve + AccTimeRate_Ve) * L$Global$Model$ValueOfTime)
@@ -1588,19 +1588,19 @@ CalculateVehicleOperatingCost <- function(L) {
   #Calculate the proportional increase in passenger DVMT due to lower disutility of
   #travel in a driverless vehicle
   PassengerDvmtAdj_Ve <- local({
-    IsDriverless_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$AVLvl == "L5"
+    IsDriverlessL5_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$AVLvl == "L5"
     DvmtAdj_Ve <- (calcCompositeCost(AltTTCostRate_Ve)/calcCompositeCost(TTCostRate_Ve)) - 1
-    DvmtAdj_Ve[!IsDriverless_] <- 0
+    DvmtAdj_Ve[!IsDriverlessL5_] <- 0
     DvmtAdj_Ve
   })
   AddPassengerDvmt_Ve <- Dvmt_Ve * PassengerDvmtAdj_Ve
   #Calculate adjustments in DVMT due to remote access
   RemoteAccessDvmtAdj_Ve <- local({
-    IsDriverless_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$AVLvl == "L5"
+    IsDriverlessL5_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$AVLvl == "L5"
     PropRemoteAccess <- L$Year$Region$PropRemoteAccess
     RemoteAccessDvmtAdj <- L$Year$Region$RemoteAccessDvmtAdj
     DvmtAdj_Ve <- array(PropRemoteAccess * RemoteAccessDvmtAdj, length(Dvmt_Ve))
-    DvmtAdj_Ve[!IsDriverless_] <- 0
+    DvmtAdj_Ve[!IsDriverlessL5_] <- 0
     DvmtAdj_Ve
   })
   AddRemoteAccessDvmt_Ve <- Dvmt_Ve * RemoteAccessDvmtAdj_Ve
@@ -1610,9 +1610,9 @@ CalculateVehicleOperatingCost <- function(L) {
   Dvmt_Ve <- with(L$Year$Household, Dvmt)[HhToVehIdx_Ve] * DvmtProp_Ve
   DeadheadDvmt_Ve <- local({
     VehAccType_Ve <- L$Year$Vehicle$VehicleAccess
-    IsDriverless_ <- (VehAccType_Ve != "Own") & L$Year$Vehicle$AVLvl == "L5"
+    IsDriverlessL5_ <- (VehAccType_Ve != "Own") & L$Year$Vehicle$AVLvl == "L5"
     DeadheadDvmt_Ve <- Dvmt_Ve * 0
-    DeadheadDvmt_Ve[IsDriverless_] <- Dvmt_Ve[IsDriverless_] * L$Year$Region$DeadheadProp
+    DeadheadDvmt_Ve[IsDriverlessL5_] <- Dvmt_Ve[IsDriverlessL5_] * L$Year$Region$DeadheadProp
     DeadheadDvmt_Ve
   })
   
@@ -1669,7 +1669,7 @@ CalculateVehicleOperatingCost <- function(L) {
   DeadheadDvmtAdjProp_Hh <- DeadheadDvmtAdj_Hh / Dvmt_Hh
   #Calculate proportion of household Dvmt in driverless vehicles
   DriverlessDvmt_Hh <- local({
-    IsDriverless_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$AVLvl == "L5"
+    IsDriverless_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$AVLvl != "L0"
     tapply(Dvmt_Ve * IsDriverless_, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
   })
   DriverlessDvmtProp_Hh <- DriverlessDvmt_Hh / Dvmt_Hh
