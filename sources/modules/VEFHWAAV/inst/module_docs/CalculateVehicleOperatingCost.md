@@ -329,18 +329,18 @@ DESCRIPTION - A description of the data.
 |OwnedVehAccessTime   |time |MIN   |NA, < 0  |            |         |Average amount of time in minutes required for access to and egress from a household-owned vehicle for a trip        |
 |HighCarSvcAccessTime |time |MIN   |NA, < 0  |            |         |Average amount of time in minutes required for access to and egress from a high service level car service for a trip |
 |LowCarSvcAccessTime  |time |MIN   |NA, < 0  |            |         |Average amount of time in minutes required for access to and egress from a low service level car service for a trip  |
-### region_av_parameter.csv
+### region_av_lev5_parameter.csv
 This input file is OPTIONAL.
 
-|   |NAME                 |TYPE   |UNITS      |PROHIBIT     |ISELEMENTOF |UNLIKELY |DESCRIPTION                                                                                                                                                                                                                  |
-|:--|:--------------------|:------|:----------|:------------|:-----------|:--------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|1  |Year                 |       |           |             |            |         |Must contain a record for each model run year                                                                                                                                                                                |
-|12 |DeadheadProp         |double |multiplier |NA, < 0      |            |         |Proportion of vehicle DVMT that is deadhead mileage                                                                                                                                                                          |
-|13 |RunTimeUtilityAdj    |double |multiplier |NA, < 0      |            |         |Adjustment factor that is used to adjust the travel time component of composite vehicle operating cost of driverless vehicles                                                                                                |
-|14 |AccessTimeUtilityAdj |double |multiplier |NA, < 0      |            |         |Adjustment factor that is used to adjust the access time component of composite vehicle operating cost of driverless vehicles when vehicle access is remotely controlled.                                                    |
-|15 |RemoteAccessDvmtAdj  |double |multiplier |NA, < 0      |            |         |Adjustment factor that specifies the proportional adjustment to driverless vehicle DVMT assumed to occur as a result of remote vehicle access for convenience, avoiding parking, and/or avoiding/reducing parking charges.   |
-|16 |PropRemoteAccess     |double |proportion |NA, < 0, > 1 |            |         |The proportion of trips in driverless vehicles for which travelers use capabilities of driverless vehicles to remotely control their vehicles to avoid having to park their vehicle and retrieve their vehicle from parking. |
-|17 |PropParkingFeeAvoid  |double |proportion |NA, < 0, > 1 |            |         |The proportion of parking fees avoided for travel in owned driverless vehicles.                                                                                                                                              |
+|   |NAME                 |TYPE   |UNITS      |PROHIBIT     |ISELEMENTOF |UNLIKELY |DESCRIPTION                                                                                                                                                                                                                          |
+|:--|:--------------------|:------|:----------|:------------|:-----------|:--------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|1  |Year                 |       |           |             |            |         |Must contain a record for each model run year                                                                                                                                                                                        |
+|12 |DeadheadProp         |double |multiplier |NA, < 0      |            |         |Proportion of vehicle DVMT that is deadhead mileage for level 5 autonomous vehicles                                                                                                                                                  |
+|13 |RunTimeUtilityAdj    |double |multiplier |NA, < 0      |            |         |Adjustment factor that is used to adjust the travel time component of composite vehicle operating cost of level 5 autonomous vehicles                                                                                                |
+|14 |AccessTimeUtilityAdj |double |multiplier |NA, < 0      |            |         |Adjustment factor that is used to adjust the access time component of composite vehicle operating cost of level 5 autonomous vehicles when vehicle access is remotely controlled.                                                    |
+|15 |RemoteAccessDvmtAdj  |double |multiplier |NA, < 0      |            |         |Adjustment factor that specifies the proportional adjustment to level 5 autonomous vehicle DVMT assumed to occur as a result of remote vehicle access for convenience, avoiding parking, and/or avoiding/reducing parking charges.   |
+|16 |PropRemoteAccess     |double |proportion |NA, < 0, > 1 |            |         |The proportion of trips in level 5 autonomous vehicles for which travelers use capabilities of driverless vehicles to remotely control their vehicles to avoid having to park their vehicle and retrieve their vehicle from parking. |
+|17 |PropParkingFeeAvoid  |double |proportion |NA, < 0, > 1 |            |         |The proportion of parking fees avoided for travel in owned driverless vehicles.                                                                                                                                                      |
 ### region_co2e_costs.csv
 This input file is OPTIONAL.
 
@@ -372,64 +372,64 @@ PROHIBIT - Values that are prohibited. Values in the datastore do not meet any o
 
 ISELEMENTOF - Categorical values that are permitted. Values in the datastore are one or more of the listed values.
 
-|NAME                  |TABLE     |GROUP  |TYPE      |UNITS      |PROHIBIT     |ISELEMENTOF                |
-|:---------------------|:---------|:------|:---------|:----------|:------------|:--------------------------|
-|ValueOfTime           |Model     |Global |currency  |USD.2010   |<= 0         |                           |
-|DeadheadProp          |Region    |Year   |double    |multiplier |NA, < 0      |                           |
-|RunTimeUtilityAdj     |Region    |Year   |double    |multiplier |NA, < 0      |                           |
-|AccessTimeUtilityAdj  |Region    |Year   |double    |multiplier |NA, < 0      |                           |
-|RemoteAccessDvmtAdj   |Region    |Year   |double    |multiplier |NA, < 0      |                           |
-|PropRemoteAccess      |Region    |Year   |double    |proportion |NA, < 0, > 1 |                           |
-|PropParkingFeeAvoid   |Region    |Year   |double    |proportion |NA, < 0, > 1 |                           |
-|CO2eCost              |Region    |Year   |currency  |USD        |NA, < 0      |                           |
-|PropClimateCostPaid   |Region    |Year   |double    |proportion |NA, < 0, > 1 |                           |
-|PropOtherExtCostPaid  |Region    |Year   |double    |proportion |NA, < 0, > 1 |                           |
-|ExtraVmtTax           |Region    |Year   |currency  |USD        |NA, < 0      |                           |
-|Marea                 |Marea     |Year   |character |ID         |             |                           |
-|LdvAveSpeed           |Marea     |Year   |compound  |MI/HR      |< 0          |                           |
-|NonUrbanAveSpeed      |Marea     |Year   |compound  |MI/HR      |< 0          |                           |
-|AveCongPrice          |Marea     |Year   |currency  |USD.2010   |< 0          |                           |
-|Azone                 |Azone     |Year   |character |ID         |             |                           |
-|OwnedVehAccessTime    |Azone     |Year   |time      |MIN        |NA, < 0      |                           |
-|HighCarSvcAccessTime  |Azone     |Year   |time      |MIN        |NA, < 0      |                           |
-|LowCarSvcAccessTime   |Azone     |Year   |time      |MIN        |NA, < 0      |                           |
-|FuelCost              |Azone     |Year   |currency  |USD.2010   |NA, < 0      |                           |
-|PowerCost             |Azone     |Year   |currency  |USD.2010   |NA, < 0      |                           |
-|FuelTax               |Azone     |Year   |currency  |USD.2010   |NA, < 0      |                           |
-|VmtTax                |Azone     |Year   |currency  |USD.2010   |NA, < 0      |                           |
-|PevSurchgTaxProp      |Azone     |Year   |double    |proportion |NA, < 0, > 1 |                           |
-|HighCarSvcCost        |Azone     |Year   |currency  |USD.2010   |NA, < 0      |                           |
-|LowCarSvcCost         |Azone     |Year   |currency  |USD.2010   |NA, < 0      |                           |
-|Marea                 |Household |Year   |character |ID         |             |                           |
-|Azone                 |Household |Year   |character |ID         |             |                           |
-|HhId                  |Household |Year   |character |ID         |             |                           |
-|Income                |Household |Year   |currency  |USD.2010   |NA, < 0      |                           |
-|Dvmt                  |Household |Year   |compound  |MI/DAY     |NA, < 0      |                           |
-|UrbanDvmtProp         |Household |Year   |double    |proportion |NA, < 0, > 1 |                           |
-|DriverlessDvmtAdjProp |Household |Year   |double    |proportion |NA, < 0, > 1 |                           |
-|DeadheadDvmtAdjProp   |Household |Year   |double    |proportion |NA, < 0, > 1 |                           |
-|HasPaydIns            |Household |Year   |integer   |binary     |             |0, 1                       |
-|VehicleTrips          |Household |Year   |compound  |TRIP/DAY   |NA, < 0      |                           |
-|OtherParkingCost      |Household |Year   |currency  |USD.2010   |NA, < 0      |                           |
-|Azone                 |Vehicle   |Year   |character |ID         |NA           |                           |
-|Marea                 |Vehicle   |Year   |character |ID         |NA           |                           |
-|HhId                  |Vehicle   |Year   |character |ID         |NA           |                           |
-|VehId                 |Vehicle   |Year   |character |ID         |NA           |                           |
-|Type                  |Vehicle   |Year   |character |category   |NA           |Auto, LtTrk                |
-|Age                   |Vehicle   |Year   |time      |YR         |NA, < 0      |                           |
-|VehicleAccess         |Vehicle   |Year   |character |category   |             |Own, LowCarSvc, HighCarSvc |
-|Powertrain            |Vehicle   |Year   |character |category   |             |ICEV, HEV, PHEV, BEV, NA   |
-|GPM                   |Vehicle   |Year   |compound  |GGE/MI     |NA, < 0      |                           |
-|KWHPM                 |Vehicle   |Year   |compound  |KWH/MI     |NA, < 0      |                           |
-|ElecDvmtProp          |Vehicle   |Year   |double    |proportion |NA, < 0, > 1 |                           |
-|FuelCO2ePM            |Vehicle   |Year   |compound  |GM/MI      |NA, < 0      |                           |
-|ElecCO2ePM            |Vehicle   |Year   |compound  |GM/MI      |NA, < 0      |                           |
-|InsCost               |Vehicle   |Year   |currency  |USD.2010   |NA, < 0      |                           |
-|HhId                  |Worker    |Year   |character |ID         |             |                           |
-|ParkingCost           |Worker    |Year   |currency  |USD.2010   |NA, < 0      |                           |
-|IsCashOut             |Worker    |Year   |integer   |binary     |             |0, 1                       |
-|PaysForParking        |Worker    |Year   |integer   |binary     |             |0, 1                       |
-|AVLvl                 |Vehicle   |Year   |character |category   |             |L0, L3, L5                 |
+|NAME                 |TABLE     |GROUP  |TYPE      |UNITS      |PROHIBIT     |ISELEMENTOF                |
+|:--------------------|:---------|:------|:---------|:----------|:------------|:--------------------------|
+|ValueOfTime          |Model     |Global |currency  |USD.2010   |<= 0         |                           |
+|DeadheadProp         |Region    |Year   |double    |multiplier |NA, < 0      |                           |
+|RunTimeUtilityAdj    |Region    |Year   |double    |multiplier |NA, < 0      |                           |
+|AccessTimeUtilityAdj |Region    |Year   |double    |multiplier |NA, < 0      |                           |
+|RemoteAccessDvmtAdj  |Region    |Year   |double    |multiplier |NA, < 0      |                           |
+|PropRemoteAccess     |Region    |Year   |double    |proportion |NA, < 0, > 1 |                           |
+|PropParkingFeeAvoid  |Region    |Year   |double    |proportion |NA, < 0, > 1 |                           |
+|CO2eCost             |Region    |Year   |currency  |USD        |NA, < 0      |                           |
+|PropClimateCostPaid  |Region    |Year   |double    |proportion |NA, < 0, > 1 |                           |
+|PropOtherExtCostPaid |Region    |Year   |double    |proportion |NA, < 0, > 1 |                           |
+|ExtraVmtTax          |Region    |Year   |currency  |USD        |NA, < 0      |                           |
+|Marea                |Marea     |Year   |character |ID         |             |                           |
+|LdvAveSpeed          |Marea     |Year   |compound  |MI/HR      |< 0          |                           |
+|NonUrbanAveSpeed     |Marea     |Year   |compound  |MI/HR      |< 0          |                           |
+|AveCongPrice         |Marea     |Year   |currency  |USD.2010   |< 0          |                           |
+|Azone                |Azone     |Year   |character |ID         |             |                           |
+|OwnedVehAccessTime   |Azone     |Year   |time      |MIN        |NA, < 0      |                           |
+|HighCarSvcAccessTime |Azone     |Year   |time      |MIN        |NA, < 0      |                           |
+|LowCarSvcAccessTime  |Azone     |Year   |time      |MIN        |NA, < 0      |                           |
+|FuelCost             |Azone     |Year   |currency  |USD.2010   |NA, < 0      |                           |
+|PowerCost            |Azone     |Year   |currency  |USD.2010   |NA, < 0      |                           |
+|FuelTax              |Azone     |Year   |currency  |USD.2010   |NA, < 0      |                           |
+|VmtTax               |Azone     |Year   |currency  |USD.2010   |NA, < 0      |                           |
+|PevSurchgTaxProp     |Azone     |Year   |double    |proportion |NA, < 0, > 1 |                           |
+|HighCarSvcCost       |Azone     |Year   |currency  |USD.2010   |NA, < 0      |                           |
+|LowCarSvcCost        |Azone     |Year   |currency  |USD.2010   |NA, < 0      |                           |
+|Marea                |Household |Year   |character |ID         |             |                           |
+|Azone                |Household |Year   |character |ID         |             |                           |
+|HhId                 |Household |Year   |character |ID         |             |                           |
+|Income               |Household |Year   |currency  |USD.2010   |NA, < 0      |                           |
+|Dvmt                 |Household |Year   |compound  |MI/DAY     |NA, < 0      |                           |
+|UrbanDvmtProp        |Household |Year   |double    |proportion |NA, < 0, > 1 |                           |
+|IsAVLvl5DvmtAdjProp  |Household |Year   |double    |proportion |NA, < 0, > 1 |                           |
+|DeadheadDvmtAdjProp  |Household |Year   |double    |proportion |NA, < 0, > 1 |                           |
+|HasPaydIns           |Household |Year   |integer   |binary     |             |0, 1                       |
+|VehicleTrips         |Household |Year   |compound  |TRIP/DAY   |NA, < 0      |                           |
+|OtherParkingCost     |Household |Year   |currency  |USD.2010   |NA, < 0      |                           |
+|Azone                |Vehicle   |Year   |character |ID         |NA           |                           |
+|Marea                |Vehicle   |Year   |character |ID         |NA           |                           |
+|HhId                 |Vehicle   |Year   |character |ID         |NA           |                           |
+|VehId                |Vehicle   |Year   |character |ID         |NA           |                           |
+|Type                 |Vehicle   |Year   |character |category   |NA           |Auto, LtTrk                |
+|Age                  |Vehicle   |Year   |time      |YR         |NA, < 0      |                           |
+|VehicleAccess        |Vehicle   |Year   |character |category   |             |Own, LowCarSvc, HighCarSvc |
+|Powertrain           |Vehicle   |Year   |character |category   |             |ICEV, HEV, PHEV, BEV, NA   |
+|GPM                  |Vehicle   |Year   |compound  |GGE/MI     |NA, < 0      |                           |
+|KWHPM                |Vehicle   |Year   |compound  |KWH/MI     |NA, < 0      |                           |
+|ElecDvmtProp         |Vehicle   |Year   |double    |proportion |NA, < 0, > 1 |                           |
+|FuelCO2ePM           |Vehicle   |Year   |compound  |GM/MI      |NA, < 0      |                           |
+|ElecCO2ePM           |Vehicle   |Year   |compound  |GM/MI      |NA, < 0      |                           |
+|InsCost              |Vehicle   |Year   |currency  |USD.2010   |NA, < 0      |                           |
+|HhId                 |Worker    |Year   |character |ID         |             |                           |
+|ParkingCost          |Worker    |Year   |currency  |USD.2010   |NA, < 0      |                           |
+|IsCashOut            |Worker    |Year   |integer   |binary     |             |0, 1                       |
+|PaysForParking       |Worker    |Year   |integer   |binary     |             |0, 1                       |
+|AVLvl                |Vehicle   |Year   |character |category   |             |L0, L3, L5                 |
 
 ## Datasets Produced by the Module
 The following table documents each dataset that is placed in the datastore by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
@@ -459,8 +459,10 @@ DESCRIPTION - A description of the data.
 |AveKWHPM              |Household |Year  |compound |KWH/MI     |< 0          |            |Average kilowatt-hours per mile of household vehicle travel                                |
 |AveCO2ePM             |Household |Year  |compound |GM/MI      |< 0          |            |Average grams of carbon-dioxide equivalents produced per mile of household vehicle travel  |
 |Dvmt                  |Household |Year  |compound |MI/DAY     |NA, < 0      |            |Average daily vehicle miles traveled by the household in autos or light trucks             |
-|DriverlessDvmtProp    |Household |Year  |double   |proportion |NA, < 0      |            |Proportion of household DVMT by driverless vehicles.                                       |
-|DriverlessDvmtAdjProp |Household |Year  |double   |proportion |NA, < 0, > 1 |            |Proportion of total DVMT that is the added driverless DVMT                                 |
-|DeadheadDvmtAdjProp   |Household |Year  |double   |proportion |NA, < 0, > 1 |            |Proportion of total DVMT that is the added car service deadhead mileage                    |
+|AVLvl3DvmtProp        |Household |Year  |double   |proportion |NA, < 0      |            |Proportion of household DVMT by level 3 autonomous vehicles.                               |
+|AVLvl5DvmtProp        |Household |Year  |double   |proportion |NA, < 0      |            |Proportion of household DVMT by level 5 autonomous vehicles.                               |
+|DriverlessDvmtAdjProp |Household |Year  |double   |proportion |NA, < 0, > 1 |            |Proportion of total DVMT that is added based on level 5 autonomous vehicle driverless use  |
+|DeadheadDvmtAdjProp   |Household |Year  |double   |proportion |NA, < 0, > 1 |            |Proportion of total DVMT that is the added deadhead mileage of level 5 autonomous vehicles |
 |DvmtProp              |Vehicle   |Year  |double   |proportion |NA, < 0, > 1 |            |Proportion of household DVMT allocated to vehicle                                          |
-|HhDriverlessDvmtProp  |Marea     |Year  |double   |proportion |NA, < 0, > 1 |            |Proportion of household DVMT that is driverless                                            |
+|HhAVLvl3DvmtProp      |Marea     |Year  |double   |proportion |NA, < 0, > 1 |            |Proportion of household DVMT that is level 3 autonomous vehicles                           |
+|HhAVLvl5DvmtProp      |Marea     |Year  |double   |proportion |NA, < 0, > 1 |            |Proportion of household DVMT that is level 5 autonomous vehicles                           |

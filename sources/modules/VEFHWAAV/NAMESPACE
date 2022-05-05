@@ -3,6 +3,7 @@
 export(AssignVehicleAge)
 export(AssignVehicleOwnership)
 export(CVAVOrientation)
+export(CalculateVehicleOperatingCost)
 export(CreateVehicleTable)
 export(adjustAgeDistribution)
 export(calcAgeDistributionByInc)
