@@ -7,6 +7,6 @@
   {"NAME": "AVAvailability", 
    "VALUE": "2020", 
    "TYPE": "time", 
-   "UNITS": "Earliest year for AV (L3 and L5) availability"
+   "UNITS": "Earliest year for AV L5 availability"
   }
 ]

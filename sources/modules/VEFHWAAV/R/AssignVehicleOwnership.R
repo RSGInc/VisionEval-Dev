@@ -798,8 +798,8 @@ AssignVehicleOwnership <- function(L) {
     }
     
     # Match the vehicles
-    IsAVLvl3Candidate_ <- Hh_df$AVLvl3Candidate==1 & 
-      ((RemVehicles_ <- Vehicles_ - AVLvl5Vehicles_)>0)
+    IsAVLvl3Candidate_ <- Hh_df$AVLvl3Candidate == 1 & 
+      ((RemVehicles_ <- Vehicles_ - AVLvl5Vehicles_) > 0)
     AVLvl3Vehicles_ <- integer(length(Vehicles_))
     AVLvl3Prob_HhNv <- cbind(sapply(seq_len(ncol(VehicleProb_HhNv)),
                                     function(x) {
