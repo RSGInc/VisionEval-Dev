@@ -59,7 +59,9 @@ CreateVehicleTableSpecifications <- list(
       NAME =
         items(
           "HighCarSvcCost",
-          "LowCarSvcCost"),
+          "LowCarSvcCost",
+          "ShdCarSvcCost",
+          "UnShdCarSvcCost"),
       FILE = "azone_carsvc_characteristics.csv",
       TABLE = "Azone",
       GROUP = "Year",
@@ -73,6 +75,8 @@ CreateVehicleTableSpecifications <- list(
       TOTAL = "",
       DESCRIPTION =
         items(
+          "Average cost in dollars per mile for travel by shared car service exclusive of the cost of fuel, road use taxes, and carbon taxes (and any other social costs charged to vehicle use).",
+          "Average cost in dollars per mile for travel by unshared car service exclusive of the cost of fuel, road use taxes, and carbon taxes (and any other social costs charged to vehicle use).",
           "Average cost in dollars per mile for travel by high service level car service exclusive of the cost of fuel, road use taxes, and carbon taxes (and any other social costs charged to vehicle use).",
           "Average cost in dollars per mile for travel by low service level car service exclusive of the cost of fuel, road use taxes, and carbon taxes (and any other social costs charged to vehicle use)."
         )
@@ -113,6 +117,32 @@ CreateVehicleTableSpecifications <- list(
           "The proportion of light-truck owners who would substitute a less-costly car service option for owning their light truck",
           "Th proportion of automobile owners who would substitute a less-costly car service option for owning their automobile"
         )
+    ),
+    item(
+      NAME =
+        items(
+          "LowCarSvcDeadheadProp",
+          "HighCarSvcDeadheadProp",
+          "ShdCarSvcDeadheadProp",
+          "UnShdCarSvcDeadheadProp"),
+      FILE = "azone_carsvc_characteristics.csv",
+      TABLE = "Azone",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      NAVALUE = -1,
+      SIZE = 0,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      UNLIKELY = "> 1",
+      TOTAL = "",
+      DESCRIPTION =
+        items(
+          "The deadhead proportion for low service level car service calculated using deadhead mileage divided by fare mileage",
+          "The deadhead proportion for high service level car service calculated using deadhead mileage divided by fare mileage",
+          "The deadhead proportion for shared car service calculated using deadhead mileage divided by fare mileage",
+          "The deadhead proportion for unshared car service calculated using deadhead mileage divided by fare mileage"
+        )
     )
   ),
   #Specify data to be loaded from data store
@@ -121,6 +151,7 @@ CreateVehicleTableSpecifications <- list(
       NAME =
         items("HhId",
               "Azone",
+              "Bzone",
               "Marea"),
       TABLE = "Household",
       GROUP = "Year",
@@ -186,6 +217,7 @@ CreateVehicleTableSpecifications <- list(
         items("HhId",
               "VehId",
               "Azone",
+              "Bzone",
               "Marea"),
       TABLE = "Vehicle",
       GROUP = "Year",
@@ -198,6 +230,7 @@ CreateVehicleTableSpecifications <- list(
         items("Unique household ID",
               "Unique vehicle ID",
               "Azone ID",
+              "Bzone ID",
               "Marea ID")
     ),
     item(
@@ -317,6 +350,9 @@ CreateVehicleTable <- function(L) {
   #Add Azone ID to table
   Out_ls$Year$Vehicle$Azone <- rep(L$Year$Household$Azone, NumVeh_Hh)
   attributes(Out_ls$Year$Vehicle$Azone)$SIZE <- max(nchar(Out_ls$Year$Vehicle$Azone))
+  #Add Bzone ID to table
+  Out_ls$Year$Vehicle$Bzone <- rep(L$Year$Household$Bzone, NumVeh_Hh)
+  attributes(Out_ls$Year$Vehicle$Bzone)$SIZE <- max(nchar(Out_ls$Year$Vehicle$Bzone))
   #Add Marea ID to table
   Out_ls$Year$Vehicle$Marea <- rep(L$Year$Household$Marea, NumVeh_Hh)
   attributes(Out_ls$Year$Vehicle$Marea)$SIZE <- max(nchar(Out_ls$Year$Vehicle$Marea))
