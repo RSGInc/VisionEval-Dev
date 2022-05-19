@@ -1527,9 +1527,9 @@ CalculateVehicleOperatingCost <- function(L) {
     if(AdjustDriverlessUtility){
       #Adjust the running time cost rate and access time rate due to the effect of
       #level 5 autonomous driverless vehicles
-      RunTimeUtilityAdj <- L$Year$Region$AVLvl5RunTimeUtilityAdj
-      PropRemoteAccess <- L$Year$Region$AVLvl5PropRemoteAccess
-      AccessTimeUtilityAdj <- L$Year$Region$AVLvl5AccessTimeUtilityAdj
+      RunTimeUtilityAdj <- L$Year$Region$RunTimeUtilityAdj
+      PropRemoteAccess <- L$Year$Region$PropRemoteAccess
+      AccessTimeUtilityAdj <- L$Year$Region$AccessTimeUtilityAdj
       IsAVLvl5_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$AVLvl == "L5"
       RunTimeRate_Ve[IsAVLvl5_] <- RunTimeRate_Ve[IsAVLvl5_] * RunTimeUtilityAdj
       AccTimeRate_Ve[IsAVLvl5_] <- AccTimeRate_Ve[IsAVLvl5_] * ((1 - PropRemoteAccess) + (AccessTimeUtilityAdj * PropRemoteAccess))

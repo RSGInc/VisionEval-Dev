@@ -5,10 +5,9 @@ Notes:
 - Scenario Description (single stage): Scenario, Description, BaseYear, Years
 
 # Model Structural Parameters
-ModelScript     : run_model.R
-Scenario        : VERSPM RVMPO AV
-Description     : Base Year 2010 + Future 2038
-BaseYear        : 2010
-Years           : [ 2010, 2038 ]
-QueryDir        : queries
-resultsPath     : results
+ModelScript    : run_av.R
+Scenario       : VERSPM RVMPO AV Future
+Description    : Future 2038
+BaseYear       : 2010
+Years          : [2038]
+StartFrom      : av-base2

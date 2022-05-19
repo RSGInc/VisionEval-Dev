@@ -319,6 +319,15 @@ AssignVehicleOwnershipSpecifications <- list(
       ISELEMENTOF = ""
     ),
     item(
+      NAME = "Marea",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "character",
+      UNITS = "ID",
+      PROHIBIT = "",
+      ISELEMENTOF = ""
+    ),
+    item(
       NAME = "Workers",
       TABLE = "Household",
       GROUP = "Year",
@@ -460,6 +469,22 @@ AssignVehicleOwnershipSpecifications <- list(
         "Number of automobiles and light trucks owned or leased by the household including high level car service vehicles available to driving-age persons",
         "Number of automation level 5 automobiles and light trucks owned or leased by the household including high level car service vehicles available to driving-age persons",
         "Number of automation level 3 automobiles and light trucks owned or leased by the household including high level car service vehicles available to driving-age persons"
+      )
+    ),
+    item(
+      NAME = items("AVLvl5Share",
+                   "AVLvl3Share"),
+      TABLE = "Marea",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = items(
+        "Market share of vehicles with level 3 autonomous driving capability",
+        "Market share of vehicles with level 5 autonomous driving capability"
       )
     ),
     item(
@@ -836,6 +861,17 @@ AssignVehicleOwnership <- function(L) {
     AVLvl5Vehicles_ <- numeric(nrow(Hh_df))
     AVLvl3Vehicles_ <- numeric(nrow(Hh_df))
   }
+  
+  # Calculate market share by Marea
+  NumVehicles_ma <- tapply(Vehicles_, L$Year$Household$Marea, sum)
+  AVLvl5Vehicles_ma <- tapply(AVLvl5Vehicles_, L$Year$Household$Marea, sum)
+  AVLvl3Vehicles_ma <- tapply(AVLvl3Vehicles_, L$Year$Household$Marea, sum)
+  
+  AVLvl5Share_ma <- AVLvl5Vehicles_ma/NumVehicles_ma
+  AVLvl3Share_ma <- AVLvl3Vehicles_ma/NumVehicles_ma
+  
+  AVLvl5Share_ma <- AVLvl5Share_ma[L$Year$Marea$Marea]
+  AVLvl3Share_ma <- AVLvl3Share_ma[L$Year$Marea$Marea]
 
   #Return the results
   #------------------
@@ -848,6 +884,10 @@ AssignVehicleOwnership <- function(L) {
          AVLvl5Candidate = Hh_df$AVLvl5Candidate,
          AVLvl3Candidate = Hh_df$AVLvl3Candidate,
          CarSvcCandidate = Hh_df$CarSvcCandidate)
+  Out_ls$Year$Marea <- list(
+    AVLvl5Share = AVLvl5Share_ma,
+    AVLvl3Share = AVLvl3Share_ma
+  )
   #Return the outputs list
   Out_ls
 }

@@ -12,17 +12,17 @@ GeoFile        : geo.csv
 ModelParamFile : model_parameters.json # Located in InputDir
 QueryDir       : queries
 resultsPath    : results
-#LoadDatastore  : TRUE
-StartFrom      : AssignDrivers
-ModelScript    : run_av.R
+LoadDatastore  : true
+Seed           : 1  # Same seed used for all scenarios
 
 # Model description
 Model          : VERSPM 3.0 AV
 Region         : RVMPO
 State          : OR
-
-# Scenario description (using default or runtime Seed parameter)
-Scenario       : VERSPM RVMPO AV
-Description    : Base Year 2010 + Future 2038
-BaseYear       : 2010
-Years          : [2010, 2038]
+ModelStages    : # specify explicitly to avoid processing base scenario
+    "assign-drivers":
+      Dir: assign-drivers
+      Reportable: true
+    "av-base":
+      Dir: av-base
+      Reportable: true

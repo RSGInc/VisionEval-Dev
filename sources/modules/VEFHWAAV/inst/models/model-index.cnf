@@ -3,9 +3,29 @@
 # to exercise the MultiModal features.
 VERSPM:
   variants:
-    av:
+    av-pop:
       description: VERSPM 3.0 with Autonomous Vehicle module
-      config: visioneval-av.cnf
+      config: visioneval-av-pop.cnf
       scripts: scripts
       inputs: inputs
       defs: defs
+      stages: # copied as they are
+          - assign-drivers
+    av-base:
+      description: VERSPM 3.0 with Autonomous Vehicle module
+      config: visioneval-av-base.cnf
+      scripts: scripts
+      inputs: inputs
+      defs: defs
+      stages: # copied as they are
+          - assign-drivers
+          - av-base
+    av-future:
+      description: VERSPM 3.0 with Autonomous Vehicle module
+      config: visioneval-av-future.cnf
+      scripts: scripts
+      inputs: inputs
+      defs: defs
+      stages: # copied as they are
+          - av-base2
+          - av-future

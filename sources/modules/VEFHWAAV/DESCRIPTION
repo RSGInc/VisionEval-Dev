@@ -23,3 +23,13 @@ VignetteBuilder: knitr
 Roxygen: list(load="pkgload")
 RoxygenNote: 7.1.2
 Remotes:
+Collate: 
+    'AssignVehicleAge.R'
+    'AssignVehicleOwnership.R'
+    'BudgetHouseholdDvmt.R'
+    'CVAVOrientation.R'
+    'CalculateRoadDvmt.R'
+    'CalculateRoadPerformance.R'
+    'CalculateVehicleOperatingCost.R'
+    'CreateVehicleTable.R'
+	'CalculateMpgMpkwhAdjustments.R'
