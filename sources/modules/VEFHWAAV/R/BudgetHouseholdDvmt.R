@@ -352,7 +352,7 @@ BudgetHouseholdDvmtSpecifications <- list(
       ISELEMENTOF = ""
     ),
     item(
-      NAME = "DeadheadDvmtAdjProp",
+      NAME = "CarSvcDeadheadDvmtAdjProp",
       TABLE = "Household",
       GROUP = "Year",
       TYPE = "double",
@@ -675,7 +675,7 @@ BudgetHouseholdDvmt <- function(L, M) {
   #--------------------------------------------
   Adj_ls <- local({
     #Calculate DVMT without car service deadhead miles
-    DhAdjProp <- L$Year$Household$DeadheadDvmtAdjProp
+    DhAdjProp <- L$Year$Household$CarSvcDeadheadDvmtAdjProp
     NoDhDvmt_Hh <- Dvmt_Hh * (1 - DhAdjProp)
     #Calculate budget based on the adjusted income
     VehOpBudget_Hh <- AdjIncome_Hh * BudgetProp_Hh

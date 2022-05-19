@@ -677,7 +677,6 @@ CalculateVehicleOperatingCostSpecifications <- list(
     ),
     item(
       NAME = items(
-        "DeadheadProp",
         "RunTimeUtilityAdj",
         "AccessTimeUtilityAdj",
         "RemoteAccessDvmtAdj"),
@@ -692,8 +691,7 @@ CalculateVehicleOperatingCostSpecifications <- list(
       ISELEMENTOF = "",
       UNLIKELY = "",
       TOTAL = "",
-      DESCRIPTION = items("Proportion of vehicle DVMT that is deadhead mileage for level 5 autonomous vehicles",
-                          "Adjustment factor that is used to adjust the travel time component of composite vehicle operating cost of level 5 autonomous vehicles",
+      DESCRIPTION = items("Adjustment factor that is used to adjust the travel time component of composite vehicle operating cost of level 5 autonomous vehicles",
                           "Adjustment factor that is used to adjust the access time component of composite vehicle operating cost of level 5 autonomous vehicles when vehicle access is remotely controlled.",
                           "Adjustment factor that specifies the proportional adjustment to level 5 autonomous vehicle DVMT assumed to occur as a result of remote vehicle access for convenience, avoiding parking, and/or avoiding/reducing parking charges."),
       OPTIONAL = TRUE
@@ -742,7 +740,6 @@ CalculateVehicleOperatingCostSpecifications <- list(
     ),
     item(
       NAME = items(
-        "DeadheadProp",
         "RunTimeUtilityAdj",
         "AccessTimeUtilityAdj",
         "RemoteAccessDvmtAdj"),
@@ -966,7 +963,7 @@ CalculateVehicleOperatingCostSpecifications <- list(
       OPTIONAL = TRUE
     ),
     item(
-      NAME = "DeadheadDvmtAdjProp",
+      NAME = "CarSvcDeadheadDvmtAdjProp",
       TABLE = "Household",
       GROUP = "Year",
       TYPE = "double",
@@ -1296,7 +1293,7 @@ CalculateVehicleOperatingCostSpecifications <- list(
       DESCRIPTION ="Proportion of household DVMT by level 5 autonomous vehicles."
     ),
     item(
-      NAME = "DriverlessDvmtAdjProp",
+      NAME = "AVLvl5DvmtAdjProp",
       TABLE = "Household",
       GROUP = "Year",
       TYPE = "double",
@@ -1308,7 +1305,7 @@ CalculateVehicleOperatingCostSpecifications <- list(
       DESCRIPTION = "Proportion of total DVMT that is added based on level 5 autonomous vehicle driverless use"
     ),
     item(
-      NAME = "DeadheadDvmtAdjProp",
+      NAME = "CarSvcDeadheadDvmtAdjProp",
       TABLE = "Household",
       GROUP = "Year",
       TYPE = "double",
@@ -1405,14 +1402,14 @@ visioneval::savePackageDataset(CalculateVehicleOperatingCostSpecifications, over
 CalculateVehicleOperatingCost <- function(L) {
   
   #Adjust household total DVMT if the module has been called earlier
-  if(!is.null(L$Year$Household[["DriverlessDvmtAdjProp"]]) &
-     !is.null(L$Year$Household[["DeadheadDvmtAdjProp"]])){
+  if(!is.null(L$Year$Household[["AVLvl5DvmtAdjProp"]]) &
+     !is.null(L$Year$Household[["CarSvcDeadheadDvmtAdjProp"]])){
     DvmtHh_ <- L$Year$Household$Dvmt
-    DriverlessDvmtAdjProp <- L$Year$Household[["DriverlessDvmtAdjProp"]]
-    DeadheadDvmtAdjProp <-  L$Year$Household[["DeadheadDvmtAdjProp"]]
-    DvmtHh_ <- DvmtHh_ * (1 - (DriverlessDvmtAdjProp + DeadheadDvmtAdjProp))
+    AVLvl5DvmtAdjProp <- L$Year$Household[["AVLvl5DvmtAdjProp"]]
+    CarSvcDeadheadDvmtAdjProp <-  L$Year$Household[["CarSvcDeadheadDvmtAdjProp"]]
+    DvmtHh_ <- DvmtHh_ * (1 - (AVLvl5DvmtAdjProp + CarSvcDeadheadDvmtAdjProp))
     L$Year$Household$Dvmt <- DvmtHh_
-    rm(DvmtHh_, DriverlessDvmtAdjProp, DeadheadDvmtAdjProp)
+    rm(DvmtHh_, AVLvl5DvmtAdjProp, CarSvcDeadheadDvmtAdjProp)
   }
   
   #Define vector of Mareas
@@ -1783,17 +1780,6 @@ CalculateVehicleOperatingCost <- function(L) {
     DeadheadDvmt_Ve
   })
   
-  #Calculate household deadhead DVMT
-  #-----------------------------------
-  Dvmt_Ve <- with(L$Year$Household, Dvmt)[HhToVehIdx_Ve] * DvmtProp_Ve
-  DeadheadDvmt_Ve <- local({
-    VehAccType_Ve <- L$Year$Vehicle$VehicleAccess
-    IsAVLvl5_ <- (VehAccType_Ve != "Own") & L$Year$Vehicle$AVLvl == "L5"
-    DeadheadDvmt_Ve <- Dvmt_Ve * 0
-    DeadheadDvmt_Ve[IsAVLvl5_] <- Dvmt_Ve[IsAVLvl5_] * L$Year$Region$DeadheadProp
-    DeadheadDvmt_Ve
-  })
-  
   #Recalculate DVMT allocation amongst household vehicles and total household DVMT
   #-------------------------------------------------------------------------------
   Dvmt_Ve <- Dvmt_Ve + AddPassengerDvmt_Ve + AddRemoteAccessDvmt_Ve + DeadheadDvmt_Ve
@@ -1820,20 +1806,20 @@ CalculateVehicleOperatingCost <- function(L) {
   #Calculate average social and environmental impacts costs per mile by household
   AveSocEnvCostPM_Hh <- local({
     SocEnvCostPM_Ve <- ClimateImpactsRate_Ve + SocialImpactsRate_Ve
-    tapply(SocEnvCostPM_Ve * DvmtProp_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
+    tapply(SocEnvCostPM_Ve * DvmtProp_Ve * CarSvcDvmtAdjFactor_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
   })
   #Calculate average road use taxes per mile
   AveRoadUseTaxPM_Hh <-
-    tapply(RoadUseCostRate_Ve * DvmtProp_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
+    tapply(RoadUseCostRate_Ve * DvmtProp_Ve * CarSvcDvmtAdjFactor_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
   #Calculate average fuel consumption per mile
   GPM_Hh <-
-    tapply(NetGPM_Ve * DvmtProp_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
+    tapply(NetGPM_Ve * DvmtProp_Ve * CarSvcDvmtAdjFactor_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
   #Calculate average electricity consumption per mile
   KWHPM_Hh <-
-    tapply(NetKWHPM_Ve * DvmtProp_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
+    tapply(NetKWHPM_Ve * DvmtProp_Ve * CarSvcDvmtAdjFactor_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
   #Calculate average greenhouse gas emissions per mile
   AveCO2ePM_Hh <-
-    tapply(CO2ePM_Ve * DvmtProp_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
+    tapply(CO2ePM_Ve * DvmtProp_Ve * CarSvcDvmtAdjFactor_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
   #Recalculate total household DVMT
   Dvmt_Hh <- local({
     tapply(Dvmt_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
@@ -1841,10 +1827,10 @@ CalculateVehicleOperatingCost <- function(L) {
   #Calculate proportion of household DVMT that is driverless DVMT adjustment
   DriverlessDvmtAdj_Hh <-
     tapply(AddPassengerDvmt_Ve + AddRemoteAccessDvmt_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
-  DriverlessDvmtAdjProp_Hh <- DriverlessDvmtAdj_Hh / Dvmt_Hh
-  #Calculate proportion of household Dvmt that is deadhead Dvmt
+  AVLvl5DvmtAdjProp_Hh <- DriverlessDvmtAdj_Hh / Dvmt_Hh
+  #Calculate proportion of Car Service Dvmt that is deadhead Dvmt
   DeadheadDvmtAdj_Hh <- tapply(DeadheadDvmt_Ve, L$Year$Vehicle$HhId, sum)[L$Year$Household$HhId]
-  DeadheadDvmtAdjProp_Hh <- DeadheadDvmtAdj_Hh / Dvmt_Hh
+  CarSvcDeadheadDvmtAdjProp_Hh <- DeadheadDvmtAdj_Hh / Dvmt_Hh
   #Calculate proportion of household Dvmt in level 3 autonomous vehicles
   AVLvl3Dvmt_Hh <- local({
     IsAVLvl3_ <- L$Year$Vehicle$VehicleAccess == "Own" & L$Year$Vehicle$AVLvl == "L3"
@@ -1889,8 +1875,8 @@ CalculateVehicleOperatingCost <- function(L) {
     Dvmt = Dvmt_Hh,
     AVLvl3DvmtProp = AVLvl3DvmtProp_Hh,
     AVLvl5DvmtProp = AVLvl5DvmtProp_Hh,
-    DriverlessDvmtAdjProp = DriverlessDvmtAdjProp_Hh,
-    DeadheadDvmtAdjProp = DeadheadDvmtAdjProp_Hh
+    AVLvl5DvmtAdjProp = AVLvl5DvmtAdjProp_Hh,
+    CarSvcDeadheadDvmtAdjProp = CarSvcDeadheadDvmtAdjProp_Hh
   )
   Out_ls$Year$Vehicle <- list(
     DvmtProp = DvmtProp_Ve
