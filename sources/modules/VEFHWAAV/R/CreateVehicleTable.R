@@ -122,9 +122,7 @@ CreateVehicleTableSpecifications <- list(
       NAME =
         items(
           "LowCarSvcDeadheadProp",
-          "HighCarSvcDeadheadProp",
-          "ShdCarSvcDeadheadProp",
-          "UnShdCarSvcDeadheadProp"),
+          "HighCarSvcDeadheadProp"),
       FILE = "azone_carsvc_characteristics.csv",
       TABLE = "Azone",
       GROUP = "Year",
@@ -139,9 +137,29 @@ CreateVehicleTableSpecifications <- list(
       DESCRIPTION =
         items(
           "The deadhead proportion for low service level car service calculated using deadhead mileage divided by fare mileage",
-          "The deadhead proportion for high service level car service calculated using deadhead mileage divided by fare mileage",
-          "The deadhead proportion for shared car service calculated using deadhead mileage divided by fare mileage",
-          "The deadhead proportion for unshared car service calculated using deadhead mileage divided by fare mileage"
+          "The deadhead proportion for high service level car service calculated using deadhead mileage divided by fare mileage"
+        )
+    ),
+    item(
+      NAME =
+        items(
+          "ShdCarSvcDeadheadFactor",
+          "UnShdCarSvcDeadheadFactor"),
+      FILE = "azone_carsvc_characteristics.csv",
+      TABLE = "Azone",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "multiplier",
+      NAVALUE = -1,
+      SIZE = 0,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      UNLIKELY = "> 2",
+      TOTAL = "",
+      DESCRIPTION =
+        items(
+          "The deadhead adjustment factor for shared car service to adjust deadheading in car services",
+          "The deadhead  adjustment factor for unshared car service to adjust deadheading in car services"
         )
     )
   ),

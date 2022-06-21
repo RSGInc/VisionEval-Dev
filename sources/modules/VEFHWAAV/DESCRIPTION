@@ -24,6 +24,8 @@ Roxygen: list(load="pkgload")
 RoxygenNote: 7.1.2
 Remotes:
 Collate: 
+	'AdjustVehicleOwnership.R'
+	'AssignCarSvcAvailability.R'
     'AssignVehicleAge.R'
     'AssignVehicleOwnership.R'
     'BudgetHouseholdDvmt.R'

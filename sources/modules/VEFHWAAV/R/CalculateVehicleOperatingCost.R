@@ -693,8 +693,7 @@ CalculateVehicleOperatingCostSpecifications <- list(
       TOTAL = "",
       DESCRIPTION = items("Adjustment factor that is used to adjust the travel time component of composite vehicle operating cost of level 5 autonomous vehicles",
                           "Adjustment factor that is used to adjust the access time component of composite vehicle operating cost of level 5 autonomous vehicles when vehicle access is remotely controlled.",
-                          "Adjustment factor that specifies the proportional adjustment to level 5 autonomous vehicle DVMT assumed to occur as a result of remote vehicle access for convenience, avoiding parking, and/or avoiding/reducing parking charges."),
-      OPTIONAL = TRUE
+                          "Adjustment factor that specifies the proportional adjustment to level 5 autonomous vehicle DVMT assumed to occur as a result of remote vehicle access for convenience, avoiding parking, and/or avoiding/reducing parking charges.")
     ),
     item(
       NAME = items(
@@ -712,8 +711,7 @@ CalculateVehicleOperatingCostSpecifications <- list(
       UNLIKELY = "",
       TOTAL = "",
       DESCRIPTION = items("The proportion of trips in level 5 autonomous vehicles for which travelers use capabilities of driverless vehicles to remotely control their vehicles to avoid having to park their vehicle and retrieve their vehicle from parking.",
-                          "The proportion of parking fees avoided for travel in owned driverless vehicles."),
-      OPTIONAL = TRUE
+                          "The proportion of parking fees avoided for travel in owned driverless vehicles.")
     )
   ),
   #Specify new tables to be created by Set if any
@@ -826,14 +824,24 @@ CalculateVehicleOperatingCostSpecifications <- list(
       NAME =
         items(
           "LowCarSvcDeadheadProp",
-          "HighCarSvcDeadheadProp",
-          "ShdCarSvcDeadheadProp",
-          "UnShdCarSvcDeadheadProp"),
+          "HighCarSvcDeadheadProp"),
       TABLE = "Azone",
       GROUP = "Year",
       TYPE = "double",
       UNITS = "proportion",
       PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = ""
+    ),
+    item(
+      NAME =
+        items(
+          "ShdCarSvcDeadheadFactor",
+          "UnShdCarSvcDeadheadFactor"),
+      TABLE = "Azone",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "multiplier",
+      PROHIBIT = c("NA", "< 0"),
       ISELEMENTOF = ""
     ),
     item(
@@ -1559,26 +1567,47 @@ CalculateVehicleOperatingCost <- function(L) {
 
   # Shared vs Unshared
   BzToVehIdx_Ve <- L$Year$Vehicle$Bzone
+  # Shared vs Unshared
   # Calculate shared car service cost rate by bzone
   SharedCarSvcCostRate_Bz <- local({
     VehAccType_Ve <- L$Year$Vehicle$VehicleAccess
+    #Access time equivalent rate of travel
+    TripsPerDvmt_Ve <- with(L$Year$Household, VehicleTrips / Dvmt)[HhToVehIdx_Ve]
+    MaxTripsPerDvmt <- quantile(TripsPerDvmt_Ve, probs = 0.99)
+    TripsPerDvmt_Ve[TripsPerDvmt_Ve > MaxTripsPerDvmt] <- MaxTripsPerDvmt
+    TripsPerDvmt_Ve[VehAccType_Ve=="Own"] <- 0
     SharedCarSvcCostRate_Ve <- rep(0, length(VehAccType_Ve))
-    SharedCarSvcCostRate_Ve <- L$Year$Azone$ShdCarSvcAccessTime[AzToVehIdx_Ve]
-    SharedCarSvcCostRate_Ve[VehAccType_Ve == "Own"] <- 0
+    SharedCarSvcCostRate_Ve <- (L$Year$Azone$ShdCarSvcAccessTime/60)[AzToVehIdx_Ve] * 
+      TripsPerDvmt_Ve * L$Global$Model$ValueOfTime
+    SharedCarSvcCostRate_Ve[VehAccType_Ve=="Own"] <- 0
     SharedCarSvcCostRate_Bz <- tapply(SharedCarSvcCostRate_Ve, BzToVehIdx_Ve, sum)
     SharedCarSvcCostRate_Bz <- SharedCarSvcCostRate_Bz[L$Year$Bzone$Bzone] *
       L$Year$Bzone$ShdSvcAvail
+    #SharedCarSvcCostRate_Bz <- 1/SharedCarSvcCostRate_Bz
+    #SharedCarSvcCostRate_Bz[is.infinite(SharedCarSvcCostRate_Bz)] <- 0
+    SharedCarSvcCostRate_Bz[is.na(SharedCarSvcCostRate_Bz)] <- 0
+    SharedCarSvcCostRate_Bz
   })
   
   # Calculate unshared car service cost rate by bzone
   UnSharedCarSvcCostRate_Bz <- local({
     VehAccType_Ve <- L$Year$Vehicle$VehicleAccess
+    #Access time equivalent rate of travel
+    TripsPerDvmt_Ve <- with(L$Year$Household, VehicleTrips / Dvmt)[HhToVehIdx_Ve]
+    MaxTripsPerDvmt <- quantile(TripsPerDvmt_Ve, probs = 0.99)
+    TripsPerDvmt_Ve[TripsPerDvmt_Ve > MaxTripsPerDvmt] <- MaxTripsPerDvmt
+    TripsPerDvmt_Ve[VehAccType_Ve=="Own"] <- 0
     UnSharedCarSvcCostRate_Ve <- rep(0, length(VehAccType_Ve))
-    UnSharedCarSvcCostRate_Ve <- L$Year$Azone$UnShdCarSvcAccessTime[AzToVehIdx_Ve]
+    UnSharedCarSvcCostRate_Ve <- L$Year$Azone$UnShdCarSvcAccessTime[AzToVehIdx_Ve] * 
+      TripsPerDvmt_Ve * L$Global$Model$ValueOfTime
     UnSharedCarSvcCostRate_Ve[VehAccType_Ve=="Own"] <- 0
     UnSharedCarSvcCostRate_Bz <- tapply(UnSharedCarSvcCostRate_Ve, BzToVehIdx_Ve, sum)
     UnSharedCarSvcCostRate_Bz <- UnSharedCarSvcCostRate_Bz[L$Year$Bzone$Bzone] *
       L$Year$Bzone$ShdSvcAvail
+    #UnSharedCarSvcCostRate_Bz <- 1/UnSharedCarSvcCostRate_Bz
+    #UnSharedCarSvcCostRate_Bz[is.infinite(UnSharedCarSvcCostRate_Bz)] <- 0
+    UnSharedCarSvcCostRate_Bz[is.na(UnSharedCarSvcCostRate_Bz)] <- 0
+    UnSharedCarSvcCostRate_Bz
   })
   
   # Calculate shared vs unshared DVMT split by bzone
@@ -1602,10 +1631,12 @@ CalculateVehicleOperatingCost <- function(L) {
     CarSvcCostRate_Ve[VehAccType_Ve == "HighCarSvc"] <-
       L$Year$Azone$HighCarSvcCost[AzToVehIdx_Ve][VehAccType_Ve == "HighCarSvc"]
     # Add average shared / unshared car service cost
-    CarSvcCostRate_Ve[VehAccType_Ve != "Own"] <- CarSvcCostRate_Ve[VehAccType_Ve != "Own"] +
-      (L$Year$Azone$UnShdCarSvcCost[AzToVehIdx_Ve] * 
-         UnSharedCarSvcDvmtProp_Bz[BzToVehIdx_Ve] + L$Year$Azone$ShdCarSvcCost[AzToVehIdx_Ve] * 
-         SharedCarSvcDvmtProp_Bz[BzToVehIdx_Ve])[VehAccType_Ve != "Own"]
+    CarSvcCostRate_Ve <- (CarSvcCostRate_Ve +
+                            (L$Year$Azone$UnShdCarSvcCost[AzToVehIdx_Ve] * 
+                               UnSharedCarSvcDvmtProp_Bz[BzToVehIdx_Ve] + 
+                               L$Year$Azone$ShdCarSvcCost[AzToVehIdx_Ve] * 
+                               SharedCarSvcDvmtProp_Bz[BzToVehIdx_Ve]))/2
+    CarSvcCostRate_Ve[VehAccType_Ve == "Own"] <- 0
     unname(CarSvcCostRate_Ve)
   })
 
@@ -1760,23 +1791,23 @@ CalculateVehicleOperatingCost <- function(L) {
   #-----------------------------------
   DeadheadDvmt_Ve <- local({
     VehAccType_Ve <- L$Year$Vehicle$VehicleAccess
-    LowCarSvcDeadheadProp <- L$Year$Azone$LowCarSvcDeadheadProp
-    HighCarSvcDeadheadProp <- L$Year$Azone$HighCarSvcDeadheadProp
-    ShdCarSvcDeadheadProp <- L$Year$Azone$ShdCarSvcDeadheadProp
-    UnShdCarSvcDeadheadProp <- L$Year$Azone$UnShdCarSvcDeadheadProp
+    IsDriverless_ <- (VehAccType_Ve != "Own") & L$Year$Vehicle$Driverless > 0
+    LowCarSvcDeadheadProp <- L$Year$Azone$LowCarSvcDeadheadProp[AzToVehIdx_Ve]
+    HighCarSvcDeadheadProp <- L$Year$Azone$HighCarSvcDeadheadProp[AzToVehIdx_Ve]
+    ShdCarSvcDeadheadFactor <- L$Year$Azone$ShdCarSvcDeadheadFactor[AzToVehIdx_Ve]
+    UnShdCarSvcDeadheadFactor <- L$Year$Azone$UnShdCarSvcDeadheadFactor[AzToVehIdx_Ve]
     SharedCarSvcDvmtProp_Ve <- SharedCarSvcDvmtProp_Bz[BzToVehIdx_Ve]
     UnSharedCarSvcDvmtProp_Ve <- UnSharedCarSvcDvmtProp_Bz[BzToVehIdx_Ve]
     ShdDvmt_Ve <- Dvmt_Ve * SharedCarSvcDvmtProp_Ve
     UnShdDvmt_Ve <- Dvmt_Ve * UnSharedCarSvcDvmtProp_Ve
     DeadheadDvmt_Ve <- Dvmt_Ve * 0
     DeadheadDvmt_Ve[VehAccType_Ve == "LowCarSvc"] <-
-      ((ShdDvmt_Ve[VehAccType_Ve == "LowCarSvc"] * ShdCarSvcDeadheadProp) +
-         (UnShdDvmt_Ve[VehAccType_Ve == "LowCarSvc"] * UnShdCarSvcDeadheadProp)) * 
-      LowCarSvcDeadheadProp
+      (((ShdDvmt_Ve * ShdCarSvcDeadheadFactor) + (UnShdDvmt_Ve * UnShdCarSvcDeadheadFactor)) * 
+         LowCarSvcDeadheadProp)[VehAccType_Ve == "LowCarSvc"]
     DeadheadDvmt_Ve[VehAccType_Ve == "HighCarSvc"] <-
-      ((ShdDvmt_Ve[VehAccType_Ve == "HighCarSvc"] * ShdCarSvcDeadheadProp) +
-         (UnShdDvmt_Ve[VehAccType_Ve == "HighCarSvc"] * UnShdCarSvcDeadheadProp)) * 
-      HighCarSvcDeadheadProp
+      (((ShdDvmt_Ve * ShdCarSvcDeadheadFactor) + (UnShdDvmt_Ve * UnShdCarSvcDeadheadFactor)) * 
+         HighCarSvcDeadheadProp)[VehAccType_Ve == "HighCarSvc"]
+    DeadheadDvmt_Ve[!IsDriverless_] <- 0
     DeadheadDvmt_Ve
   })
   

@@ -1940,7 +1940,7 @@ CalculateRoadPerformance <- function(L) {
   
   # Calculate capacity adjustment factors based on AV penetration
   AVCapacityFactors <- as.data.frame(L$Global$AVCapacityFactors)
-  AvMpr_ma <- L$Year$Marea$AVLvl5Share + L$Year$Marea$AVLvl3Share
+  AvMpr_ma <- L$Year$Marea$LdvAVLvl5Prop
   names(AvMpr_ma) <- L$Year$Marea$Marea
   
   FwyAdjFactors_ma <- numeric(length = length(Ma))
