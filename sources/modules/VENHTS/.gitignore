@@ -1,0 +1,7 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.zip
+inst/extdata/2001csv/*
+inst/extdata/2017csv/*
