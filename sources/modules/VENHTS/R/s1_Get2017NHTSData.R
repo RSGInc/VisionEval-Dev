@@ -23,7 +23,7 @@ source('./R/s0_MakeNHTSFunctions.R')
 #LOAD NHTS DATASETS
 #==================
 
-colxwalk <- read.csv('./inst/extdata/conversions.csv')
+colxwalk <- read.csv('./inst/extdata/nhts_xwalk.csv')
 
 
 # Because of a setting in .Rbuildignore, "data-raw" won't be present
@@ -43,26 +43,8 @@ Nhts2017Repo <-
 #Download data from repository and process if it has not already been done
 if (!file.exists("data-raw/Hh_df.rda")) {
   Hh_df <- getZipDatasetFromRepo(Nhts2017Repo, "hhpub")
-  
   Keep_ <- colxwalk[colxwalk$File=='hh','NHTS2017']
   Keep_ <- Keep_[Keep_!=""]
-  
-  
-  # Keep_ <- c("HOUSEID", "AGE_P1", "AGE_P2", "AGE_P3", "AGE_P4", "AGE_P5",
-  #            "AGE_P6", "AGE_P7", "AGE_P8", "AGE_P9", "AGE_P10", "AGE_P11",
-  #            "AGE_P12", "AGE_P13", "AGE_P14", "CENSUS_D", "CENSUS_R", "DRVRCNT",
-  #            "DRV_P1", "DRV_P2", "DRV_P3", "DRV_P4", "DRV_P5", "DRV_P6",
-  #            "DRV_P7", "DRV_P8", "DRV_P9", "DRV_P10", "DRV_P11", "DRV_P12",
-  #            "DRV_P13", "DRV_P14", "EXPFLHHN", "EXPFLLHH", "FLGFINCM",
-  #            "HBHRESDN", "HBHUR", "HBPPOPDN", "HHC_MSA", "HHFAMINC", "HHINCTTL",
-  #            "HHNUMBIK", "HHR_AGE", "HHR_DRVR", "HHR_RACE", "HHR_SEX", "HHSIZE",
-  #            "HHVEHCNT", "HOMETYPE", "HTEEMPDN", "HTHRESDN", "HTHUR",
-  #            "HTPPOPDN", "LIF_CYC", "MSAPOP", "MSACAT", "MSASIZE", "RAIL",
-  #            "RATIO16V", "URBAN", "URBRUR", "WRKCOUNT", "WKR_P1", "WKR_P2",
-  #            "WKR_P3", "WKR_P4", "WKR_P5", "WKR_P6", "WKR_P7", "WKR_P8",
-  #            "WKR_P9", "WKR_P10", "WKR_P11", "WKR_P12", "WKR_P13", "WKR_P14",
-  #            "CNTTDHH")
-  
   Hh_df <- Hh_df[, Keep_]
   save(Hh_df, file = "data-raw/Hh_df.rda", compress = TRUE)
 } else {
