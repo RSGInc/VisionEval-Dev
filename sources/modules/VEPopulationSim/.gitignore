@@ -37,5 +37,4 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
-
-UrbanSim-to-VisionEval20220104155800.zip
+.key
