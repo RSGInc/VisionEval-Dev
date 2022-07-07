@@ -1,0 +1,15 @@
+width	label
+4	Four-digit FIPS MSA/CMSA code (6/30/99 definition)
+4	Blank
+4	Four-digit FIPS PMSA code (6/30/99 definition)
+4	Blank
+2	Alternative two-digit FIPS CMSA code(6/30/99 definition)
+6	Blank
+2	FIPS state code (blank at MA level)
+3	FIPS county code (blank at MA level)
+3	Blank
+1	Central/Outlying county or city/town flag (1 = Central, 2 = Outlying)
+5	Blank
+5	FIPS entity code (blank at MA and county levels)
+3	Blank
+49	Area title, county name, and town name

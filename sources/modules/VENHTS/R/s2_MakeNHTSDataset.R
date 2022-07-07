@@ -1,34 +1,9 @@
-#=====================
-#Make2001NHTSDataset.R
-#=====================
-#This module creates a data frame of data from the publically available data
-#from the 2001 National Household Travel Survey (NHTS) augmented with data on
-#metropolitan area freeway supply and transit supply. The package produces a
-#data frame of values by household.
-
-#=======
-#PURPOSE
-#=======
-
-#This script processes 2001 NHTS text files to create the household travel
-#dataset to be used in model estimation. Data on freeway lane miles and
-#bus equivalent transit revenue miles are added. A household dataframe (Hh_df)
-#containing travel and other relevant data for each survey household.
-# library(visioneval)
-
-globalVariables("Per_df")
-
-#==================
-#LOAD NHTS DATASETS
-#==================
-
-# Because of a setting in .Rbuildignore, "data-raw" won't be present
-# during the final build, but we will already have done all the
-# following during the documentation phase, so we can jus skip it.
-
 #================
 #PROCESS DATASETS
 #================
+
+codebook <- read.csv('./inst/extdata/codebook.csv')
+codebook <- codebook[codebook$year == NHTSYEAR, ]
 
 #Calculate the number of persons by age group and add summary to household data
 #------------------------------------------------------------------------------
@@ -309,16 +284,24 @@ getHouseholdTours <- function(HTrp_df) {
 #It takes a long time to create the data frame of tours and so the code to do so
 #should not be run unless a completed tour dataset has not been created or if
 #the code is changed
-if (file.exists("data-raw/ToursByHh_df.Rda")) {
-  load("data-raw/ToursByHh_df.Rda")
+if (file.exists(file.path(RAW_DIR, "ToursByHh_df.Rda"))) {
+  load(file.path(RAW_DIR, "ToursByHh_df.Rda"))
 } else {
   HTrp_ls <- split(Dt_df, Dt_df$Houseid)
-  ToursByHh_ls <- lapply(HTrp_ls, getHouseholdTours)
+  if(PARALLEL) {
+    cl <- parallel::makeCluster(parallel::detectCores() - 1)
+    parallel::clusterExport(cl=cl, list("getPersonTours",'Per_df'), envir=environment())
+    ToursByHh_ls <- pblapply(HTrp_ls, getHouseholdTours, cl=cl)
+    parallel::stopCluster(cl)
+  } else {
+    ToursByHh_ls <- lapply(HTrp_ls, getHouseholdTours)  
+  }
+  
   ToursByHh_df <- do.call(rbind, ToursByHh_ls)
   rownames(ToursByHh_df) <- NULL
   ToursByHh_df$Houseid <- as.character(ToursByHh_df$Houseid)
   ToursByHh_df$Whyto <- as.character(ToursByHh_df$Whyto)
-  save(ToursByHh_df, file = "data-raw/ToursByHh_df.Rda")
+  save(ToursByHh_df, file = file.path(RAW_DIR, "ToursByHh_df.Rda"))
   rm(HTrp_ls, ToursByHh_ls)
 }
 #Make a copy of household tour data frame to further refine
@@ -349,19 +332,18 @@ rm(Speeds_, IsInLimits_)
 #Add a Mode variable
 HhTours_df <- HhTours_df[HhTours_df$Trptrans > 0 & HhTours_df$Trptrans != 91,]
 HhTours_df <- HhTours_df[,]
-Modes_ <- c("1" = "Auto", "2" = "LtTrk", "3" = "LtTrk", "4" = "LtTrk",
-            "5" = "OthTrk", "6" = "RV", "7" = "Motorcycle", "8" = "Airplane",
-            "9" = "Airplane", "10" = "Bus", "11" = "Bus", "12" = "SchoolBus",
-            "13" = "Bus", "14" = "Bus", "15" = "Train", "16" = "Train",
-            "17" = "Subway", "18" = "StreetCar", "19" = "Boat", "20" = "Boat",
-            "21" = "Boat", "22" = "Taxi", "23" = "Taxi", "24" = "Taxi",
-            "25" = "Bicycle", "26" = "Walk")
+
+Modes_ <- with(codebook[codebook$variable=='TRPTRANS',], 
+               setNames(ve_label, value)
+               )
+
 HhTours_df$Mode <- Modes_[as.character(HhTours_df$Trptrans)]
 rm(Modes_)
 #Add a flag for whether tour has a work purpose
 IncludesWork_ <-
   sapply(HhTours_df$Whyto, function(x) {
-    any(unlist(strsplit(x, "-")) %in% c("10", "11", "12", "13", "14"))
+    work_codes <- codebook[codebook$variable=='WHYTOWORK','value']
+    any(unlist(strsplit(x, "-")) %in% work_codes)
   })
 HhTours_df$IncludesWork <- unname(IncludesWork_)
 rm(IncludesWork_)
@@ -520,17 +502,23 @@ Hh_df$Census_d <-
 Hh_df$Census_r <-
   factor(Hh_df$Census_r,
          labels = c("Northeast", "Midwest", "South", "West"))
+
+Hh_df$Flgfincm <- 1
 Hh_df$Flgfincm <-
   factor(Hh_df$Flgfincm,
          levels = c("-7", "-8", "-9", "1", "2"),
          labels = c("Refused", "Don't Know", "Not Ascertained", "Yes", "No"))
+# Hh_df$Flgfincm <-
+#   factor(Hh_df$Flgfincm,
+#          levels = c("-7", "-8", "-9", "1", "2"),
+#          labels = c("Refused", "Don't Know", "Not Ascertained", "Yes", "No"))
 Hh_df$Hhr_drvr <- factor(Hh_df$Hhr_drvr, labels = c("Yes", "No"))
 Hh_df$Hhr_race <- factor( Hh_df$Hhr_race )
 Hh_df$Hhr_sex <- factor( Hh_df$Hhr_sex, labels = c( "Male", "Female" ) )
-Hh_df$Hometype <-
-  factor(Hh_df$Hometype,
-         labels = c("Single Family", "Duplex", "Attached", "Multi-family",
-                    "Mobile Home", "Dorm", "Other"))
+# Hh_df$Hometype <-
+#   factor(Hh_df$Hometype,
+#          labels = c("Single Family", "Duplex", "Attached", "Multi-family",
+#                     "Mobile Home", "Dorm", "Other"))
 Hh_df$Lif_cyc <- factor(Hh_df$Lif_cyc)
 Hh_df$Msacat <- factor(Hh_df$Msacat)
 Hh_df$Msasize <- factor(Hh_df$Msasize)

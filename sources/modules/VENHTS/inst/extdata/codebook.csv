@@ -1,0 +1,55 @@
+variable,year,value,label,ve_label
+TRPTRANS,2001,1,Car   ,Auto
+TRPTRANS,2001,2,Van   ,LtTrk
+TRPTRANS,2001,3,SUV   ,LtTrk
+TRPTRANS,2001,4,Pickup truck  ,LtTrk
+TRPTRANS,2001,5,Other truck  ,OthTrk
+TRPTRANS,2001,6,RV   ,RV
+TRPTRANS,2001,7,Motorcycle   ,Motorcycle
+TRPTRANS,2001,8,Commercial/charter airplane  ,Airplane
+TRPTRANS,2001,9,Private/corporate airplane  ,Airplane
+TRPTRANS,2001,10,Local public transit bus,Bus
+TRPTRANS,2001,11,Commuter bus  ,Bus
+TRPTRANS,2001,12,School bus  ,SchoolBus
+TRPTRANS,2001,13,Charter/tour bus  ,Bus
+TRPTRANS,2001,14,City to city bus,Bus
+TRPTRANS,2001,15,Amtrack/inter city train ,Train
+TRPTRANS,2001,16,Commuter train  ,Train
+TRPTRANS,2001,17,Subway/elevated rail  ,Subway
+TRPTRANS,2001,18,Street car/trolley  ,StreetCar
+TRPTRANS,2001,19,Ship/cruise   ,Boat
+TRPTRANS,2001,20,Passenger line/ferry  ,Boat
+TRPTRANS,2001,21,Sailboat/motorboat/yacht   ,Boat
+TRPTRANS,2001,22,Taxicab   ,Taxi
+TRPTRANS,2001,23,Limousine   ,Taxi
+TRPTRANS,2001,24,Hotel/airport shuttle  ,Taxi
+TRPTRANS,2001,25,Bicycle   ,Bicycle
+TRPTRANS,2001,26,Walk   ,Walk
+TRPTRANS,2017,1,Walk,Walk
+TRPTRANS,2017,2,Bicycle,Bicycle
+TRPTRANS,2017,3,Car,Auto
+TRPTRANS,2017,4,SUV,LtTrk
+TRPTRANS,2017,5,Van,LtTrk
+TRPTRANS,2017,6,Pickup truck,LtTrk
+TRPTRANS,2017,7,Golf cart / Segway,Motorcycle
+TRPTRANS,2017,8,Motorcycle / Moped,Motorcycle
+TRPTRANS,2017,9,"RV (motor home, ATV, snowmobile)",RV
+TRPTRANS,2017,10,School bus,SchoolBus
+TRPTRANS,2017,11,Public or commuter bus,Bus
+TRPTRANS,2017,12,Paratransit / Dial-a-ride,Taxi
+TRPTRANS,2017,13,Private / Charter / Tour / Shuttle bus,Bus
+TRPTRANS,2017,14,"City-to-city bus (Greyhound, Megabus)",Bus
+TRPTRANS,2017,15,Amtrak / Commuter rail,Train
+TRPTRANS,2017,16,Subway / elevated / light rail / street car,Subway
+TRPTRANS,2017,17,Taxi / limo (including Uber / Lyft),Taxi
+TRPTRANS,2017,18,Rental car (Including Zipcar / Car2Go),Auto
+TRPTRANS,2017,19,Airplane,Airplane
+TRPTRANS,2017,20,Boat / ferry / water taxi,Boat
+WHYTOWORK,2001,10,Work,Work
+WHYTOWORK,2001,11,Go to work,Work
+WHYTOWORK,2001,12,Return to work,Work
+WHYTOWORK,2001,13,Attend business meeting/trip,Work
+WHYTOWORK,2001,14,Other work related,Work
+WHYTOWORK,2017,2,Work from home,Work
+WHYTOWORK,2017,3,Work,Work
+WHYTOWORK,2017,4,Work-related meeting/trip,Work
