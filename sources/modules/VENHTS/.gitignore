@@ -5,4 +5,4 @@
 *.zip
 inst/extdata/2001csv/*
 inst/extdata/2017csv/*
-data-raw/*
+data-raw/2017/nhts_dflist.rda
