@@ -1,0 +1,1084 @@
+07/07/2022 16:52:51 - INFO - activitysim - Read logging configuration from: configs\logging.yaml
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING configs_dir: configs
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING settings_file_name: settings.yaml
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING data_dir: data
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING output_dir: output
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING multiprocess: None
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING num_processes: None
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING resume_after: None
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING GROUP_BY_INCIDENCE_SIGNATURE: True
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING INTEGERIZE_WITH_BACKSTOPPED_CONTROLS: True
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING SUB_BALANCE_WITH_FLOAT_SEED_WEIGHTS: False
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING meta_control_data: None
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING control_file_name: controls.csv
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING USE_CVXPY: False
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - SETTING USE_SIMUL_INTEGERIZER: True
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - ENV MKL_NUM_THREADS: None
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - ENV OMP_NUM_THREADS: None
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - ENV OPENBLAS_NUM_THREADS: None
+07/07/2022 16:52:51 - INFO - activitysim.cli.run - run single process simulation
+07/07/2022 16:52:51 - DEBUG - activitysim.core.random - Set random seed base to 0
+07/07/2022 16:52:51 - DEBUG - activitysim.core.pipeline - open_pipeline - new, empty pipeline
+07/07/2022 16:52:51 - DEBUG - activitysim.core.pipeline - opened pipeline_store output\pipeline.h5
+07/07/2022 16:52:51 - DEBUG - activitysim.core.pipeline - add_checkpoint init timestamp 2022-07-07 16:52:51.999229
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - open_pipeline complete
+07/07/2022 16:52:52 - INFO - activitysim.core.tracing - Time to execute open_pipeline : 0.007 seconds (0.0 minutes)
+07/07/2022 16:52:52 - INFO - activitysim.core.tracing - Time to execute preload_injectables : 0.01 seconds (0.0 minutes)
+07/07/2022 16:52:52 - INFO - activitysim.core.pipeline - #run_model running step input_pre_processor
+07/07/2022 16:52:52 - INFO - populationsim.steps.input_pre_processor - Using table list: [{'tablename': 'households', 'filename': 'seed_households.csv', 'index_col': 'hh_id', 'rename_columns': {'hhnum': 'hh_id'}}, {'tablename': 'persons', 'filename': 'seed_persons.csv', 'rename_columns': {'hhnum': 'hh_id', 'SPORDER': 'per_num'}}, {'tablename': 'geo_cross_walk', 'filename': 'geo_cross_walk.csv', 'column_map': {'TRACTGEOID': 'TRACT', 'GEOID': 'BG'}}, {'tablename': 'BG_control_data', 'filename': 'control_totals_bg.csv', 'column_map': {'TRACTGEOID': 'TRACT', 'GEOID': 'BG'}}, {'tablename': 'TRACT_control_data', 'filename': 'control_totals_tract.csv', 'column_map': {'TRACTGEOID': 'TRACT'}}, {'tablename': 'REGION_control_data', 'filename': 'scaled_control_totals_meta.csv'}]
+07/07/2022 16:52:52 - INFO - activitysim.core.input - Reading CSV file data\seed_households.csv
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - raw households table size: (82704, 9) 6.0 MB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - renaming columns: {'hhnum': 'hh_id'}
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - households table columns: ['SERIALNO' 'PUMA' 'REGION' 'NP' 'NW' 'HHINCADJ' 'WGTP' 'HTYPE']
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - households table size: (82704, 8) 6.0 MB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - households index name: hh_id
+07/07/2022 16:52:52 - INFO - populationsim.steps.input_pre_processor - registering table households
+07/07/2022 16:52:52 - INFO - activitysim.core.input - Reading CSV file data\seed_persons.csv
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - raw persons table size: (196436, 9) 14.1 MB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - renaming columns: {'hhnum': 'hh_id', 'SPORDER': 'per_num'}
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - persons table columns: ['SERIALNO' 'hh_id' 'PUMA' 'REGION' 'per_num' 'PWGTP' 'RAC1P' 'AGEP'
+ 'PINCADJ']
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - persons table size: (196436, 9) 14.1 MB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - persons index name: None
+07/07/2022 16:52:52 - INFO - populationsim.steps.input_pre_processor - registering table persons
+07/07/2022 16:52:52 - INFO - activitysim.core.input - Reading CSV file data\geo_cross_walk.csv
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - raw geo_cross_walk table size: (102, 8) 6.7 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - renaming columns: {'TRACTGEOID': 'TRACT', 'GEOID': 'BG'}
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - geo_cross_walk table columns: ['STATEFP' 'COUNTYFP' 'TRACTCE' 'BLKGRPCE' 'BG' 'PUMA' 'REGION' 'TRACT']
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - geo_cross_walk table size: (102, 8) 6.7 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - geo_cross_walk index name: None
+07/07/2022 16:52:52 - INFO - populationsim.steps.input_pre_processor - registering table geo_cross_walk
+07/07/2022 16:52:52 - INFO - activitysim.core.input - Reading CSV file data\control_totals_bg.csv
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - raw BG_control_data table size: (102, 31) 25.4 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - renaming columns: {'TRACTGEOID': 'TRACT', 'GEOID': 'BG'}
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - BG_control_data table columns: ['BG' 'POPBASE' 'HHBASE' 'PINC' 'HHSIZ1' 'HHSIZ2' 'HHSIZ3' 'HHSIZ4'
+ 'PAGE0TO14' 'PAGE15TO19' 'PAGE20TO29' 'PAGE30TO54' 'PAGE55TO64'
+ 'PAGE65PLUS' 'PRACWHT' 'PRACBLK' 'PRACNAT' 'PRACASN' 'PRACPAC' 'PRACOTH'
+ 'PRACMUL' 'HHINC1' 'HHINC2' 'HHINC3' 'HHINC4' 'STATEFP' 'COUNTYFP'
+ 'TRACTCE' 'TRACT' 'PUMA' 'REGION']
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - BG_control_data table size: (102, 31) 25.4 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - BG_control_data index name: None
+07/07/2022 16:52:52 - INFO - populationsim.steps.input_pre_processor - registering table BG_control_data
+07/07/2022 16:52:52 - INFO - activitysim.core.input - Reading CSV file data\control_totals_tract.csv
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - raw TRACT_control_data table size: (44, 16) 5.8 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - renaming columns: {'TRACTGEOID': 'TRACT'}
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - TRACT_control_data table columns: ['TRACT' 'POPBASE' 'HHBASE' 'HHWRK0' 'HHWRK1' 'HHWRK2' 'HHWRK3' 'SF' 'DUP'
+ 'MF' 'MH' 'STATEFP' 'COUNTYFP' 'TRACTCE' 'PUMA' 'REGION']
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - TRACT_control_data table size: (44, 16) 5.8 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - TRACT_control_data index name: None
+07/07/2022 16:52:52 - INFO - populationsim.steps.input_pre_processor - registering table TRACT_control_data
+07/07/2022 16:52:52 - INFO - activitysim.core.input - Reading CSV file data\scaled_control_totals_meta.csv
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - raw REGION_control_data table size: (1, 34) 400 B
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - REGION_control_data table columns: ['REGION' 'HHBASE' 'HHWRK0' 'HHWRK1' 'HHWRK2' 'HHWRK3' 'SF' 'DUP' 'MF'
+ 'MH' 'POPBASE' 'HHBASE.1' 'PINC' 'HHSIZ1' 'HHSIZ2' 'HHSIZ3' 'HHSIZ4'
+ 'PAGE0TO14' 'PAGE15TO19' 'PAGE20TO29' 'PAGE30TO54' 'PAGE55TO64'
+ 'PAGE65PLUS' 'PRACWHT' 'PRACBLK' 'PRACNAT' 'PRACASN' 'PRACPAC' 'PRACOTH'
+ 'PRACMUL' 'HHINC1' 'HHINC2' 'HHINC3' 'HHINC4']
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - REGION_control_data table size: (1, 34) 400 B
+07/07/2022 16:52:52 - DEBUG - activitysim.core.input - REGION_control_data index name: None
+07/07/2022 16:52:52 - INFO - populationsim.steps.input_pre_processor - registering table REGION_control_data
+07/07/2022 16:52:52 - DEBUG - activitysim.core.tracing - Time to execute #run_model completed step 'input_pre_processor' : 0.253 seconds (0.0 minutes)
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint input_pre_processor timestamp 2022-07-07 16:52:52.299328
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'input_pre_processor' table 'households' (82704, 8) 6.0 MB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'input_pre_processor' table 'persons' (196436, 9) 14.1 MB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'input_pre_processor' table 'geo_cross_walk' (102, 8) 6.7 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'input_pre_processor' table 'BG_control_data' (102, 31) 25.4 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'input_pre_processor' table 'TRACT_control_data' (44, 16) 5.8 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'input_pre_processor' table 'REGION_control_data' (1, 34) 400 B
+07/07/2022 16:52:52 - INFO - activitysim.core.pipeline - #run_model running step setup_data_structures
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - Reading control file configs\controls.csv
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - dropped 78681 households not in seed zones
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - kept 4023 households in seed zones
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - rewrap table households inplace=False
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - rewrap table persons inplace=False
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target num_hh
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression (households.WGTP > 0) & (households.WGTP < np.inf)
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_size_1
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression households.NP == 1
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_size_2
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression households.NP == 2
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_size_3
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression households.NP == 3
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_size_4_plus
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression households.NP >= 4
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_inc_0_21
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression (households.HHINCADJ > -999999999) & (households.HHINCADJ <= 21297)
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_inc_21_42
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression (households.HHINCADJ >21297) & (households.HHINCADJ <= 42593)
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_inc_42_85
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression (households.HHINCADJ > 42593) & (households.HHINCADJ <= 85185)
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_inc_85_plus
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression (households.HHINCADJ > 85185) & (households.HHINCADJ <= 999999999)
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_wrks_0
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression households.NW == 0
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_wrks_1
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression households.NW == 1
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_wrks_2
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression households.NW == 2
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_wrks_3_plus
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression households.NW >= 3
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_by_type_sf
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression households.HTYPE == 1
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_by_type_mf
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression households.HTYPE == 2
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_by_type_mh
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression households.HTYPE == 3
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target hh_by_type_dup
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table households
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression households.HTYPE == 4
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target num_per
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression (persons.PWGTP > 0) & (persons.PWGTP < np.inf)
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target per_race_white
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression persons.RAC1P == 1
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target per_race_black
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression persons.RAC1P == 2
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target per_race_native
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression persons.RAC1P.isin([3,4,5])
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target per_race_asian
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression persons.RAC1P == 6
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target per_race_pacific
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression persons.RAC1P == 7
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target per_race_other
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression persons.RAC1P == 8
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target per_race_multi
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression persons.RAC1P == 9
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target per_age_0_14
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression (persons.AGEP <= 14)
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target per_age_15_19
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression (persons.AGEP > 15) & (persons.AGEP <= 19)
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target per_age_20_29
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression (persons.AGEP > 19) & (persons.AGEP <= 29)
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target per_age_30_54
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression (persons.AGEP > 29) & (persons.AGEP <= 54)
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target per_age_55_64
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression (persons.AGEP > 54) & (persons.AGEP <= 64)
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target per_age_65_plus
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression (persons.AGEP > 64) & (persons.AGEP <= np.inf)
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - control target avg_percap_inc
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.seed_table persons
+07/07/2022 16:52:52 - DEBUG - populationsim.steps.setup_data_structures - control_row.expression persons.PINCADJ
+07/07/2022 16:52:52 - INFO - populationsim.steps.setup_data_structures - grouped incidence table has 3939 entries, ungrouped has 4023
+07/07/2022 16:52:52 - DEBUG - activitysim.core.tracing - Time to execute #run_model completed step 'setup_data_structures' : 0.353 seconds (0.0 minutes)
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint setup_data_structures timestamp 2022-07-07 16:52:52.796196
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'setup_data_structures' table 'crosswalk' (102, 4) 4.1 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'setup_data_structures' table 'control_spec' (32, 6) 1.7 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'setup_data_structures' table 'REGION_controls' (1, 32) 264 B
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'setup_data_structures' table 'PUMA_controls' (2, 32) 528 B
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'setup_data_structures' table 'TRACT_controls' (44, 32) 11.6 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'setup_data_structures' table 'BG_controls' (102, 24) 20.4 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'setup_data_structures' table 'households' (4023, 8) 289.7 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'setup_data_structures' table 'persons' (196436, 9) 14.1 MB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'setup_data_structures' table 'household_groups' (4023, 3) 112.6 KB
+07/07/2022 16:52:52 - DEBUG - activitysim.core.pipeline - add_checkpoint 'setup_data_structures' table 'incidence_table' (3939, 37) 1.2 MB
+07/07/2022 16:52:52 - INFO - activitysim.core.pipeline - #run_model running step initial_seed_balancing
+07/07/2022 16:52:52 - INFO - populationsim.steps.initial_seed_balancing - initial_seed_balancing seed id 901
+07/07/2022 16:52:54 - INFO - populationsim.steps.initial_seed_balancing - seed_balancer status: {'converged': True, 'iter': 961, 'delta': 4.830714100313447e-10, 'max_gamma_dif': 9.135521228387233e-10}
+07/07/2022 16:52:54 - INFO - populationsim.steps.initial_seed_balancing - Total balanced weights for seed 901 = 35240.9996926587
+07/07/2022 16:52:54 - INFO - populationsim.steps.initial_seed_balancing - initial_seed_balancing seed id 902
+07/07/2022 16:52:55 - INFO - populationsim.steps.initial_seed_balancing - seed_balancer status: {'converged': True, 'iter': 959, 'delta': 3.594360056151311e-10, 'max_gamma_dif': 9.327287830984687e-10}
+07/07/2022 16:52:56 - INFO - populationsim.steps.initial_seed_balancing - Total balanced weights for seed 902 = 25735.999245060106
+07/07/2022 16:52:56 - DEBUG - activitysim.core.tracing - Time to execute #run_model completed step 'initial_seed_balancing' : 3.08 seconds (0.1 minutes)
+07/07/2022 16:52:56 - DEBUG - activitysim.core.pipeline - add_checkpoint initial_seed_balancing timestamp 2022-07-07 16:52:56.016027
+07/07/2022 16:52:56 - DEBUG - activitysim.core.pipeline - add_checkpoint 'initial_seed_balancing' table 'PUMA_weights' (3939, 4) 126.2 KB
+07/07/2022 16:52:56 - INFO - activitysim.core.pipeline - #run_model running step meta_control_factoring
+07/07/2022 16:52:56 - WARNING - populationsim.steps.meta_control_factoring - meta_control_factoring: no meta targets so nothing to do
+07/07/2022 16:52:56 - DEBUG - activitysim.core.tracing - Time to execute #run_model completed step 'meta_control_factoring' : 0.0 seconds (0.0 minutes)
+07/07/2022 16:52:56 - DEBUG - activitysim.core.pipeline - add_checkpoint meta_control_factoring timestamp 2022-07-07 16:52:56.066005
+07/07/2022 16:52:56 - INFO - activitysim.core.pipeline - #run_model running step final_seed_balancing
+07/07/2022 16:52:56 - WARNING - populationsim.steps.final_seed_balancing - no need for final_seed_balancing because no meta controls
+07/07/2022 16:52:56 - DEBUG - activitysim.core.tracing - Time to execute #run_model completed step 'final_seed_balancing' : 0.007 seconds (0.0 minutes)
+07/07/2022 16:52:56 - DEBUG - activitysim.core.pipeline - add_checkpoint final_seed_balancing timestamp 2022-07-07 16:52:56.115875
+07/07/2022 16:52:56 - DEBUG - activitysim.core.pipeline - rewrap table PUMA_weights inplace=True
+07/07/2022 16:52:56 - DEBUG - activitysim.core.pipeline - add_checkpoint 'final_seed_balancing' table 'PUMA_weights' (3939, 5) 157.7 KB
+07/07/2022 16:52:56 - INFO - activitysim.core.pipeline - #run_model running step integerize_final_seed_weights
+07/07/2022 16:52:56 - INFO - populationsim.steps.integerize_final_seed_weights - integerize_final_seed_weights seed id 901
+07/07/2022 16:52:56 - DEBUG - populationsim.integerizer - omitting 65 zero weight rows out of 1938
+07/07/2022 16:52:56 - DEBUG - populationsim.integerizer - Integerizer: 16 out of 1873 different from round
+07/07/2022 16:52:56 - DEBUG - populationsim.integerizer - Integerizer status for unbackstopped PUMA_901: OPTIMAL
+07/07/2022 16:52:56 - INFO - populationsim.steps.integerize_final_seed_weights - integerize_final_seed_weights seed id 902
+07/07/2022 16:52:56 - DEBUG - populationsim.integerizer - omitting 109 zero weight rows out of 2001
+07/07/2022 16:52:56 - INFO - populationsim.integerizer - Integerizer: 2 zero resid_weights out of 1892
+07/07/2022 16:52:56 - DEBUG - populationsim.integerizer - Integerizer: 10 out of 1892 different from round
+07/07/2022 16:52:56 - DEBUG - populationsim.integerizer - Integerizer status for unbackstopped PUMA_902: OPTIMAL
+07/07/2022 16:52:56 - DEBUG - activitysim.core.tracing - Time to execute #run_model completed step 'integerize_final_seed_weights' : 0.293 seconds (0.0 minutes)
+07/07/2022 16:52:56 - DEBUG - activitysim.core.pipeline - add_checkpoint integerize_final_seed_weights timestamp 2022-07-07 16:52:56.455912
+07/07/2022 16:52:56 - DEBUG - activitysim.core.pipeline - rewrap table PUMA_weights inplace=True
+07/07/2022 16:52:56 - DEBUG - activitysim.core.pipeline - add_checkpoint 'integerize_final_seed_weights' table 'PUMA_weights' (3939, 6) 189.2 KB
+07/07/2022 16:52:56 - INFO - activitysim.core.pipeline - #run_model running step sub_balancing
+07/07/2022 16:52:56 - INFO - populationsim.steps.sub_balancing - balancing 1/1 seed 901, PUMA 901
+07/07/2022 16:52:56 - DEBUG - populationsim.simul_balancer - 136 positive weight rows out of 1938
+07/07/2022 16:52:56 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 136 control_count 32 zone_count 25
+07/07/2022 16:52:56 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 124.20887948859675 max_gamma_dif 98.63482876608418
+07/07/2022 16:52:58 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.6801207896613479 max_gamma_dif 18.267992371283526
+07/07/2022 16:53:00 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.691092884147546 max_gamma_dif 5.333123674686509
+07/07/2022 16:53:02 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.5054825244264258 max_gamma_dif 2.9736555748519438
+07/07/2022 16:53:04 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.35130580617378143 max_gamma_dif 2.8102357986355773
+07/07/2022 16:53:06 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.23046171749997368 max_gamma_dif 0.7136321972254431
+07/07/2022 16:53:08 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.08608162237437018 max_gamma_dif 0.14356903684955769
+07/07/2022 16:53:11 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.014230930841028569 max_gamma_dif 0.008533213514924198
+07/07/2022 16:53:12 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.0019337012019467077 max_gamma_dif 0.001156290371391755
+07/07/2022 16:53:15 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 3.4560478424093346e-05 max_gamma_dif 2.3936901960341928e-05
+07/07/2022 16:53:17 - DEBUG - populationsim.steps.sub_balancing - PUMA 901 converged False iter 999
+07/07/2022 16:53:17 - INFO - populationsim.multi_integerizer - omitting 1802 zero weight rows out of 1938
+07/07/2022 16:53:17 - INFO - populationsim.multi_integerizer - restoring 1802 zero weight rows
+07/07/2022 16:53:17 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:17 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for PUMA_901 status OPTIMAL. 
+07/07/2022 16:53:17 - INFO - populationsim.steps.sub_balancing - balancing 1/1 seed 902, PUMA 902
+07/07/2022 16:53:17 - DEBUG - populationsim.simul_balancer - 121 positive weight rows out of 2001
+07/07/2022 16:53:17 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 121 control_count 32 zone_count 19
+07/07/2022 16:53:17 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 97.55533342259305 max_gamma_dif 151.29576561740154
+07/07/2022 16:53:19 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.5921624322691769 max_gamma_dif 27.156855864952288
+07/07/2022 16:53:21 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.5357428833659449 max_gamma_dif 8.899597683157634
+07/07/2022 16:53:22 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.45122651055829466 max_gamma_dif 3.5963399709018136
+07/07/2022 16:53:24 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.36200832908082964 max_gamma_dif 1.4132277793122103
+07/07/2022 16:53:25 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.18006067701731931 max_gamma_dif 0.3099218694088599
+07/07/2022 16:53:27 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.09364496513209733 max_gamma_dif 0.16866530133624946
+07/07/2022 16:53:29 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.025790654091995914 max_gamma_dif 0.013306724378870372
+07/07/2022 16:53:31 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.0019238565313287016 max_gamma_dif 0.0006251573052034054
+07/07/2022 16:53:32 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 6.200701760125419e-05 max_gamma_dif 4.2580965062710696e-05
+07/07/2022 16:53:34 - DEBUG - populationsim.steps.sub_balancing - PUMA 902 converged False iter 999
+07/07/2022 16:53:34 - INFO - populationsim.multi_integerizer - omitting 1880 zero weight rows out of 2001
+07/07/2022 16:53:34 - INFO - populationsim.multi_integerizer - restoring 1880 zero weight rows
+07/07/2022 16:53:34 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:34 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for PUMA_902 status OPTIMAL. 
+07/07/2022 16:53:34 - INFO - populationsim.steps.sub_balancing - adding table TRACT_weights
+07/07/2022 16:53:34 - DEBUG - activitysim.core.tracing - Time to execute #run_model completed step 'sub_balancing.geography=TRACT' : 37.97 seconds (0.6 minutes)
+07/07/2022 16:53:34 - DEBUG - activitysim.core.pipeline - add_checkpoint sub_balancing.geography=TRACT timestamp 2022-07-07 16:53:34.466074
+07/07/2022 16:53:34 - DEBUG - activitysim.core.pipeline - add_checkpoint 'sub_balancing.geography=TRACT' table 'TRACT_weights' (86469, 6) 4.5 MB
+07/07/2022 16:53:34 - DEBUG - activitysim.core.pipeline - add_checkpoint 'sub_balancing.geography=TRACT' table 'TRACT_weights_sparse' (2313, 6) 120.3 KB
+07/07/2022 16:53:34 - DEBUG - activitysim.core.pipeline - add_checkpoint 'sub_balancing.geography=TRACT' table 'trace_TRACT_weights' (2001, 6) 104.1 KB
+07/07/2022 16:53:34 - INFO - activitysim.core.pipeline - #run_model running step sub_balancing
+07/07/2022 16:53:34 - INFO - populationsim.steps.sub_balancing - balancing 1/25 seed 901, TRACT 41029000100
+07/07/2022 16:53:34 - DEBUG - populationsim.simul_balancer - 59 positive weight rows out of 1938
+07/07/2022 16:53:34 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 59 control_count 24 zone_count 2
+07/07/2022 16:53:34 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 3.980220610219664 max_gamma_dif 13.306758592441298
+07/07/2022 16:53:34 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.012666154451814115 max_gamma_dif 7.821007100072517
+07/07/2022 16:53:34 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.012493467723383675 max_gamma_dif 2.557615961824917
+07/07/2022 16:53:34 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.00877039176067136 max_gamma_dif 0.7868024719518494
+07/07/2022 16:53:35 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.009470834024143122 max_gamma_dif 0.16132629447128644
+07/07/2022 16:53:35 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.0019806793676103852 max_gamma_dif 0.09863756814479074
+07/07/2022 16:53:35 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.0006768899869948248 max_gamma_dif 0.045063129619709597
+07/07/2022 16:53:35 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0010185268392563288 max_gamma_dif 0.019958991019858763
+07/07/2022 16:53:35 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.000305672206095495 max_gamma_dif 0.0030751858914137564
+07/07/2022 16:53:35 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 1.2032610071548126e-05 max_gamma_dif 8.485003554348225e-05
+07/07/2022 16:53:35 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000100 converged False iter 999
+07/07/2022 16:53:35 - INFO - populationsim.multi_integerizer - omitting 1879 zero weight rows out of 1938
+07/07/2022 16:53:35 - INFO - populationsim.multi_integerizer - restoring 1879 zero weight rows
+07/07/2022 16:53:35 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:35 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000100 status OPTIMAL. 
+07/07/2022 16:53:35 - INFO - populationsim.steps.sub_balancing - balancing 2/25 seed 901, TRACT 41029000201
+07/07/2022 16:53:35 - DEBUG - populationsim.simul_balancer - 54 positive weight rows out of 1938
+07/07/2022 16:53:35 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 54 control_count 24 zone_count 3
+07/07/2022 16:53:35 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 8.434162683144748 max_gamma_dif 9.52355877241939
+07/07/2022 16:53:36 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.025096914926593945 max_gamma_dif 6.105476381798494
+07/07/2022 16:53:36 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.03391984130506526 max_gamma_dif 2.9572969385061723
+07/07/2022 16:53:36 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.060354171576073146 max_gamma_dif 1.0233314547592336
+07/07/2022 16:53:36 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.03925168761095547 max_gamma_dif 0.25200509026946216
+07/07/2022 16:53:36 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.01754644650376846 max_gamma_dif 0.15123633244092716
+07/07/2022 16:53:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.009744949050179898 max_gamma_dif 0.04460653190447539
+07/07/2022 16:53:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0006374181230080155 max_gamma_dif 0.00664265150009502
+07/07/2022 16:53:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.0001533427752262598 max_gamma_dif 0.0010482450812887567
+07/07/2022 16:53:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 2.792017711348692e-06 max_gamma_dif 1.6882210655433383e-05
+07/07/2022 16:53:37 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000201 converged True iter 989
+07/07/2022 16:53:37 - INFO - populationsim.multi_integerizer - omitting 1884 zero weight rows out of 1938
+07/07/2022 16:53:37 - INFO - populationsim.multi_integerizer - restoring 1884 zero weight rows
+07/07/2022 16:53:37 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:37 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000201 status OPTIMAL. 
+07/07/2022 16:53:37 - INFO - populationsim.steps.sub_balancing - balancing 3/25 seed 901, TRACT 41029000202
+07/07/2022 16:53:37 - DEBUG - populationsim.simul_balancer - 69 positive weight rows out of 1938
+07/07/2022 16:53:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 69 control_count 24 zone_count 3
+07/07/2022 16:53:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 8.007601875414913 max_gamma_dif 11.296079573486528
+07/07/2022 16:53:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.02289322262215925 max_gamma_dif 6.313369654877492
+07/07/2022 16:53:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.022668549296867464 max_gamma_dif 2.698122816159822
+07/07/2022 16:53:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.023955592988438017 max_gamma_dif 0.6298503357425056
+07/07/2022 16:53:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.012266685731786735 max_gamma_dif 0.5356187536105916
+07/07/2022 16:53:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.004964860889720574 max_gamma_dif 0.08368712169135128
+07/07/2022 16:53:39 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.001358749769116188 max_gamma_dif 0.02416781390196432
+07/07/2022 16:53:39 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0010000512953968208 max_gamma_dif 0.011164699586687088
+07/07/2022 16:53:39 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00032816604535221495 max_gamma_dif 0.002626115739160051
+07/07/2022 16:53:39 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 1.4929829597855712e-05 max_gamma_dif 7.559710508098227e-05
+07/07/2022 16:53:39 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000202 converged False iter 999
+07/07/2022 16:53:39 - INFO - populationsim.multi_integerizer - omitting 1869 zero weight rows out of 1938
+07/07/2022 16:53:39 - INFO - populationsim.multi_integerizer - restoring 1869 zero weight rows
+07/07/2022 16:53:39 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:39 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000202 status OPTIMAL. 
+07/07/2022 16:53:39 - INFO - populationsim.steps.sub_balancing - balancing 4/25 seed 901, TRACT 41029000203
+07/07/2022 16:53:39 - DEBUG - populationsim.simul_balancer - 72 positive weight rows out of 1938
+07/07/2022 16:53:39 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 72 control_count 24 zone_count 3
+07/07/2022 16:53:39 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 8.814582179838714 max_gamma_dif 40.05719005919504
+07/07/2022 16:53:40 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.02299889338789283 max_gamma_dif 11.915367722159889
+07/07/2022 16:53:40 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.036878653391654796 max_gamma_dif 4.9046391491408015
+07/07/2022 16:53:40 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.044907601622545076 max_gamma_dif 1.145685968189622
+07/07/2022 16:53:40 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.01716910480645918 max_gamma_dif 0.28485488046337815
+07/07/2022 16:53:40 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.003491329078606006 max_gamma_dif 0.09762988941804385
+07/07/2022 16:53:41 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.0020066832742244686 max_gamma_dif 0.032816421927421624
+07/07/2022 16:53:41 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.000585970377377838 max_gamma_dif 0.006753858131449464
+07/07/2022 16:53:41 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 7.072090129322481e-05 max_gamma_dif 0.0008342082606158652
+07/07/2022 16:53:41 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 1.1016226723459622e-06 max_gamma_dif 1.2275645077330921e-05
+07/07/2022 16:53:41 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000203 converged True iter 979
+07/07/2022 16:53:41 - INFO - populationsim.multi_integerizer - omitting 1866 zero weight rows out of 1938
+07/07/2022 16:53:41 - INFO - populationsim.multi_integerizer - restoring 1866 zero weight rows
+07/07/2022 16:53:41 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:41 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000203 status OPTIMAL. 
+07/07/2022 16:53:41 - INFO - populationsim.steps.sub_balancing - balancing 5/25 seed 901, TRACT 41029000300
+07/07/2022 16:53:41 - DEBUG - populationsim.simul_balancer - 56 positive weight rows out of 1938
+07/07/2022 16:53:41 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 56 control_count 24 zone_count 2
+07/07/2022 16:53:41 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 12.979402500593627 max_gamma_dif 45.04411462852181
+07/07/2022 16:53:42 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.03623184924096106 max_gamma_dif 22.894707730982784
+07/07/2022 16:53:42 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.029638213981327623 max_gamma_dif 4.990799212622187
+07/07/2022 16:53:42 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.03508195528738116 max_gamma_dif 4.2233475570823
+07/07/2022 16:53:42 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.03463405293767561 max_gamma_dif 1.8973154671627088
+07/07/2022 16:53:42 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.011198405754337237 max_gamma_dif 0.052636483198291284
+07/07/2022 16:53:42 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.00227037402430235 max_gamma_dif 0.04787009356426497
+07/07/2022 16:53:42 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0027483611515448777 max_gamma_dif 0.02052122572229631
+07/07/2022 16:53:42 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.0009865118093953138 max_gamma_dif 0.004664068098554797
+07/07/2022 16:53:43 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 6.762132877334329e-05 max_gamma_dif 0.0002076933950863058
+07/07/2022 16:53:43 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000300 converged False iter 999
+07/07/2022 16:53:43 - INFO - populationsim.multi_integerizer - omitting 1882 zero weight rows out of 1938
+07/07/2022 16:53:43 - INFO - populationsim.multi_integerizer - restoring 1882 zero weight rows
+07/07/2022 16:53:43 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:43 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000300 status OPTIMAL. 
+07/07/2022 16:53:43 - INFO - populationsim.steps.sub_balancing - balancing 6/25 seed 901, TRACT 41029000403
+07/07/2022 16:53:43 - DEBUG - populationsim.simul_balancer - 57 positive weight rows out of 1938
+07/07/2022 16:53:43 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 57 control_count 24 zone_count 2
+07/07/2022 16:53:43 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 7.5054424401468705 max_gamma_dif 23.12616529283053
+07/07/2022 16:53:43 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.011887730941663668 max_gamma_dif 23.38859226163052
+07/07/2022 16:53:43 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.015863550315479237 max_gamma_dif 8.49573783350091
+07/07/2022 16:53:43 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.018405040655874692 max_gamma_dif 2.0825036763154787
+07/07/2022 16:53:43 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.013844832751118719 max_gamma_dif 0.8052831230535374
+07/07/2022 16:53:44 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.011090509046142678 max_gamma_dif 0.43606369313971083
+07/07/2022 16:53:44 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.002663329242335505 max_gamma_dif 0.2557860587028489
+07/07/2022 16:53:44 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.001174682598336896 max_gamma_dif 0.15165726396475243
+07/07/2022 16:53:44 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.0011227606923047062 max_gamma_dif 0.12381372685780223
+07/07/2022 16:53:44 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 0.004800192558484151 max_gamma_dif 0.1144656193793866
+07/07/2022 16:53:44 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000403 converged False iter 999
+07/07/2022 16:53:44 - INFO - populationsim.multi_integerizer - omitting 1881 zero weight rows out of 1938
+07/07/2022 16:53:44 - INFO - populationsim.multi_integerizer - restoring 1881 zero weight rows
+07/07/2022 16:53:44 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:44 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000403 status OPTIMAL. 
+07/07/2022 16:53:44 - INFO - populationsim.steps.sub_balancing - balancing 7/25 seed 901, TRACT 41029000404
+07/07/2022 16:53:44 - DEBUG - populationsim.simul_balancer - 78 positive weight rows out of 1938
+07/07/2022 16:53:44 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 78 control_count 24 zone_count 2
+07/07/2022 16:53:44 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 9.354600257567268 max_gamma_dif 11.119355903796022
+07/07/2022 16:53:45 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.014489313932435865 max_gamma_dif 4.444801275958178
+07/07/2022 16:53:45 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.023123039391003262 max_gamma_dif 2.0134874062728243
+07/07/2022 16:53:45 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.02987929199684791 max_gamma_dif 0.7886058532875113
+07/07/2022 16:53:45 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.03210723784127758 max_gamma_dif 0.2290029159949798
+07/07/2022 16:53:45 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.022073378852566244 max_gamma_dif 0.1506026342904656
+07/07/2022 16:53:45 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.006671707183128555 max_gamma_dif 0.04393303685601535
+07/07/2022 16:53:45 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0010203167056892224 max_gamma_dif 0.007672485543308349
+07/07/2022 16:53:45 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00023763052811050385 max_gamma_dif 0.0007969863919257136
+07/07/2022 16:53:46 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 7.941285464410932e-06 max_gamma_dif 1.5198748527289752e-05
+07/07/2022 16:53:46 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000404 converged False iter 999
+07/07/2022 16:53:46 - INFO - populationsim.multi_integerizer - omitting 1860 zero weight rows out of 1938
+07/07/2022 16:53:46 - INFO - populationsim.multi_integerizer - restoring 1860 zero weight rows
+07/07/2022 16:53:46 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:46 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000404 status OPTIMAL. 
+07/07/2022 16:53:46 - INFO - populationsim.steps.sub_balancing - balancing 8/25 seed 901, TRACT 41029000405
+07/07/2022 16:53:46 - DEBUG - populationsim.simul_balancer - 69 positive weight rows out of 1938
+07/07/2022 16:53:46 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 69 control_count 24 zone_count 2
+07/07/2022 16:53:46 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 3.804551398998209 max_gamma_dif 12.14365124521169
+07/07/2022 16:53:46 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.025717553453949684 max_gamma_dif 9.410818759018593
+07/07/2022 16:53:46 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.025685349409031905 max_gamma_dif 3.989555781992393
+07/07/2022 16:53:46 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.027419543159593135 max_gamma_dif 1.0688428188231924
+07/07/2022 16:53:46 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.02494167854033315 max_gamma_dif 0.19154708020700095
+07/07/2022 16:53:46 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.01080751865641796 max_gamma_dif 0.05583732018009724
+07/07/2022 16:53:47 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.0013821065853570282 max_gamma_dif 0.025110807052460715
+07/07/2022 16:53:47 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0004418747842077792 max_gamma_dif 0.007051758448536782
+07/07/2022 16:53:47 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00012626761710819094 max_gamma_dif 0.0006093571022864896
+07/07/2022 16:53:47 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 3.1943084863744255e-06 max_gamma_dif 8.210449643275552e-06
+07/07/2022 16:53:47 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000405 converged True iter 993
+07/07/2022 16:53:47 - INFO - populationsim.multi_integerizer - omitting 1869 zero weight rows out of 1938
+07/07/2022 16:53:47 - INFO - populationsim.multi_integerizer - restoring 1869 zero weight rows
+07/07/2022 16:53:47 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:47 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000405 status OPTIMAL. 
+07/07/2022 16:53:47 - INFO - populationsim.steps.sub_balancing - balancing 9/25 seed 901, TRACT 41029000406
+07/07/2022 16:53:47 - DEBUG - populationsim.simul_balancer - 59 positive weight rows out of 1938
+07/07/2022 16:53:47 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 59 control_count 24 zone_count 2
+07/07/2022 16:53:47 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 8.519477985501137 max_gamma_dif 18.976026112242586
+07/07/2022 16:53:47 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.016330572440858143 max_gamma_dif 12.970815610557485
+07/07/2022 16:53:47 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.019738309017568192 max_gamma_dif 4.487721683667266
+07/07/2022 16:53:48 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.031627789389156384 max_gamma_dif 1.2369639566839754
+07/07/2022 16:53:48 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.009384709090568839 max_gamma_dif 0.1973727359738331
+07/07/2022 16:53:48 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.0024108206227672893 max_gamma_dif 0.038097371762079946
+07/07/2022 16:53:48 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.0010578746476298786 max_gamma_dif 0.027307821795078735
+07/07/2022 16:53:48 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0007416190910733357 max_gamma_dif 0.008527118158746072
+07/07/2022 16:53:48 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00022580668808789498 max_gamma_dif 0.0018628824568083235
+07/07/2022 16:53:48 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 1.6236693781818177e-05 max_gamma_dif 7.609080502446464e-05
+07/07/2022 16:53:48 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000406 converged False iter 999
+07/07/2022 16:53:48 - INFO - populationsim.multi_integerizer - omitting 1879 zero weight rows out of 1938
+07/07/2022 16:53:48 - INFO - populationsim.multi_integerizer - restoring 1879 zero weight rows
+07/07/2022 16:53:48 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:48 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000406 status OPTIMAL. 
+07/07/2022 16:53:48 - INFO - populationsim.steps.sub_balancing - balancing 10/25 seed 901, TRACT 41029000501
+07/07/2022 16:53:48 - DEBUG - populationsim.simul_balancer - 68 positive weight rows out of 1938
+07/07/2022 16:53:48 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 68 control_count 24 zone_count 2
+07/07/2022 16:53:48 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 4.398953897008736 max_gamma_dif 27.298423018607927
+07/07/2022 16:53:49 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.020727133540178234 max_gamma_dif 16.24644638032269
+07/07/2022 16:53:49 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.022340410332016235 max_gamma_dif 6.562065933834456
+07/07/2022 16:53:49 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.02994710580043684 max_gamma_dif 1.549617971160572
+07/07/2022 16:53:49 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.010933295625986094 max_gamma_dif 0.2309884787447083
+07/07/2022 16:53:49 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.0019193586501449914 max_gamma_dif 0.07366996660301872
+07/07/2022 16:53:49 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.0013658497695292111 max_gamma_dif 0.029164726254807927
+07/07/2022 16:53:49 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.00038939874626510104 max_gamma_dif 0.006952713334464566
+07/07/2022 16:53:49 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 6.55690068730723e-05 max_gamma_dif 0.0007503845060892189
+07/07/2022 16:53:50 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 1.707305372544139e-06 max_gamma_dif 1.20809524044585e-05
+07/07/2022 16:53:50 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000501 converged True iter 997
+07/07/2022 16:53:50 - INFO - populationsim.multi_integerizer - omitting 1870 zero weight rows out of 1938
+07/07/2022 16:53:50 - INFO - populationsim.multi_integerizer - restoring 1870 zero weight rows
+07/07/2022 16:53:50 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:50 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000501 status OPTIMAL. 
+07/07/2022 16:53:50 - INFO - populationsim.steps.sub_balancing - balancing 11/25 seed 901, TRACT 41029000502
+07/07/2022 16:53:50 - DEBUG - populationsim.simul_balancer - 63 positive weight rows out of 1938
+07/07/2022 16:53:50 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 63 control_count 24 zone_count 3
+07/07/2022 16:53:50 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 14.650689958983314 max_gamma_dif 386.8301625768404
+07/07/2022 16:53:50 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.03664682176016367 max_gamma_dif 250.0
+07/07/2022 16:53:50 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.03999499063269032 max_gamma_dif 125.0
+07/07/2022 16:53:50 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.048332095367272225 max_gamma_dif 62.5
+07/07/2022 16:53:50 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.02342137202101059 max_gamma_dif 2.8891641592381565
+07/07/2022 16:53:51 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.011209341098502553 max_gamma_dif 1.9295141642953624
+07/07/2022 16:53:51 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.02099719481957854 max_gamma_dif 1.3350995217880666
+07/07/2022 16:53:51 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.006723584833444178 max_gamma_dif 0.8766653572357352
+07/07/2022 16:53:51 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.002067371813964761 max_gamma_dif 0.6005962390440578
+07/07/2022 16:53:51 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 0.0009135428110209484 max_gamma_dif 0.3903650235501561
+07/07/2022 16:53:52 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000502 converged False iter 999
+07/07/2022 16:53:52 - INFO - populationsim.multi_integerizer - omitting 1875 zero weight rows out of 1938
+07/07/2022 16:53:52 - INFO - populationsim.multi_integerizer - restoring 1875 zero weight rows
+07/07/2022 16:53:52 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:52 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000502 status OPTIMAL. 
+07/07/2022 16:53:52 - INFO - populationsim.steps.sub_balancing - balancing 12/25 seed 901, TRACT 41029000603
+07/07/2022 16:53:52 - DEBUG - populationsim.simul_balancer - 51 positive weight rows out of 1938
+07/07/2022 16:53:52 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 51 control_count 24 zone_count 2
+07/07/2022 16:53:52 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 8.284111643837852 max_gamma_dif 19.431920369913215
+07/07/2022 16:53:52 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.01932326747032717 max_gamma_dif 3.767353681470796
+07/07/2022 16:53:52 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.054561843384867935 max_gamma_dif 1.9328832721925884
+07/07/2022 16:53:52 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.033365047953105326 max_gamma_dif 1.0390572287122892
+07/07/2022 16:53:52 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.028712659888503956 max_gamma_dif 0.34091877322854547
+07/07/2022 16:53:52 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.012030667545979716 max_gamma_dif 0.10261542929723122
+07/07/2022 16:53:52 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.0023250097847344305 max_gamma_dif 0.048460356476757616
+07/07/2022 16:53:52 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.001215526321227703 max_gamma_dif 0.01263713324887572
+07/07/2022 16:53:53 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00031716954990669463 max_gamma_dif 0.0021755591559575738
+07/07/2022 16:53:53 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 1.6617830345011672e-05 max_gamma_dif 0.0001239415754428208
+07/07/2022 16:53:53 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000603 converged False iter 999
+07/07/2022 16:53:53 - INFO - populationsim.multi_integerizer - omitting 1887 zero weight rows out of 1938
+07/07/2022 16:53:53 - INFO - populationsim.multi_integerizer - restoring 1887 zero weight rows
+07/07/2022 16:53:53 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:53 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000603 status OPTIMAL. 
+07/07/2022 16:53:53 - INFO - populationsim.steps.sub_balancing - balancing 13/25 seed 901, TRACT 41029000604
+07/07/2022 16:53:53 - DEBUG - populationsim.simul_balancer - 57 positive weight rows out of 1938
+07/07/2022 16:53:53 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 57 control_count 24 zone_count 2
+07/07/2022 16:53:53 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 5.7691535863762615 max_gamma_dif 20.0469023683033
+07/07/2022 16:53:53 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.021963412573900762 max_gamma_dif 10.013984172939306
+07/07/2022 16:53:53 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.032206316580213105 max_gamma_dif 3.9711460590760774
+07/07/2022 16:53:53 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.02645153310104159 max_gamma_dif 1.0921789684862633
+07/07/2022 16:53:53 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.01822316273827207 max_gamma_dif 0.22541210497448305
+07/07/2022 16:53:53 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.006231489749560551 max_gamma_dif 0.06629267105095882
+07/07/2022 16:53:54 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.0012342386721506341 max_gamma_dif 0.020579149122176954
+07/07/2022 16:53:54 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0004641314171315718 max_gamma_dif 0.004037589340750047
+07/07/2022 16:53:54 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 6.479380914377096e-05 max_gamma_dif 0.000329926141062753
+07/07/2022 16:53:54 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 1.0037352570076255e-06 max_gamma_dif 3.612463021163137e-06
+07/07/2022 16:53:54 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000604 converged True iter 981
+07/07/2022 16:53:54 - INFO - populationsim.multi_integerizer - omitting 1881 zero weight rows out of 1938
+07/07/2022 16:53:54 - INFO - populationsim.multi_integerizer - restoring 1881 zero weight rows
+07/07/2022 16:53:54 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:54 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000604 status OPTIMAL. 
+07/07/2022 16:53:54 - INFO - populationsim.steps.sub_balancing - balancing 14/25 seed 901, TRACT 41029000605
+07/07/2022 16:53:54 - DEBUG - populationsim.simul_balancer - 54 positive weight rows out of 1938
+07/07/2022 16:53:54 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 54 control_count 24 zone_count 2
+07/07/2022 16:53:54 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 6.592216119677951 max_gamma_dif 95.86281061995986
+07/07/2022 16:53:54 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.03234205903088097 max_gamma_dif 20.575906383304837
+07/07/2022 16:53:54 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.023424572547275133 max_gamma_dif 5.94629121791098
+07/07/2022 16:53:54 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.04308459061411649 max_gamma_dif 4.015222220469308
+07/07/2022 16:53:55 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.0182828086550712 max_gamma_dif 3.241140885715712
+07/07/2022 16:53:55 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.006723438858970708 max_gamma_dif 0.27564939908530484
+07/07/2022 16:53:55 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.0019743301741860547 max_gamma_dif 0.030061080297031473
+07/07/2022 16:53:55 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0009649194376776785 max_gamma_dif 0.014601736504782803
+07/07/2022 16:53:55 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00023270691280069032 max_gamma_dif 0.0028754943948339218
+07/07/2022 16:53:55 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 1.0696709180304146e-05 max_gamma_dif 7.705610964103826e-05
+07/07/2022 16:53:55 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000605 converged False iter 999
+07/07/2022 16:53:55 - INFO - populationsim.multi_integerizer - omitting 1884 zero weight rows out of 1938
+07/07/2022 16:53:55 - INFO - populationsim.multi_integerizer - restoring 1884 zero weight rows
+07/07/2022 16:53:55 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:55 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000605 status OPTIMAL. 
+07/07/2022 16:53:55 - INFO - populationsim.steps.sub_balancing - balancing 15/25 seed 901, TRACT 41029000606
+07/07/2022 16:53:55 - DEBUG - populationsim.simul_balancer - 22 positive weight rows out of 1938
+07/07/2022 16:53:55 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 22 control_count 24 zone_count 1
+07/07/2022 16:53:55 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 3.2297397080004555e-16 max_gamma_dif 25.525390096509426
+07/07/2022 16:53:55 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000606 converged False iter 0
+07/07/2022 16:53:55 - INFO - populationsim.multi_integerizer - omitting 1916 zero weight rows out of 1938
+07/07/2022 16:53:55 - INFO - populationsim.multi_integerizer - restoring 1916 zero weight rows
+07/07/2022 16:53:55 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:55 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000606 status OPTIMAL. 
+07/07/2022 16:53:55 - INFO - populationsim.steps.sub_balancing - balancing 16/25 seed 901, TRACT 41029000701
+07/07/2022 16:53:55 - DEBUG - populationsim.simul_balancer - 69 positive weight rows out of 1938
+07/07/2022 16:53:55 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 69 control_count 24 zone_count 2
+07/07/2022 16:53:55 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 7.5829813326619675 max_gamma_dif 24.617020397702827
+07/07/2022 16:53:56 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.021019775248420983 max_gamma_dif 11.580379401862174
+07/07/2022 16:53:56 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.03276615005360917 max_gamma_dif 4.262388303944638
+07/07/2022 16:53:56 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.03346477774247558 max_gamma_dif 1.2066056885708911
+07/07/2022 16:53:56 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.01180661947258532 max_gamma_dif 0.15774465653277825
+07/07/2022 16:53:56 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.012068448344041374 max_gamma_dif 0.09041312074263042
+07/07/2022 16:53:56 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.0023863486845924022 max_gamma_dif 0.02424976112107524
+07/07/2022 16:53:56 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0004153827176281846 max_gamma_dif 0.004452777823131804
+07/07/2022 16:53:56 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 3.418767908700899e-05 max_gamma_dif 0.00032059813801188497
+07/07/2022 16:53:57 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 7.965006848072912e-07 max_gamma_dif 3.078102083442502e-06
+07/07/2022 16:53:57 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000701 converged True iter 982
+07/07/2022 16:53:57 - INFO - populationsim.multi_integerizer - omitting 1869 zero weight rows out of 1938
+07/07/2022 16:53:57 - INFO - populationsim.multi_integerizer - restoring 1869 zero weight rows
+07/07/2022 16:53:57 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:57 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000701 status OPTIMAL. 
+07/07/2022 16:53:57 - INFO - populationsim.steps.sub_balancing - balancing 17/25 seed 901, TRACT 41029000702
+07/07/2022 16:53:57 - DEBUG - populationsim.simul_balancer - 74 positive weight rows out of 1938
+07/07/2022 16:53:57 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 74 control_count 24 zone_count 3
+07/07/2022 16:53:57 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 7.7258285304436365 max_gamma_dif 12.838988451507301
+07/07/2022 16:53:57 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.016718229593303484 max_gamma_dif 4.49748814053388
+07/07/2022 16:53:57 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.03905930437794965 max_gamma_dif 2.2069492772809833
+07/07/2022 16:53:57 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.036948157454115595 max_gamma_dif 2.119305671343995
+07/07/2022 16:53:57 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.026865396286703605 max_gamma_dif 3.0312176699982984
+07/07/2022 16:53:58 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.020157544183953904 max_gamma_dif 3.968468695943863
+07/07/2022 16:53:58 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.014686489753197345 max_gamma_dif 1.6689517886179326
+07/07/2022 16:53:58 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.00289652972899934 max_gamma_dif 0.5867474240046189
+07/07/2022 16:53:58 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.0013460121501967894 max_gamma_dif 0.0994183446289767
+07/07/2022 16:53:58 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 0.00017897176737485896 max_gamma_dif 0.0050851770483726355
+07/07/2022 16:53:59 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000702 converged False iter 999
+07/07/2022 16:53:59 - INFO - populationsim.multi_integerizer - omitting 1864 zero weight rows out of 1938
+07/07/2022 16:53:59 - INFO - populationsim.multi_integerizer - restoring 1864 zero weight rows
+07/07/2022 16:53:59 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:53:59 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000702 status OPTIMAL. 
+07/07/2022 16:53:59 - INFO - populationsim.steps.sub_balancing - balancing 18/25 seed 901, TRACT 41029000800
+07/07/2022 16:53:59 - DEBUG - populationsim.simul_balancer - 36 positive weight rows out of 1938
+07/07/2022 16:53:59 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 36 control_count 24 zone_count 2
+07/07/2022 16:53:59 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 11.483471758187875 max_gamma_dif 112.43318874945736
+07/07/2022 16:53:59 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.01724371613279387 max_gamma_dif 60.43053474050169
+07/07/2022 16:53:59 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.03676242346721695 max_gamma_dif 14.406116666719244
+07/07/2022 16:53:59 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.03004116642122756 max_gamma_dif 1.9226881183888058
+07/07/2022 16:53:59 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.013680752591549336 max_gamma_dif 0.3025165467249642
+07/07/2022 16:53:59 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.0030261053856895947 max_gamma_dif 0.09813141308258966
+07/07/2022 16:53:59 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.0014319979707387103 max_gamma_dif 0.03195742532231005
+07/07/2022 16:53:59 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.00047061319359653603 max_gamma_dif 0.006259114366903962
+07/07/2022 16:54:00 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 4.634827122688816e-05 max_gamma_dif 0.0005300480994812062
+07/07/2022 16:54:00 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 6.877431756319977e-07 max_gamma_dif 6.2813749219792214e-06
+07/07/2022 16:54:00 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000800 converged True iter 975
+07/07/2022 16:54:00 - INFO - populationsim.multi_integerizer - omitting 1902 zero weight rows out of 1938
+07/07/2022 16:54:00 - INFO - populationsim.multi_integerizer - restoring 1902 zero weight rows
+07/07/2022 16:54:00 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:00 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000800 status OPTIMAL. 
+07/07/2022 16:54:00 - INFO - populationsim.steps.sub_balancing - balancing 19/25 seed 901, TRACT 41029000901
+07/07/2022 16:54:00 - DEBUG - populationsim.simul_balancer - 60 positive weight rows out of 1938
+07/07/2022 16:54:00 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 60 control_count 24 zone_count 3
+07/07/2022 16:54:00 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 9.738814653158462 max_gamma_dif 12.552783430939913
+07/07/2022 16:54:00 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.02282072049409981 max_gamma_dif 6.798822019503373
+07/07/2022 16:54:00 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.04322581859468963 max_gamma_dif 2.7795167650833457
+07/07/2022 16:54:00 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.04192295031694329 max_gamma_dif 0.8436083706276001
+07/07/2022 16:54:01 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.031282451453356695 max_gamma_dif 0.3563216256892492
+07/07/2022 16:54:01 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.01697725297116752 max_gamma_dif 0.16732394579407117
+07/07/2022 16:54:01 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.004640040429771416 max_gamma_dif 0.0665462370102674
+07/07/2022 16:54:01 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0013885040688452648 max_gamma_dif 0.009568407594240824
+07/07/2022 16:54:01 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00018425143982339024 max_gamma_dif 0.0011878084208620798
+07/07/2022 16:54:01 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 4.8000013234380825e-06 max_gamma_dif 2.3481110663636784e-05
+07/07/2022 16:54:02 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000901 converged False iter 999
+07/07/2022 16:54:02 - INFO - populationsim.multi_integerizer - omitting 1878 zero weight rows out of 1938
+07/07/2022 16:54:02 - INFO - populationsim.multi_integerizer - restoring 1878 zero weight rows
+07/07/2022 16:54:02 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:02 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000901 status OPTIMAL. 
+07/07/2022 16:54:02 - INFO - populationsim.steps.sub_balancing - balancing 20/25 seed 901, TRACT 41029000902
+07/07/2022 16:54:02 - DEBUG - populationsim.simul_balancer - 44 positive weight rows out of 1938
+07/07/2022 16:54:02 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 44 control_count 24 zone_count 1
+07/07/2022 16:54:02 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 1.0092936587501423e-17 max_gamma_dif 11.369755257382472
+07/07/2022 16:54:02 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029000902 converged False iter 0
+07/07/2022 16:54:02 - INFO - populationsim.multi_integerizer - omitting 1894 zero weight rows out of 1938
+07/07/2022 16:54:02 - INFO - populationsim.multi_integerizer - restoring 1894 zero weight rows
+07/07/2022 16:54:02 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:02 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029000902 status OPTIMAL. 
+07/07/2022 16:54:02 - INFO - populationsim.steps.sub_balancing - balancing 21/25 seed 901, TRACT 41029001001
+07/07/2022 16:54:02 - DEBUG - populationsim.simul_balancer - 66 positive weight rows out of 1938
+07/07/2022 16:54:02 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 66 control_count 24 zone_count 3
+07/07/2022 16:54:02 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 14.16507641562962 max_gamma_dif 33.127068923101824
+07/07/2022 16:54:02 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.030104888790750902 max_gamma_dif 235.64359138787285
+07/07/2022 16:54:02 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.02764276365048932 max_gamma_dif 95.77443578476888
+07/07/2022 16:54:02 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.031042530209802924 max_gamma_dif 13.611428679019902
+07/07/2022 16:54:02 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.02059855532943043 max_gamma_dif 1.7114659324301469
+07/07/2022 16:54:03 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.013161683104277717 max_gamma_dif 0.1329978008601097
+07/07/2022 16:54:03 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.00914803034067472 max_gamma_dif 0.05404175363688313
+07/07/2022 16:54:03 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.002948443004920067 max_gamma_dif 0.01754318442965186
+07/07/2022 16:54:03 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.0006593739189903004 max_gamma_dif 0.0046329220801846205
+07/07/2022 16:54:03 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 3.097468414466973e-05 max_gamma_dif 0.00013303890615623537
+07/07/2022 16:54:04 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001001 converged False iter 999
+07/07/2022 16:54:04 - INFO - populationsim.multi_integerizer - omitting 1872 zero weight rows out of 1938
+07/07/2022 16:54:04 - INFO - populationsim.multi_integerizer - restoring 1872 zero weight rows
+07/07/2022 16:54:04 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:04 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001001 status OPTIMAL. 
+07/07/2022 16:54:04 - INFO - populationsim.steps.sub_balancing - balancing 22/25 seed 901, TRACT 41029001002
+07/07/2022 16:54:04 - DEBUG - populationsim.simul_balancer - 68 positive weight rows out of 1938
+07/07/2022 16:54:04 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 68 control_count 24 zone_count 3
+07/07/2022 16:54:04 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 8.926446751811348 max_gamma_dif 391.8111234361048
+07/07/2022 16:54:04 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 2.1905634974542494 max_gamma_dif 76.43125589310006
+07/07/2022 16:54:04 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 1.8736138983487678 max_gamma_dif 22.821424421499042
+07/07/2022 16:54:04 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 1.189358311864682 max_gamma_dif 14.394152835799202
+07/07/2022 16:54:04 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.638920765097251 max_gamma_dif 17.700560528573952
+07/07/2022 16:54:05 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.4080704814917245 max_gamma_dif 13.189066727201102
+07/07/2022 16:54:05 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.21880027195782692 max_gamma_dif 64.79590724609321
+07/07/2022 16:54:05 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.05455974672864023 max_gamma_dif 21.17782515360971
+07/07/2022 16:54:05 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.17173403094846276 max_gamma_dif 19.47879827691051
+07/07/2022 16:54:05 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 0.023797765079641413 max_gamma_dif 9.765625
+07/07/2022 16:54:05 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001002 converged False iter 999
+07/07/2022 16:54:05 - INFO - populationsim.multi_integerizer - omitting 1870 zero weight rows out of 1938
+07/07/2022 16:54:06 - INFO - populationsim.multi_integerizer - restoring 1870 zero weight rows
+07/07/2022 16:54:06 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:06 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001002 status OPTIMAL. 
+07/07/2022 16:54:06 - INFO - populationsim.steps.sub_balancing - balancing 23/25 seed 901, TRACT 41029001100
+07/07/2022 16:54:06 - DEBUG - populationsim.simul_balancer - 59 positive weight rows out of 1938
+07/07/2022 16:54:06 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 59 control_count 24 zone_count 3
+07/07/2022 16:54:06 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 13.770966010824834 max_gamma_dif 36.17637805279008
+07/07/2022 16:54:06 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.020059515364940238 max_gamma_dif 18.687816127277497
+07/07/2022 16:54:06 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.061836543138074074 max_gamma_dif 6.020424786855256
+07/07/2022 16:54:06 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.051206090755351034 max_gamma_dif 1.890242867753173
+07/07/2022 16:54:06 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.017488373833861173 max_gamma_dif 0.3717775084986661
+07/07/2022 16:54:06 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.009281876233964668 max_gamma_dif 0.11136303958280713
+07/07/2022 16:54:07 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.005352993452993392 max_gamma_dif 0.04376473605022624
+07/07/2022 16:54:07 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0014479585015388112 max_gamma_dif 0.008167495417184645
+07/07/2022 16:54:07 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.0003254655478130378 max_gamma_dif 0.0014104780720038956
+07/07/2022 16:54:07 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 1.1048028912024003e-05 max_gamma_dif 3.373094634095963e-05
+07/07/2022 16:54:07 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001100 converged False iter 999
+07/07/2022 16:54:07 - INFO - populationsim.multi_integerizer - omitting 1879 zero weight rows out of 1938
+07/07/2022 16:54:07 - INFO - populationsim.multi_integerizer - restoring 1879 zero weight rows
+07/07/2022 16:54:07 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:07 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001100 status OPTIMAL. 
+07/07/2022 16:54:07 - INFO - populationsim.steps.sub_balancing - balancing 24/25 seed 901, TRACT 41029001200
+07/07/2022 16:54:07 - DEBUG - populationsim.simul_balancer - 50 positive weight rows out of 1938
+07/07/2022 16:54:07 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 50 control_count 24 zone_count 2
+07/07/2022 16:54:07 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 2.048284196885059 max_gamma_dif 33.08027182472482
+07/07/2022 16:54:08 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.007927527877318112 max_gamma_dif 9.699548556216802
+07/07/2022 16:54:08 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.002383715683757115 max_gamma_dif 3.7843746944396974
+07/07/2022 16:54:08 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.0017596440151633685 max_gamma_dif 6.836913592675885
+07/07/2022 16:54:08 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.0019337367684971907 max_gamma_dif 1.5572182625047892
+07/07/2022 16:54:08 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.0025045827523426495 max_gamma_dif 1.5131583481882798
+07/07/2022 16:54:08 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.0007880194287775827 max_gamma_dif 1.1888778468093122
+07/07/2022 16:54:08 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0007432046990575124 max_gamma_dif 0.45707033540713526
+07/07/2022 16:54:08 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00022599568692421835 max_gamma_dif 0.1493998225321873
+07/07/2022 16:54:08 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 8.408738122457637e-05 max_gamma_dif 0.1219057199423823
+07/07/2022 16:54:09 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001200 converged False iter 999
+07/07/2022 16:54:09 - INFO - populationsim.multi_integerizer - omitting 1888 zero weight rows out of 1938
+07/07/2022 16:54:09 - INFO - populationsim.multi_integerizer - restoring 1888 zero weight rows
+07/07/2022 16:54:09 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:09 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001200 status OPTIMAL. 
+07/07/2022 16:54:09 - INFO - populationsim.steps.sub_balancing - balancing 25/25 seed 901, TRACT 41029001601
+07/07/2022 16:54:09 - DEBUG - populationsim.simul_balancer - 59 positive weight rows out of 1938
+07/07/2022 16:54:09 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 59 control_count 24 zone_count 2
+07/07/2022 16:54:09 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 12.06684073330956 max_gamma_dif 36.11986578948607
+07/07/2022 16:54:09 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.01493054360686073 max_gamma_dif 21.0978188270592
+07/07/2022 16:54:09 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.03313596162250177 max_gamma_dif 6.800703502822902
+07/07/2022 16:54:09 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.044824666600952745 max_gamma_dif 1.579371869508095
+07/07/2022 16:54:09 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.015137198215499253 max_gamma_dif 0.3117927518234056
+07/07/2022 16:54:09 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.00913648561502289 max_gamma_dif 0.10184305503335422
+07/07/2022 16:54:09 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.002648603309358486 max_gamma_dif 0.049617197072704844
+07/07/2022 16:54:09 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0006296439024583557 max_gamma_dif 0.010119768379623695
+07/07/2022 16:54:10 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00011515968670416032 max_gamma_dif 0.0014624130048050965
+07/07/2022 16:54:10 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 3.368901662570363e-06 max_gamma_dif 2.547867879232335e-05
+07/07/2022 16:54:10 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001601 converged False iter 999
+07/07/2022 16:54:10 - INFO - populationsim.multi_integerizer - omitting 1879 zero weight rows out of 1938
+07/07/2022 16:54:10 - INFO - populationsim.multi_integerizer - restoring 1879 zero weight rows
+07/07/2022 16:54:10 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:10 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001601 status OPTIMAL. 
+07/07/2022 16:54:10 - INFO - populationsim.steps.sub_balancing - balancing 1/19 seed 902, TRACT 41029001301
+07/07/2022 16:54:10 - DEBUG - populationsim.simul_balancer - 51 positive weight rows out of 2001
+07/07/2022 16:54:10 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 51 control_count 24 zone_count 3
+07/07/2022 16:54:10 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 11.44271365469142 max_gamma_dif 32.55907646418585
+07/07/2022 16:54:10 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.02552310850905667 max_gamma_dif 8.912987053800313
+07/07/2022 16:54:10 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.020364142415237155 max_gamma_dif 3.5872704621526132
+07/07/2022 16:54:11 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.05210704746918466 max_gamma_dif 0.9927470502170017
+07/07/2022 16:54:11 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.09290126743805568 max_gamma_dif 0.5447039761145933
+07/07/2022 16:54:11 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.055986796502763114 max_gamma_dif 0.19691199598547693
+07/07/2022 16:54:11 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.01740626493033314 max_gamma_dif 0.17494152136160812
+07/07/2022 16:54:11 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.00231020744736805 max_gamma_dif 0.021053233026253504
+07/07/2022 16:54:11 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.000635076938417966 max_gamma_dif 0.003596327547969791
+07/07/2022 16:54:12 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 1.1866693973121425e-05 max_gamma_dif 5.2665048344557874e-05
+07/07/2022 16:54:12 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001301 converged False iter 999
+07/07/2022 16:54:12 - INFO - populationsim.multi_integerizer - omitting 1950 zero weight rows out of 2001
+07/07/2022 16:54:12 - INFO - populationsim.multi_integerizer - restoring 1950 zero weight rows
+07/07/2022 16:54:12 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:12 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001301 status OPTIMAL. 
+07/07/2022 16:54:12 - INFO - populationsim.steps.sub_balancing - balancing 2/19 seed 902, TRACT 41029001303
+07/07/2022 16:54:12 - DEBUG - populationsim.simul_balancer - 35 positive weight rows out of 2001
+07/07/2022 16:54:12 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 35 control_count 24 zone_count 2
+07/07/2022 16:54:12 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 17.897565598732875 max_gamma_dif 4.31767768844603
+07/07/2022 16:54:12 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.02712616981657044 max_gamma_dif 5.46083208409382
+07/07/2022 16:54:12 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.05962397607842871 max_gamma_dif 3.6405161353913638
+07/07/2022 16:54:12 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.03270226264114588 max_gamma_dif 2.7553778979628043
+07/07/2022 16:54:13 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.0272323925745978 max_gamma_dif 2.067105035223072
+07/07/2022 16:54:13 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.019974254014577905 max_gamma_dif 1.2573757445263785
+07/07/2022 16:54:13 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.019298398874725484 max_gamma_dif 0.597215287585089
+07/07/2022 16:54:13 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.016518201521773804 max_gamma_dif 0.2502123083234883
+07/07/2022 16:54:13 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00638845429350574 max_gamma_dif 0.03623152791004258
+07/07/2022 16:54:13 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 0.0006901253875165486 max_gamma_dif 0.0016102251129777034
+07/07/2022 16:54:13 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001303 converged False iter 999
+07/07/2022 16:54:13 - INFO - populationsim.multi_integerizer - omitting 1966 zero weight rows out of 2001
+07/07/2022 16:54:13 - INFO - populationsim.multi_integerizer - restoring 1966 zero weight rows
+07/07/2022 16:54:13 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:13 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001303 status OPTIMAL. 
+07/07/2022 16:54:13 - INFO - populationsim.steps.sub_balancing - balancing 3/19 seed 902, TRACT 41029001304
+07/07/2022 16:54:13 - DEBUG - populationsim.simul_balancer - 46 positive weight rows out of 2001
+07/07/2022 16:54:13 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 46 control_count 24 zone_count 3
+07/07/2022 16:54:13 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 17.355155192190942 max_gamma_dif 10.162895035075614
+07/07/2022 16:54:14 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.030187373088865262 max_gamma_dif 5.988525365046258
+07/07/2022 16:54:14 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.07557776231230075 max_gamma_dif 2.75027002974866
+07/07/2022 16:54:14 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.07863180844875188 max_gamma_dif 1.3283994820126557
+07/07/2022 16:54:14 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.031853852667229315 max_gamma_dif 0.9661948597799362
+07/07/2022 16:54:14 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.013487044045006953 max_gamma_dif 0.9403807551229695
+07/07/2022 16:54:15 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.008489110049332376 max_gamma_dif 0.9324989493328392
+07/07/2022 16:54:15 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.010598494618613724 max_gamma_dif 0.9281741412052518
+07/07/2022 16:54:15 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.014889189733743573 max_gamma_dif 0.9224941677199956
+07/07/2022 16:54:15 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 0.025085261668183433 max_gamma_dif 0.915072333072868
+07/07/2022 16:54:15 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001304 converged False iter 999
+07/07/2022 16:54:15 - INFO - populationsim.multi_integerizer - omitting 1955 zero weight rows out of 2001
+07/07/2022 16:54:15 - INFO - populationsim.multi_integerizer - restoring 1955 zero weight rows
+07/07/2022 16:54:15 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:15 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001304 status OPTIMAL. 
+07/07/2022 16:54:15 - INFO - populationsim.steps.sub_balancing - balancing 4/19 seed 902, TRACT 41029001401
+07/07/2022 16:54:15 - DEBUG - populationsim.simul_balancer - 40 positive weight rows out of 2001
+07/07/2022 16:54:15 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 40 control_count 24 zone_count 2
+07/07/2022 16:54:15 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 9.747071127720229 max_gamma_dif 4.012196943854164
+07/07/2022 16:54:16 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.013386480140080828 max_gamma_dif 4.8023897945117655
+07/07/2022 16:54:16 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.024760528398539604 max_gamma_dif 2.2177580217442188
+07/07/2022 16:54:16 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.028486475448845316 max_gamma_dif 0.5568817589996525
+07/07/2022 16:54:16 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.01944297724755658 max_gamma_dif 0.2341499348732371
+07/07/2022 16:54:16 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.011599403349468747 max_gamma_dif 0.14741363608916114
+07/07/2022 16:54:16 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.006112869335692358 max_gamma_dif 0.06995116546410163
+07/07/2022 16:54:16 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0014774677852397555 max_gamma_dif 0.011170746501429907
+07/07/2022 16:54:17 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 6.302685873698902e-05 max_gamma_dif 0.0004008939890289831
+07/07/2022 16:54:17 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 2.1609181517026734e-05 max_gamma_dif 4.959132832405011e-05
+07/07/2022 16:54:17 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001401 converged False iter 999
+07/07/2022 16:54:17 - INFO - populationsim.multi_integerizer - omitting 1961 zero weight rows out of 2001
+07/07/2022 16:54:17 - INFO - populationsim.multi_integerizer - restoring 1961 zero weight rows
+07/07/2022 16:54:17 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:17 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001401 status OPTIMAL. 
+07/07/2022 16:54:17 - INFO - populationsim.steps.sub_balancing - balancing 5/19 seed 902, TRACT 41029001403
+07/07/2022 16:54:17 - DEBUG - populationsim.simul_balancer - 24 positive weight rows out of 2001
+07/07/2022 16:54:17 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 24 control_count 24 zone_count 1
+07/07/2022 16:54:17 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 1.7578531223231644e-16 max_gamma_dif 29.52680868405982
+07/07/2022 16:54:17 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001403 converged False iter 0
+07/07/2022 16:54:17 - INFO - populationsim.multi_integerizer - omitting 1977 zero weight rows out of 2001
+07/07/2022 16:54:17 - INFO - populationsim.multi_integerizer - restoring 1977 zero weight rows
+07/07/2022 16:54:17 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:17 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001403 status OPTIMAL. 
+07/07/2022 16:54:17 - INFO - populationsim.steps.sub_balancing - balancing 6/19 seed 902, TRACT 41029001500
+07/07/2022 16:54:17 - DEBUG - populationsim.simul_balancer - 60 positive weight rows out of 2001
+07/07/2022 16:54:17 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 60 control_count 24 zone_count 4
+07/07/2022 16:54:17 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 20.34042484616065 max_gamma_dif 45.41672340872139
+07/07/2022 16:54:17 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.05518132620533683 max_gamma_dif 15.881625830738095
+07/07/2022 16:54:17 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.07479502578477924 max_gamma_dif 5.805755442399177
+07/07/2022 16:54:18 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.08409743317674 max_gamma_dif 1.4859025536758104
+07/07/2022 16:54:18 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.09474632374602457 max_gamma_dif 0.8726440131304651
+07/07/2022 16:54:18 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.04581761298230827 max_gamma_dif 0.7661341778936989
+07/07/2022 16:54:19 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.02945806764408328 max_gamma_dif 0.6860652083420923
+07/07/2022 16:54:19 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.019502350094607202 max_gamma_dif 0.6746838582045455
+07/07/2022 16:54:19 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.016126305453108152 max_gamma_dif 0.6645150706305998
+07/07/2022 16:54:19 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 0.01745648993768247 max_gamma_dif 0.6502952234228794
+07/07/2022 16:54:20 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001500 converged False iter 999
+07/07/2022 16:54:20 - INFO - populationsim.multi_integerizer - omitting 1941 zero weight rows out of 2001
+07/07/2022 16:54:20 - INFO - populationsim.multi_integerizer - restoring 1941 zero weight rows
+07/07/2022 16:54:20 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:20 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001500 status OPTIMAL. 
+07/07/2022 16:54:20 - INFO - populationsim.steps.sub_balancing - balancing 7/19 seed 902, TRACT 41029001602
+07/07/2022 16:54:20 - DEBUG - populationsim.simul_balancer - 62 positive weight rows out of 2001
+07/07/2022 16:54:20 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 62 control_count 24 zone_count 5
+07/07/2022 16:54:20 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 21.591935156776035 max_gamma_dif 23.975853159198707
+07/07/2022 16:54:20 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.11283310292437386 max_gamma_dif 144.10130782026405
+07/07/2022 16:54:20 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.07069554198162074 max_gamma_dif 40.50487942165013
+07/07/2022 16:54:21 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.052302845212976116 max_gamma_dif 6.6263202496290186
+07/07/2022 16:54:21 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.05467724669550085 max_gamma_dif 5.505476235399644
+07/07/2022 16:54:21 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.025532446316426108 max_gamma_dif 3.7774692346798906
+07/07/2022 16:54:22 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.01779761400680908 max_gamma_dif 1.5458663420016192
+07/07/2022 16:54:22 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.012486957056322464 max_gamma_dif 0.318961177528404
+07/07/2022 16:54:22 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.007750864553243853 max_gamma_dif 0.03060757197965458
+07/07/2022 16:54:23 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 0.002878263099633318 max_gamma_dif 0.005553363339982353
+07/07/2022 16:54:23 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001602 converged False iter 999
+07/07/2022 16:54:23 - INFO - populationsim.multi_integerizer - omitting 1939 zero weight rows out of 2001
+07/07/2022 16:54:23 - INFO - populationsim.multi_integerizer - restoring 1939 zero weight rows
+07/07/2022 16:54:23 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:23 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001602 status OPTIMAL. 
+07/07/2022 16:54:23 - INFO - populationsim.steps.sub_balancing - balancing 8/19 seed 902, TRACT 41029001701
+07/07/2022 16:54:23 - DEBUG - populationsim.simul_balancer - 37 positive weight rows out of 2001
+07/07/2022 16:54:23 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 37 control_count 24 zone_count 1
+07/07/2022 16:54:23 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 0.0 max_gamma_dif 13.68178408346437
+07/07/2022 16:54:23 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001701 converged False iter 0
+07/07/2022 16:54:23 - INFO - populationsim.multi_integerizer - omitting 1964 zero weight rows out of 2001
+07/07/2022 16:54:23 - INFO - populationsim.multi_integerizer - restoring 1964 zero weight rows
+07/07/2022 16:54:23 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:23 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001701 status OPTIMAL. 
+07/07/2022 16:54:23 - INFO - populationsim.steps.sub_balancing - balancing 9/19 seed 902, TRACT 41029001702
+07/07/2022 16:54:23 - DEBUG - populationsim.simul_balancer - 67 positive weight rows out of 2001
+07/07/2022 16:54:23 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 67 control_count 24 zone_count 2
+07/07/2022 16:54:23 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 8.10912199958564 max_gamma_dif 29.080962920949073
+07/07/2022 16:54:23 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.019701046292325195 max_gamma_dif 13.548073948706563
+07/07/2022 16:54:24 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.03371460852485678 max_gamma_dif 4.817405205163071
+07/07/2022 16:54:24 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.03151810675215081 max_gamma_dif 1.3267772351376417
+07/07/2022 16:54:24 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.022916133805124434 max_gamma_dif 0.754862107395872
+07/07/2022 16:54:24 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.01414839605915184 max_gamma_dif 0.35455302120243926
+07/07/2022 16:54:24 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.005391669367654967 max_gamma_dif 0.1055644776534701
+07/07/2022 16:54:24 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0011107276014340976 max_gamma_dif 0.012604121697389448
+07/07/2022 16:54:24 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00010675229964837989 max_gamma_dif 0.0008355724391371222
+07/07/2022 16:54:25 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 1.548110027704524e-06 max_gamma_dif 9.100418958185585e-06
+07/07/2022 16:54:25 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001702 converged True iter 981
+07/07/2022 16:54:25 - INFO - populationsim.multi_integerizer - omitting 1934 zero weight rows out of 2001
+07/07/2022 16:54:25 - INFO - populationsim.multi_integerizer - restoring 1934 zero weight rows
+07/07/2022 16:54:25 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:25 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001702 status OPTIMAL. 
+07/07/2022 16:54:25 - INFO - populationsim.steps.sub_balancing - balancing 10/19 seed 902, TRACT 41029001801
+07/07/2022 16:54:25 - DEBUG - populationsim.simul_balancer - 53 positive weight rows out of 2001
+07/07/2022 16:54:25 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 53 control_count 24 zone_count 2
+07/07/2022 16:54:25 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 10.152678821013886 max_gamma_dif 27.34979727737137
+07/07/2022 16:54:25 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.02150373345787626 max_gamma_dif 14.967048386409909
+07/07/2022 16:54:25 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.03456632640429744 max_gamma_dif 5.421371150555549
+07/07/2022 16:54:25 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.02817831009169975 max_gamma_dif 1.6175950341610665
+07/07/2022 16:54:25 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.024396315341483066 max_gamma_dif 0.7339318880178345
+07/07/2022 16:54:25 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.009391176281724218 max_gamma_dif 0.10847600677740177
+07/07/2022 16:54:26 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.0029923725220248826 max_gamma_dif 0.03073678211586639
+07/07/2022 16:54:26 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.00046554737919323917 max_gamma_dif 0.0074944175028410775
+07/07/2022 16:54:26 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00010045643713704725 max_gamma_dif 0.0011399299181944489
+07/07/2022 16:54:26 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 5.5308652137757125e-06 max_gamma_dif 2.914861496172705e-05
+07/07/2022 16:54:26 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001801 converged False iter 999
+07/07/2022 16:54:26 - INFO - populationsim.multi_integerizer - omitting 1948 zero weight rows out of 2001
+07/07/2022 16:54:26 - INFO - populationsim.multi_integerizer - restoring 1948 zero weight rows
+07/07/2022 16:54:26 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:26 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001801 status OPTIMAL. 
+07/07/2022 16:54:26 - INFO - populationsim.steps.sub_balancing - balancing 11/19 seed 902, TRACT 41029001802
+07/07/2022 16:54:26 - DEBUG - populationsim.simul_balancer - 36 positive weight rows out of 2001
+07/07/2022 16:54:26 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 36 control_count 24 zone_count 2
+07/07/2022 16:54:26 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 11.515817804099331 max_gamma_dif 100.7172247762638
+07/07/2022 16:54:26 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.03205501429441967 max_gamma_dif 53.71951279495924
+07/07/2022 16:54:26 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.026460367898862507 max_gamma_dif 13.805906378288295
+07/07/2022 16:54:27 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.03675878158106606 max_gamma_dif 2.0037510444651057
+07/07/2022 16:54:27 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.033348578117403715 max_gamma_dif 0.5336858647777076
+07/07/2022 16:54:27 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.017025482884126822 max_gamma_dif 0.1468560680257407
+07/07/2022 16:54:27 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.003635216767772698 max_gamma_dif 0.050137266483991194
+07/07/2022 16:54:27 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.001806414166728418 max_gamma_dif 0.011010345745710692
+07/07/2022 16:54:27 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00024077374024495982 max_gamma_dif 0.0011220035150811825
+07/07/2022 16:54:28 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 6.342726744123761e-06 max_gamma_dif 8.30711167933984e-05
+07/07/2022 16:54:28 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001802 converged False iter 999
+07/07/2022 16:54:28 - INFO - populationsim.multi_integerizer - omitting 1965 zero weight rows out of 2001
+07/07/2022 16:54:28 - INFO - populationsim.multi_integerizer - restoring 1965 zero weight rows
+07/07/2022 16:54:28 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:28 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001802 status OPTIMAL. 
+07/07/2022 16:54:28 - INFO - populationsim.steps.sub_balancing - balancing 12/19 seed 902, TRACT 41029001900
+07/07/2022 16:54:28 - DEBUG - populationsim.simul_balancer - 49 positive weight rows out of 2001
+07/07/2022 16:54:28 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 49 control_count 24 zone_count 2
+07/07/2022 16:54:28 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 4.204577666436183 max_gamma_dif 23.97639425810757
+07/07/2022 16:54:28 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.017454665314755327 max_gamma_dif 9.236936058477825
+07/07/2022 16:54:28 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.01764166919340114 max_gamma_dif 3.6152215934717704
+07/07/2022 16:54:28 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.017184851445687956 max_gamma_dif 0.8293607940603347
+07/07/2022 16:54:28 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.014335846789911498 max_gamma_dif 0.17523590848970005
+07/07/2022 16:54:28 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.013902079114910797 max_gamma_dif 0.15561786587333204
+07/07/2022 16:54:29 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.01844730568465808 max_gamma_dif 0.09459872763492239
+07/07/2022 16:54:29 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0024043447034034354 max_gamma_dif 0.024614047272781603
+07/07/2022 16:54:29 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00042461175847786567 max_gamma_dif 0.0032134234249454607
+07/07/2022 16:54:29 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 1.548506074229168e-05 max_gamma_dif 7.060742335607273e-05
+07/07/2022 16:54:29 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029001900 converged False iter 999
+07/07/2022 16:54:29 - INFO - populationsim.multi_integerizer - omitting 1952 zero weight rows out of 2001
+07/07/2022 16:54:29 - INFO - populationsim.multi_integerizer - restoring 1952 zero weight rows
+07/07/2022 16:54:29 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:29 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029001900 status OPTIMAL. 
+07/07/2022 16:54:29 - INFO - populationsim.steps.sub_balancing - balancing 13/19 seed 902, TRACT 41029002000
+07/07/2022 16:54:29 - DEBUG - populationsim.simul_balancer - 45 positive weight rows out of 2001
+07/07/2022 16:54:29 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 45 control_count 24 zone_count 2
+07/07/2022 16:54:29 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 4.182471231434198 max_gamma_dif 161.4667354425369
+07/07/2022 16:54:29 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.024832518282523555 max_gamma_dif 47.47881954620693
+07/07/2022 16:54:29 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.02919538644773138 max_gamma_dif 9.623938597983662
+07/07/2022 16:54:30 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.025281749174531406 max_gamma_dif 2.3611206480179043
+07/07/2022 16:54:30 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.03118234226843627 max_gamma_dif 0.870276503571876
+07/07/2022 16:54:30 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.006887374772757758 max_gamma_dif 0.0987753626485035
+07/07/2022 16:54:30 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.005026523773115737 max_gamma_dif 0.04417878378112816
+07/07/2022 16:54:30 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0016404580361299723 max_gamma_dif 0.011408619908602313
+07/07/2022 16:54:30 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00024321161295716068 max_gamma_dif 0.0015566825020141284
+07/07/2022 16:54:30 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 9.678570427917852e-06 max_gamma_dif 0.00011550056295916988
+07/07/2022 16:54:30 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029002000 converged False iter 999
+07/07/2022 16:54:30 - INFO - populationsim.multi_integerizer - omitting 1956 zero weight rows out of 2001
+07/07/2022 16:54:30 - INFO - populationsim.multi_integerizer - restoring 1956 zero weight rows
+07/07/2022 16:54:30 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:30 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029002000 status OPTIMAL. 
+07/07/2022 16:54:30 - INFO - populationsim.steps.sub_balancing - balancing 14/19 seed 902, TRACT 41029002100
+07/07/2022 16:54:30 - DEBUG - populationsim.simul_balancer - 54 positive weight rows out of 2001
+07/07/2022 16:54:31 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 54 control_count 24 zone_count 3
+07/07/2022 16:54:31 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 12.819118614267142 max_gamma_dif 43.04214247329626
+07/07/2022 16:54:31 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.04406985357092559 max_gamma_dif 157.4209953297792
+07/07/2022 16:54:31 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.11675219385841479 max_gamma_dif 57.18412115762552
+07/07/2022 16:54:31 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.04884423483091092 max_gamma_dif 7.339085379335
+07/07/2022 16:54:31 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.017101340411039483 max_gamma_dif 3.2902624665595077
+07/07/2022 16:54:32 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.011879148595251922 max_gamma_dif 3.7777925627307187
+07/07/2022 16:54:32 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.007869870499206795 max_gamma_dif 3.464579859138073
+07/07/2022 16:54:32 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.003170978339934149 max_gamma_dif 2.4776661490114025
+07/07/2022 16:54:32 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.0005474335282057397 max_gamma_dif 1.4579546551316787
+07/07/2022 16:54:32 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 0.00038760268980534454 max_gamma_dif 0.8148396897432941
+07/07/2022 16:54:33 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029002100 converged False iter 999
+07/07/2022 16:54:33 - INFO - populationsim.multi_integerizer - omitting 1947 zero weight rows out of 2001
+07/07/2022 16:54:33 - INFO - populationsim.multi_integerizer - restoring 1947 zero weight rows
+07/07/2022 16:54:33 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:33 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029002100 status OPTIMAL. 
+07/07/2022 16:54:33 - INFO - populationsim.steps.sub_balancing - balancing 15/19 seed 902, TRACT 41029002200
+07/07/2022 16:54:33 - DEBUG - populationsim.simul_balancer - 57 positive weight rows out of 2001
+07/07/2022 16:54:33 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 57 control_count 24 zone_count 4
+07/07/2022 16:54:33 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 15.056070922358897 max_gamma_dif 57.36562378573602
+07/07/2022 16:54:33 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.05834556692321448 max_gamma_dif 25.34435427579051
+07/07/2022 16:54:33 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.060824055460171715 max_gamma_dif 6.83372402233841
+07/07/2022 16:54:33 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.09058164219667324 max_gamma_dif 3.120165307143922
+07/07/2022 16:54:34 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.05315645412715276 max_gamma_dif 0.7927700709515506
+07/07/2022 16:54:34 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.03613494375762516 max_gamma_dif 0.27281730246979063
+07/07/2022 16:54:34 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.01211544377765052 max_gamma_dif 0.07073892507866453
+07/07/2022 16:54:35 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0015984433432570395 max_gamma_dif 0.011546786243588514
+07/07/2022 16:54:35 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.00019962133193210876 max_gamma_dif 0.0012678399681094188
+07/07/2022 16:54:35 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 3.381464658886529e-06 max_gamma_dif 5.048401453833229e-05
+07/07/2022 16:54:35 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029002200 converged False iter 999
+07/07/2022 16:54:35 - INFO - populationsim.multi_integerizer - omitting 1944 zero weight rows out of 2001
+07/07/2022 16:54:35 - INFO - populationsim.multi_integerizer - restoring 1944 zero weight rows
+07/07/2022 16:54:35 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:35 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029002200 status OPTIMAL. 
+07/07/2022 16:54:35 - INFO - populationsim.steps.sub_balancing - balancing 16/19 seed 902, TRACT 41029002300
+07/07/2022 16:54:35 - DEBUG - populationsim.simul_balancer - 31 positive weight rows out of 2001
+07/07/2022 16:54:35 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 31 control_count 24 zone_count 2
+07/07/2022 16:54:35 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 4.683909954651994 max_gamma_dif 24.524974662039842
+07/07/2022 16:54:36 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.015822331047519258 max_gamma_dif 13.837568885557552
+07/07/2022 16:54:36 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.02529757166713022 max_gamma_dif 5.027946696066248
+07/07/2022 16:54:36 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.029545914356233636 max_gamma_dif 1.2526058030601828
+07/07/2022 16:54:36 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.01265491717359219 max_gamma_dif 0.2891218388241221
+07/07/2022 16:54:36 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.006238571916813356 max_gamma_dif 0.21377340293078562
+07/07/2022 16:54:36 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.004185901552285195 max_gamma_dif 0.05907901261958837
+07/07/2022 16:54:36 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.0007255561554839687 max_gamma_dif 0.008069211306306556
+07/07/2022 16:54:36 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 4.1227288995971736e-05 max_gamma_dif 0.0005837695597543657
+07/07/2022 16:54:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 4.091690493015134e-06 max_gamma_dif 1.2868050151437771e-05
+07/07/2022 16:54:37 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029002300 converged False iter 999
+07/07/2022 16:54:37 - INFO - populationsim.multi_integerizer - omitting 1970 zero weight rows out of 2001
+07/07/2022 16:54:37 - INFO - populationsim.multi_integerizer - restoring 1970 zero weight rows
+07/07/2022 16:54:37 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:37 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029002300 status OPTIMAL. 
+07/07/2022 16:54:37 - INFO - populationsim.steps.sub_balancing - balancing 17/19 seed 902, TRACT 41029002400
+07/07/2022 16:54:37 - DEBUG - populationsim.simul_balancer - 30 positive weight rows out of 2001
+07/07/2022 16:54:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 30 control_count 24 zone_count 2
+07/07/2022 16:54:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 5.272837173848275 max_gamma_dif 67.51080056172638
+07/07/2022 16:54:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.014081527526402567 max_gamma_dif 64.87968767648827
+07/07/2022 16:54:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.033468977851674894 max_gamma_dif 14.935938979345622
+07/07/2022 16:54:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.021205206964955 max_gamma_dif 7.109030743197879
+07/07/2022 16:54:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.019118956170784726 max_gamma_dif 1.095589847158657
+07/07/2022 16:54:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.013586364925682024 max_gamma_dif 0.9541266630676623
+07/07/2022 16:54:37 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.005222565254109909 max_gamma_dif 0.8279941655876282
+07/07/2022 16:54:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.004666389682406899 max_gamma_dif 0.7504382274176279
+07/07/2022 16:54:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.0029579501372841628 max_gamma_dif 0.7158465061544053
+07/07/2022 16:54:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 0.002575692721784537 max_gamma_dif 0.6897177740881794
+07/07/2022 16:54:38 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029002400 converged False iter 999
+07/07/2022 16:54:38 - INFO - populationsim.multi_integerizer - omitting 1971 zero weight rows out of 2001
+07/07/2022 16:54:38 - INFO - populationsim.multi_integerizer - restoring 1971 zero weight rows
+07/07/2022 16:54:38 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:38 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029002400 status OPTIMAL. 
+07/07/2022 16:54:38 - INFO - populationsim.steps.sub_balancing - balancing 18/19 seed 902, TRACT 41029002500
+07/07/2022 16:54:38 - DEBUG - populationsim.simul_balancer - 27 positive weight rows out of 2001
+07/07/2022 16:54:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 27 control_count 24 zone_count 2
+07/07/2022 16:54:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 15.50197531728376 max_gamma_dif 68.8099444434385
+07/07/2022 16:54:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 100 delta 0.021942027753917417 max_gamma_dif 31.09992609829377
+07/07/2022 16:54:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 200 delta 0.03625272703077567 max_gamma_dif 9.522246872695394
+07/07/2022 16:54:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 300 delta 0.039498639135899266 max_gamma_dif 7.488164284833026
+07/07/2022 16:54:38 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 400 delta 0.029238076217206706 max_gamma_dif 5.649455122330421
+07/07/2022 16:54:39 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 500 delta 0.025176839726977724 max_gamma_dif 2.691271777245778
+07/07/2022 16:54:39 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 600 delta 0.02436388720035864 max_gamma_dif 0.9895217260835649
+07/07/2022 16:54:39 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 700 delta 0.025291163828226267 max_gamma_dif 0.9843428666435505
+07/07/2022 16:54:39 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 800 delta 0.029742120142373298 max_gamma_dif 0.9784760412417627
+07/07/2022 16:54:39 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 900 delta 0.03170652350532188 max_gamma_dif 0.971268172855111
+07/07/2022 16:54:39 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029002500 converged False iter 999
+07/07/2022 16:54:39 - INFO - populationsim.multi_integerizer - omitting 1974 zero weight rows out of 2001
+07/07/2022 16:54:39 - WARNING - populationsim.multi_integerizer - do_simul_integerizing failed for TRACT_41029002500 status INFEASIBLE. 
+07/07/2022 16:54:39 - INFO - populationsim.multi_integerizer - sequential_integerizing zone_id 410290025001 zone_name BG_410290025001
+07/07/2022 16:54:39 - DEBUG - populationsim.integerizer - omitting 1984 zero weight rows out of 2001
+07/07/2022 16:54:39 - INFO - populationsim.integerizer - Integerizer: 8 zero resid_weights out of 17
+07/07/2022 16:54:39 - DEBUG - populationsim.integerizer - Integerizer: 11 out of 17 different from round
+07/07/2022 16:54:39 - DEBUG - populationsim.integerizer - Integerizer status for backstopped TRACT_41029002500_BG_410290025001: OPTIMAL
+07/07/2022 16:54:39 - INFO - populationsim.multi_integerizer - sequential_integerizing zone_id 410290025003 zone_name BG_410290025003
+07/07/2022 16:54:39 - DEBUG - populationsim.integerizer - omitting 1975 zero weight rows out of 2001
+07/07/2022 16:54:39 - INFO - populationsim.integerizer - Integerizer: 11 zero resid_weights out of 26
+07/07/2022 16:54:39 - DEBUG - populationsim.integerizer - Integerizer: 1 out of 26 different from round
+07/07/2022 16:54:39 - DEBUG - populationsim.integerizer - Integerizer status for backstopped TRACT_41029002500_BG_410290025003: INFEASIBLE
+07/07/2022 16:54:39 - INFO - populationsim.integerizer - Integerizer: 11 zero resid_weights out of 26
+07/07/2022 16:54:39 - DEBUG - populationsim.integerizer - Integerizer: 1 out of 26 different from round
+07/07/2022 16:54:39 - DEBUG - populationsim.integerizer - Integerizer status for unbackstopped TRACT_41029002500_BG_410290025003: INFEASIBLE
+07/07/2022 16:54:39 - ERROR - populationsim.integerizer - Integerizer failed for TRACT_41029002500_BG_410290025003 status INFEASIBLE. Returning smart-rounded original weights
+07/07/2022 16:54:39 - WARNING - populationsim.multi_integerizer - do_simul_integerizing failed but found no infeasible sub zones TRACT_41029002500. 
+07/07/2022 16:54:39 - INFO - populationsim.steps.sub_balancing - balancing 19/19 seed 902, TRACT 41029003001
+07/07/2022 16:54:39 - DEBUG - populationsim.simul_balancer - 36 positive weight rows out of 2001
+07/07/2022 16:54:39 - DEBUG - populationsim.simul_balancer - np_simul_balancer sample_count 36 control_count 24 zone_count 1
+07/07/2022 16:54:39 - DEBUG - populationsim.simul_balancer - np_simul_balancer iteration 0 delta 0.0 max_gamma_dif 8.591504548596653
+07/07/2022 16:54:39 - DEBUG - populationsim.steps.sub_balancing - TRACT 41029003001 converged False iter 0
+07/07/2022 16:54:39 - INFO - populationsim.multi_integerizer - omitting 1965 zero weight rows out of 2001
+07/07/2022 16:54:39 - INFO - populationsim.multi_integerizer - restoring 1965 zero weight rows
+07/07/2022 16:54:39 - DEBUG - populationsim.multi_integerizer - SimulIntegerizer status OPTIMAL
+07/07/2022 16:54:39 - INFO - populationsim.multi_integerizer - do_simul_integerizing succeeded for TRACT_41029003001 status OPTIMAL. 
+07/07/2022 16:54:39 - INFO - populationsim.steps.sub_balancing - adding table BG_weights
+07/07/2022 16:54:39 - DEBUG - activitysim.core.tracing - Time to execute #run_model completed step 'sub_balancing.geography=BG' : 65.419 seconds (1.1 minutes)
+07/07/2022 16:54:39 - DEBUG - activitysim.core.pipeline - add_checkpoint sub_balancing.geography=BG timestamp 2022-07-07 16:54:39.972967
+07/07/2022 16:54:39 - DEBUG - activitysim.core.pipeline - add_checkpoint 'sub_balancing.geography=BG' table 'BG_weights' (200511, 7) 12.0 MB
+07/07/2022 16:54:39 - DEBUG - activitysim.core.pipeline - add_checkpoint 'sub_balancing.geography=BG' table 'BG_weights_sparse' (3491, 7) 209.5 KB
+07/07/2022 16:54:40 - DEBUG - activitysim.core.pipeline - add_checkpoint 'sub_balancing.geography=BG' table 'trace_BG_weights' (2001, 7) 120.1 KB
+07/07/2022 16:54:40 - INFO - activitysim.core.pipeline - #run_model running step expand_households
+07/07/2022 16:54:41 - DEBUG - activitysim.core.tracing - Time to execute #run_model completed step 'expand_households' : 1.899 seconds (0.0 minutes)
+07/07/2022 16:54:41 - DEBUG - activitysim.core.pipeline - add_checkpoint expand_households timestamp 2022-07-07 16:54:41.951905
+07/07/2022 16:54:41 - DEBUG - activitysim.core.pipeline - add_checkpoint 'expand_households' table 'expanded_household_ids' (60988, 4) 2.2 MB
+07/07/2022 16:54:41 - INFO - activitysim.core.pipeline - #run_model running step write_data_dictionary
+07/07/2022 16:54:42 - DEBUG - activitysim.core.tracing - Time to execute #run_model completed step 'write_data_dictionary' : 0.669 seconds (0.0 minutes)
+07/07/2022 16:54:42 - DEBUG - activitysim.core.pipeline - add_checkpoint write_data_dictionary timestamp 2022-07-07 16:54:42.671566
+07/07/2022 16:54:42 - INFO - activitysim.core.pipeline - #run_model running step summarize
+07/07/2022 16:54:42 - INFO - populationsim.steps.summarize - saving summary table summary_REGION_1
+07/07/2022 16:54:42 - INFO - populationsim.steps.summarize - saving summary table summary_TRACT_aggregate
+07/07/2022 16:54:42 - INFO - populationsim.steps.summarize - saving summary table summary_TRACT_PUMA
+07/07/2022 16:54:43 - INFO - populationsim.steps.summarize - saving summary table summary_TRACT
+07/07/2022 16:54:43 - INFO - populationsim.steps.summarize - saving summary table summary_BG_aggregate
+07/07/2022 16:54:43 - INFO - populationsim.steps.summarize - saving summary table summary_BG_PUMA
+07/07/2022 16:54:44 - INFO - populationsim.steps.summarize - saving summary table summary_BG
+07/07/2022 16:54:44 - INFO - populationsim.steps.summarize - saving summary table summary_hh_weights
+07/07/2022 16:54:44 - DEBUG - activitysim.core.tracing - Time to execute #run_model completed step 'summarize' : 1.7 seconds (0.0 minutes)
+07/07/2022 16:54:44 - DEBUG - activitysim.core.pipeline - add_checkpoint summarize timestamp 2022-07-07 16:54:44.415893
+07/07/2022 16:54:44 - DEBUG - activitysim.core.pipeline - add_checkpoint 'summarize' table 'summary_REGION_1' (32, 8) 2.3 KB
+07/07/2022 16:54:44 - DEBUG - activitysim.core.pipeline - add_checkpoint 'summarize' table 'summary_TRACT_aggregate' (3939, 7) 236.3 KB
+07/07/2022 16:54:44 - DEBUG - activitysim.core.pipeline - add_checkpoint 'summarize' table 'summary_TRACT_PUMA' (2, 98) 1.3 KB
+07/07/2022 16:54:44 - DEBUG - activitysim.core.pipeline - add_checkpoint 'summarize' table 'summary_TRACT' (44, 98) 29.2 KB
+07/07/2022 16:54:44 - DEBUG - activitysim.core.pipeline - add_checkpoint 'summarize' table 'summary_BG_aggregate' (3939, 7) 236.3 KB
+07/07/2022 16:54:44 - DEBUG - activitysim.core.pipeline - add_checkpoint 'summarize' table 'summary_BG_PUMA' (2, 98) 1.3 KB
+07/07/2022 16:54:44 - DEBUG - activitysim.core.pipeline - add_checkpoint 'summarize' table 'summary_BG' (102, 74) 51.4 KB
+07/07/2022 16:54:44 - DEBUG - activitysim.core.pipeline - add_checkpoint 'summarize' table 'summary_hh_weights' (3939, 6) 157.7 KB
+07/07/2022 16:54:44 - INFO - activitysim.core.pipeline - #run_model running step write_tables
+07/07/2022 16:54:44 - DEBUG - activitysim.core.tracing - Time to execute #run_model completed step 'write_tables' : 0.123 seconds (0.0 minutes)
+07/07/2022 16:54:44 - DEBUG - activitysim.core.pipeline - add_checkpoint write_tables timestamp 2022-07-07 16:54:44.661253
+07/07/2022 16:54:44 - INFO - activitysim.core.pipeline - #run_model running step write_synthetic_population
+07/07/2022 16:54:44 - WARNING - populationsim.steps.write_synthetic_population - column 'per_id' not in persons
+07/07/2022 16:54:45 - DEBUG - activitysim.core.tracing - Time to execute #run_model completed step 'write_synthetic_population' : 0.647 seconds (0.0 minutes)
+07/07/2022 16:54:45 - DEBUG - activitysim.core.pipeline - add_checkpoint write_synthetic_population timestamp 2022-07-07 16:54:45.355989
+07/07/2022 16:54:45 - INFO - activitysim.core.tracing - Time to execute run_model (13 models) : 113.374 seconds (1.9 minutes)
+07/07/2022 16:54:45 - DEBUG - activitysim.core.pipeline - close_pipeline
+07/07/2022 16:54:45 - INFO - activitysim.core.mem - MainProcess high water mark rss: 178_565_120 (178.6 MB) timestamp: 07/07/2022 16:54:44 label:pipeline.run_model write_tables finished
+07/07/2022 16:54:45 - INFO - activitysim.core.mem - MainProcess high water mark uss: 146_493_440 (146.5 MB) timestamp: 07/07/2022 16:54:44 label:pipeline.run_model write_tables finished
+07/07/2022 16:54:45 - INFO - activitysim.core.tracing - Time to execute all models : 113.407 seconds (1.9 minutes)
