@@ -97,8 +97,8 @@ Components:
     Path: sources/modules
     Test:
       Group: 1
-  VE2001NHTS:
-    # VE2001NHTS is only used internally for estimating other models
+  VENHTS:
+    # VENHTS is only used internally for estimating other models
     # Rethink how it is packaged and used for local re-estimation (future change)
     Type: module
     Path: sources/modules
@@ -116,7 +116,7 @@ Components:
       - data.table
       - pscl
     VE:
-      - VE2001NHTS
+      - VENHTS
   VEHouseholdVehicles:
     Type: module
     Path: sources/modules
@@ -126,7 +126,7 @@ Components:
       - ordinal
       - reshape2
     VE:
-      - VE2001NHTS
+      - VENHTS
   VELandUse:
     Type: module
     Path: sources/modules
@@ -136,7 +136,7 @@ Components:
       - fields
       - geosphere
     VE:
-      - VE2001NHTS
+      - VENHTS
       - VESimHouseholds
 
 # Group 3 Packages
@@ -148,7 +148,7 @@ Components:
     CRAN:
       - data.table
     VE:
-      - VE2001NHTS
+      - VENHTS
       - VEHouseholdTravel
   VESimLandUse:
     Type: module
