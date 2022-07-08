@@ -32,7 +32,7 @@ person,WRKDRIVE,NA,
 person,WRKTRANS,WRKTRANS,
 person,WORKER,WORKER,
 person,DTGAS,,PRICE from HH file
-person,DISTTOWK,DISTTOWK,
+person,DISTTOWK,DISTTOWK17,
 person,DRIVER,DRIVER,
 person,R_AGE,R_AGE,
 person,R_SEX,R_SEX,
