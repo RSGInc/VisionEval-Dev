@@ -304,7 +304,8 @@ if(NHTSYEAR == 2017) {
 	  names(raw_dflist) <- gsub('.csv', '', flist)
 	  unlink(tf)
 	  rm(tf, flist)
-	  save(raw_dflist, file = file.path(RAW_DIR, "nhts_dflist.rda"), compress = TRUE)
+	  save(raw_dflist, file = file.path(RAW_DIR, "nhts_dflist.rda"),
+	       compress = TRUE)
 	} else {
 	  #Otherwise read in from 'data-raw' directory
 	  load(file.path(RAW_DIR, "nhts_dflist.rda"))
