@@ -1171,7 +1171,6 @@ rm(list=ls()[!(ls() %in% c('Hh_df', 'Per_df', 'Veh_df', 'HhTours_df'))])
 "Hh_df"
 if ( exists("Hh_df") ) visioneval::savePackageDataset(Hh_df, overwrite = TRUE)
 
-print('BLAH!')
 
 #SAVE THE VEHICLE DATASET
 #' Vehicle dataset from the 2001 National Household Travel Survey
