@@ -1,0 +1,361 @@
+---
+title: "VE NHTS Diagnostics"
+author: "Nick Fournier"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(data.table)
+library(gridExtra)
+library(ggplot2)
+```
+
+## Purpose
+
+This document is meant to serve as a useful diagnostics tool for users seeking to change out the default 2001NHTS data. The purpose is to provide a "living" analysis and diagnostics of newer NHTS data as they are ingested into the Vision Eval (VE) ecosystem. The importance of doing a thorough diagnostic during this process is because NHTS data are used in several downstream VE packages in different ways. Simply swapping out the data in the VENHTS module does not only affect the VENHTS module, and can have cascading impacts if the data are not sufficient for analysis in the many subsequent estimation models. Below is a general diagram of how NHTS data feeds through the VE ecosystem.
+
+```{r diagram, echo=F, fig.cap=""}
+DiagrammeR::grViz("digraph {
+  graph [layout = dot, rankdir = TB]
+  
+  node                  [shape = rectangle]        
+  VENHTS                [label = 'VENHTS', fillcolor='#2171b5', style='filled']
+  VEHouseholdVehicles   [label = 'VEHouseholdVehicles', fillcolor='#6baed6', style='filled']
+  VEPowertrainsAndFuels [label = 'VEPowertrainsAndFuels', fillcolor='#6baed6', style='filled']
+  VELandUse             [label = 'VELandUse', fillcolor='#6baed6', style='filled']
+  VEHouseholdTravel     [label = 'VEHouseholdTravel', fillcolor='#6baed6', style='filled']
+  VELandUse             [label = 'VELandUse']
+  VETravelPerformance   [label = 'VETravelPerformance', fillcolor='#bdd7e7', style='filled']
+  VESimLandUse          [label = 'VESimLandUse', fillcolor='#bdd7e7', style='filled']
+  VESimTransportSupply  [label = 'VESimTransportSupply', fillcolor='#eff3ff', style='filled']
+  Model                 [label = 'Model\nVEState | VETravelDemandMM | VERPAT', fillcolor='#fcae91', style='filled,rounded']
+
+  
+  # edge definitions with the node IDs
+  VENHTS -> VEHouseholdTravel
+  VENHTS -> VEHouseholdVehicles
+  VENHTS -> VELandUse
+  VESimHouseholds -> VELandUse
+  VENHTS -> VEPowertrainsAndFuels
+  VEHouseholdTravel -> VEPowertrainsAndFuels
+  VELandUse -> VESimLandUse
+  VESimLandUseData -> VESimLandUse
+  VEHouseholdTravel -> VETravelPerformance
+  VEPowertrainsAndFuels -> VETravelPerformance
+  VESimLandUse -> VESimTransportSupply
+  VETransportSupply -> VESimTransportSupply
+  
+  VEHouseholdTravel -> Model
+  VEHouseholdVehicles -> Model
+  VEPowertrainsAndFuels -> Model
+  VESimHouseholds -> Model
+  VESimLandUse -> Model
+  VESimTransportSupply -> Model
+  VETravelPerformance -> Model
+  
+  }",
+  height = 400)
+```
+
+It is clear that Vision Evals' usage of NHTS throughout the Vision Eval ecosystem is complex. It is also important to note that modules do not use the same NHTS data. For example, the VEHouseholdVehicles uses the vehicle data tables in NHTS while VEHouseholdTravel uses the household and person data tables.
+
+
+## Overview
+This document performs a high level comparison of the new (e.g., 2017) NHTS data to the original 2001 data that VE was originally developed using. This high level comparison is performed for each of the four primary modules receiving NHTS data:
+
+  - VEHouseholdTravel
+  - VEHouseholdVehicles
+  - VEPowertrainsAndFuels
+  - VELandUse
+
+
+
+
+
+### Data
+```{r load_data, eval=T}
+# Read in the data for both 2001 and 2017. Convert to data.table for performance
+for(x in c('Hh_df', 'Per_df', 'Veh_df', 'HhTours_df')) {
+  assign(x,
+         list('Old' = data.table(visioneval::loadPackageDataset(x,"VE2001NHTS")),
+              'New' = data.table(visioneval::loadPackageDataset(x,"VENHTS")))
+  )
+}
+```
+
+### Overall Summary Statistics
+
+```{r comparison_func, eval=T}
+is_integer <- function(x) ifelse(is.numeric(x), 
+                                 all(x %% 1 == 0, na.rm = T) == T,
+                                 F)
+
+auto_type <- function(x) {
+  if((is_integer(x) & length(unique(x)) <= 30) | class(x) %in% c('character', 'factor')) {
+    'frequency'
+  } else if(# If too few cases, use histogram instead of smoothed density
+    class(x) %in% c('numeric', 'integer') &
+    length(unique(x)) < 100 & 
+    length(unique(x)) > 30
+    ) {
+    'histogram'
+  } else {
+    'density'
+  }
+  
+}
+
+
+compare_plot <- function(var) {
+  fill_colors <- c("Old" = "#8da0cb", "New" = "#66c2a5")
+
+  if(compare_vars[var] == 'frequency') {
+    agg <- merge(
+      Hh_df$Old[,.(Old = .N), by=var],
+      Hh_df$New[,.(New = .N), by=var],
+      all=T
+    )
+    if(class(agg[[var]]) != 'factor') {
+      agg[[var]] <- as.factor(agg[[var]])
+    }
+    # Fill in NA with obvious missing value
+    if(any(is.na(agg[[var]]))) { 
+      agg[[var]] <- addNA(agg[[var]])
+      levels(agg[[var]]) <- c(levels(agg[[var]]), -999)
+      agg[is.na(get(var))][[var]] <- factor(-999)
+    }
+    
+    agg <- melt(agg, id.vars = var, variable.name = 'NHTS')
+    agg[is.na(value), value := 0]
+    agg[ , N := sum(value), by=NHTS]
+    agg[ , pct := value / N]
+    agg[is.na(var)]
+    
+    plot <- ggplot(agg, aes(x=UQ(as.name(var)), y=pct, fill=NHTS)) + 
+      geom_col(position = 'dodge') +
+      scale_x_discrete(limits=sort(unique(agg[[var]]))) +
+      scale_y_continuous("Percent of sample", labels=scales::percent_format(accuracy=1))
+  } else {
+    
+    # Setup data
+    tmp <- rbind(data.table(NHTS='Old', value=Hh_df$Old[[var]]),
+                 data.table(NHTS='New', value=Hh_df$New[[var]]))
+    tmp[!is.finite(value), value := 0]
+
+    # Initialize plot
+    plot <- ggplot(tmp, aes(x=value, fill=NHTS))
+    
+    # Histogram or density plot
+    if(compare_vars[var] == 'density') {
+      plot <- plot + geom_density(alpha=0.5) + 
+                scale_y_continuous("Density of sample")
+    } else {
+      bw <- 4 * IQR(tmp$value, na.rm = T) / (max(tmp$value, na.rm=T) - min(tmp$value, na.rm=T))^(1/3)
+      
+      plot <- plot + 
+        geom_histogram(position = 'dodge', binwidth = bw,
+                       aes(y=after_stat(
+                         c(count[group==1]/sum(count[group==1]),
+                           count[group==2]/sum(count[group==2]))))) +
+        scale_y_continuous("Percent of sample",
+                           labels=scales::percent_format(accuracy=1))
+    }
+    
+  }
+  # Update some aesthetics
+  plot <- plot + 
+    xlab(var) +
+    theme_classic() + 
+    scale_fill_manual(values = fill_colors)
+  return(plot)
+}
+```
+
+
+```{r hh_comparison, eval=T}
+# Set comparison type automatically by data type
+compare_vars <- sapply(Hh_df$Old, auto_type)
+
+
+# Check any column differences
+notinOld <- setdiff(colnames(Hh_df$Old),colnames(Hh_df$New))
+notinNew <- setdiff(colnames(Hh_df$New), colnames(Hh_df$Old))
+
+# Cols to ignore
+compare_vars <- compare_vars[!(names(compare_vars) %in% c('Houseid','Expflhhn','Expfllhh','Flgfincm','Hhc_msa'))]
+compare_vars <- compare_vars[!(names(compare_vars) %in% notinOld)]
+
+
+# Setup custom analysis separately
+age_cols <- colnames(Hh_df$Old)[grepl('^Age', colnames(Hh_df$Old))]
+drv_cols <- colnames(Hh_df$Old)[grepl('^Drv', colnames(Hh_df$Old))]
+wkr_cols <- colnames(Hh_df$Old)[grepl('^Wkr', colnames(Hh_df$Old))]
+
+compare_vars <- compare_vars[!(names(compare_vars) %in% c(age_cols, drv_cols, wkr_cols))]
+
+print(paste("Columns in 2001 missing from candidate:",
+            paste(notinOld, collapse = ", ")))
+print(paste("Columns in candidate missing from 2001:",
+            paste(notinNew, collapse = ", ")))
+```
+
+```{r hh_plots, eval=T, out.width="100%", warning=TRUE}
+chunker <- function(x, n) split(x, sort(x %% (length(x) %/% n)))
+
+hh_plots <- lapply(names(compare_vars), compare_plot)
+chunks <- chunker(1:length(hh_plots), 4)
+
+for(p in chunks) {
+  do.call("grid.arrange", c(hh_plots[p], ncol=2))
+}
+
+```
+
+
+
+```{r Hh_df_plots, eval=T}
+
+```
+
+
+### VEHouseholdTravel
+
+#### CalculateVehicleTrips.R
+```{r CalculateVehicleTrips, eval=F, fig.cap=""}
+plot(density(Hh_df$AveVehTrpLen[Hh_df$IsMetro], na.rm = TRUE),
+     xlab = "Average Vehicle Trip Length (miles)",
+     ylab = "Probability Density",
+     main = paste0(
+       "Metropolitan Household Average Trip Length Distribution",
+       "\nLinear Model of Simulation vs. Simulation"))
+lines(density(MetroAveTrpLen_ls$AveVehTrpLen), col = "red")
+legend("topright", lty = 1, col = c(1,2), bty = "n",
+       legend = c("Linear Model", "Simulation"))
+
+#Plot comparison of model and simulated values for nonmetropolitan households
+plot(density(Hh_df$AveVehTrpLen[!Hh_df$IsMetro], na.rm = TRUE),
+     xlab = "Average Vehicle Trip Length (miles)",
+     ylab = "Probability Density",
+     main = paste0(
+       "Non-metropolitan Household Average Trip Length Distribution",
+       "\nLinear Model of Simulation vs. Simulation"))
+lines(density(NonMetroAveTrpLen_ls$AveVehTrpLen), col = "red")
+legend("topright", lty = 1, col = c(1,2), bty = "n",
+       legend = c("Linear Model", "Simulation"))
+
+```
+
+#### CalculateHouseholdDvmt.R
+```{r CalculateHouseholdDvmt, eval=F, fig.cap=""}
+
+plot(
+  density(TestHh_df$Dvmt),
+  xlim=c(0, 200),
+  xlab = "Miles",
+  main = "Distributions of Simulated and Predicted Average DVMT \nMetropolitan Households"
+)
+lines(density(predict(MetroAveDvmt_LM, newdata = TestHh_df)^(1/MetroPow)), lty = 2)
+legend("topright", legend = c("Simulated", "Predicted"), lty = c(1,2))
+
+
+plot(
+  density(TestHh_df$Dvmt),
+  xlim=c(0, 200),
+  xlab = "Miles",
+  main = "Distributions of Simulated and Predicted Average DVMT \nNon-metropolitan Households"
+)
+lines(density(predict(NonMetroAveDvmt_LM, newdata = TestHh_df)^(1/NonMetroPow)), lty = 2)
+legend("topright", legend = c("Simulated", "Predicted"), lty = c(1,2))
+
+```
+
+### VEHouseholdVehicles
+
+#### CalculateVehicleOwnCost.R
+```{r CalculateVehicleOwnCost, eval=F, fig.cap=""}
+
+matplot(Depr_AgVt, type = "l", lty = c(1,2), col = "black",
+        xlab = "Vehicle Age (years)", ylab = "Depreciation (2017 dollars)",
+        main = "Average Auto and Light Truck Depreciation\nBy Vehicle Age")
+legend("topright", legend = c("Auto", "Light Truck"), lty = c(1,2))
+
+plot(Vmt_, AutoDep_, type = "l", ylim = range(c(AutoDep_, LtTrkDep_)),
+     xlab = "Annual Miles", ylab = "Annual Depreciation (2017 dollars)",
+     main = "Annual Depreciation by Annual Miles Driven\n5-Year Old Auto and Light Truck")
+lines(Vmt_, LtTrkDep_, lty = 2)
+legend("topleft", legend = c("Auto", "Light Truck"), lty = c(1,2))
+
+
+
+```
+
+#### AssignVehicleAge.R
+```{r AssignVehicleAge, eval=F, fig.cap=""}
+
+#Cumulate age proportions
+plot(0:30, AutoAgeCDF_Ag, type = "l", xlab = "Vehicle Age (years)",
+     ylab = "Proportion of Vehicles",
+     main = "Cumulative Proportion of Vehicles by Age")
+lines(0:30, LtTrkAgeCDF_Ag, lty = 2)
+legend("bottomright", lty = c(1,2), legend = c("Auto", "Light Truck"),
+       bty = "n")
+
+#Document auto age proportions by household income group
+Temp_AgIg <- sweep(AutoAgeIncDF_AgIg, 2, colSums(AutoAgeIncDF_AgIg), "/")
+matplot(Temp_AgIg, type = "l", xlab = "Vehicle Age (years)",
+        ylab = "Proportion of Vehicles",
+        main = "Proportions of Automobiles by Age by Household Income")
+legend("topright", lty = 1:6, col = 1:6, legend = colnames(AutoAgeIncDF_AgIg))
+
+
+#Document light truck age proportions by household income group
+Temp_AgIg <- sweep(LtTrkAgeIncDF_AgIg, 2, colSums(LtTrkAgeIncDF_AgIg), "/")
+matplot(Temp_AgIg, type = "l", xlab = "Vehicle Age (years)",
+        ylab = "Proportion of Vehicles",
+        main = "Proportions of Light Trucks by Age by Household Income")
+legend("topright", lty = 1:6, col = 1:6, legend = colnames(LtTrkAgeIncDF_AgIg))
+
+
+```
+
+### VEPowertrainsAndFuels
+#### AssignHhVehiclePowertrain.R
+```{r AssignHhVehiclePowertrain, eval=F, fig.cap=""}
+
+#Plot metropolitan lookup for documentation
+Col_ <- rainbow(40)[1:30]
+matplot(PhevElecProp_ls$Metro_VmRg, type = "l", lty = 1, col = Col_,
+        axes = FALSE, ylab = "Proportion of DVMT Powered by Electricity",
+        xlab = "Average Daily Vehicle Miles Traveled",
+        main = "Metropolitan Electrically Powered DVMT Proportion")
+box()
+axis(2, at = seq(0, 1, 0.1))
+axis(1, at = seq(0, 40, 10), labels = 5 * seq(0, 40, 10))
+legend("topright", legend = c("5-mile range", "150-mile range"), lty = 1,
+       col = Col_[c(1,30)], bty = "n")
+
+#Plot non-metropolitan lookup for documentation
+Col_ <- rainbow(40)[1:30]
+matplot(PhevElecProp_ls$NonMetro_VmRg, type = "l", lty = 1, col = Col_,
+        axes = FALSE, ylab = "Proportion of DVMT Powered by Electricity",
+        xlab = "Average Daily Vehicle Miles Traveled",
+        main = "Non-metropolitan Electrically Powered DVMT Proportion")
+box()
+axis(2, at = seq(0, 1, 0.1))
+axis(1, at = seq(0, 40, 10), labels = 5 * seq(0, 40, 10))
+legend("topright", legend = c("5-mile range", "150-mile range"), lty = 1,
+       col = Col_[c(1,30)], bty = "n")
+
+```
+
+
+### VELandUse
+
+
+
+
+
+
+
