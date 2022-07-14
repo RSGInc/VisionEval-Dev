@@ -13,7 +13,7 @@
 #
 #A binary logit model is used to calculate the probability that a household is located in an urban mixed-use neighborhood as a function of the population density of the Bzone that household resides in and the housing type of the household.
 #
-#This model is estimated using a household dataset prepared from 2001 National Household Travel Survey public use datasets by the VE2001NHTS package. The HhData_df data frame is loaded from that package and used to estimate the model. Following are the summary statistics for the estimated model:
+#This model is estimated using a household dataset prepared from 2001 National Household Travel Survey public use datasets by the VENHTS package. The HhData_df data frame is loaded from that package and used to estimate the model. Following are the summary statistics for the estimated model:
 #
 #<txt:UrbanMixModel_ls$Summary>
 #
@@ -82,14 +82,14 @@ estimateUrbanMixModel <- function(EstData_df, StartTerms_) {
 #Estimate the binomial logit model for urban mixed-use
 #-----------------------------------------------------
 #Create model estimation dataset
-NhtsHometype_ <- loadPackageDataset("Hh_df","VE2001NHTS")$Hometype
+NhtsHometype_ <- loadPackageDataset("Hh_df","VENHTS")$Hometype
 HouseType_ <- rep("SF", length(NhtsHometype_))
 HouseType_[NhtsHometype_ == "Dorm"] <- "GQ"
 HouseType_[NhtsHometype_ %in% c("Duplex", "Multi-family", "Other")] <- "MF"
 Data_df <-
   data.frame(
-    UrbanMix = loadPackageDataset("Hh_df","VE2001NHTS")$UrbanDev,
-    LocalPopDensity = loadPackageDataset("Hh_df","VE2001NHTS")$Hbppopdn,
+    UrbanMix = loadPackageDataset("Hh_df","VENHTS")$UrbanDev,
+    LocalPopDensity = loadPackageDataset("Hh_df","VENHTS")$Hbppopdn,
     IsSF = as.numeric(HouseType_ == "SF"))
 Data_df <- Data_df[complete.cases(Data_df),]
 rm(NhtsHometype_, HouseType_)

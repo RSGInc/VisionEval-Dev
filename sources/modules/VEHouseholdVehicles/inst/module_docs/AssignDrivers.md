@@ -88,7 +88,7 @@ Number of Fisher Scoring iterations: 17
 
 ```
 
-The models are estimated using the *Hh_df* (household) and *Per_df* (person) datasets in the VE2001NHTS package. Information about these datasets and how they were developed from the 2001 National Household Travel Survey public use dataset is included in that package.
+The models are estimated using the *Hh_df* (household) and *Per_df* (person) datasets in the VENHTS package. Information about these datasets and how they were developed from the 2001 National Household Travel Survey public use dataset is included in that package.
 
 ## How the Module Works
 

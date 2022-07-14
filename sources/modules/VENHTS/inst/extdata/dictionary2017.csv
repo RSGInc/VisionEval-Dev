@@ -1,0 +1,245 @@
+Name,Type,Length,Label,HH,PER,VEH,TRIP
+ALT_16,C,2,Alternative Mode of Transportation: Public Transportation or Taxi,,P,,
+ALT_23,C,2,Alternative Mode of Transportation: Passenger to Friend/Family Member or Rental Car,,P,,
+ALT_45,C,2,Alternative Mode of Transportation: Bicycle or Walk,,P,,
+ANNMILES,N,6,Self-reported annualized mile estimate,,,V,
+BESTMILE,N,8,Best estimate of annual miles,,,V,
+BEST_EDT,C,2,Flag any edits/adjustments to BESTMILE,,,V,
+BEST_FLG,C,2,How BESTMILE was computed,,,V,
+BEST_OUT,C,2,Flag identifying BESTMILE outlier values,,,V,
+BIKE,C,2,Frequency of Bicycle Use for Travel,H,,,
+BIKE2SAVE,C,2,Bicycle to Reduce Financial Burden of Travel,H,,,
+BIKE4EX,N,3,Count of Bike Trips for Exercise,,P,,
+BIKESHARE,N,3,Count of Bike Share Program Usage,,P,,
+BIKE_DFR,C,2,Reason for Not Biking More: Infrastructure,,P,,
+BIKE_GKP,C,2,Reason for Not Biking More: Safety,,P,,
+BORNINUS,C,2,Born in United States,,P,,
+BUS,C,2,Frequency of Bus Use for Travel,H,,,
+CAR,C,2,Frequency of Personal Vehicle Use for Travel,H,,,
+CARRODE,N,3,Count of People in Vehicle to Work,,P,,
+CARSHARE,N,3,Count of Car Share Program Usage,,P,,
+CDIVMSAR,C,2,"Grouping of household by combination of census division, MSA status, and presence of a subway system when population greater than 1 million",H,P,V,T
+CENSUS_D,C,2,2010 Census division classification for the respondent's home address,H,P,V,T
+CENSUS_R,C,2,Census region classification for home address,H,P,V,T
+CNTTDHH,N,3,Count of household trips on travel day,H,,,
+CNTTDTR,N,3,Count of person trips on travel day,,P,,
+CONDNIGH,C,2,Medical Condition Results in Limiting Driving to Daytime,,P,,
+CONDPUB,C,2,Medical Condition Results in Using Bus or Subway Less Frequently,,P,,
+CONDRIDE,C,2,Medical Condition Results in Asking Others for Rides,,P,,
+CONDRIVE,C,2,Medical Condition Results in Giving up Driving,,P,,
+CONDSPEC,C,2,Medical Condition Results in Using Special Transportation Services,,P,,
+CONDTAX,C,2,Medical Condition Results in Using a Reduced Fare Taxi,,P,,
+CONDTRAV,C,2,Medical Condition Results in Reduced Day-to-Day Travel,,P,,
+DBHTNRNT,C,2,Category of the percent of renter-occupied housing in the census block group of the trip destination's location,,,,T
+DBHUR,C,2,Urban / Rural indicator - Trip Destination Block group,,,,T
+DBPPOPDN,C,5,Category of population density (persons per square mile) in the census block group of the trip destination's location,,,,T
+DBRESDN,C,5,Category of housing units per square mile in the census block group of the trip destination's location,,,,T
+DELIVER,N,3,Count of Times Purchased Online for Delivery in Last 30 Days,,P,,
+DIARY,C,2,Travel Diary completion status,,P,,
+DISTTOSC17,N,7,"Road network distance, in miles, between respondent's home location and school location, sourced using Google Distance Matrix API (https://maps.googleapis.com/maps/api/distancematrix/)",,P,,
+DISTTOWK17,N,7,"Road network distance, in miles, between respondent's home location and work location, sourced using Google Distance Matrix API (https://maps.googleapis.com/maps/api/distancematrix/)",,P,,
+DRIVER,C,2,"Driver status, derived",,P,,T
+DROP_PRK,C,2,Parked or Dropped Off at Station,,,,T
+DRVRCNT,N,3,Number of drivers in household,H,P,V,T
+DRVR_FLG,C,2,Respondent drove on trip,,,,T
+DTEEMPDN,C,4,Category of workers per square mile in the census tract of the trip destination's location,,,,T
+DTHTNRNT,C,2,Category of the percent of renter-occupied housing in the census tract of the trip destination's location,,,,T
+DTPPOPDN,C,5,Category of population density (persons per square mile) in the census tract of the trip destination's location,,,,T
+DTRESDN,C,5,Category of housing units per square mile in the census tract of the trip destination's location,,,,T
+DWELTIME,N,4,Time at destination,,,,T
+EDUC,C,2,Educational Attainment,,P,,T
+ENDTIME,C,4,Trip End Time (HHMM),,,,T
+FEGEMPG,N,8,Fuel Economy.gov EIA-Derived 55/45 fuel economy,,,V,
+FEGEMPGA,N,8,Fuel Economy.gov 55/45 alternative fuel economy,,,V,
+FEGEMPGF,C,2,Flag for FEGEMPG,,,V,
+FLEXTIME,C,2,Flex Time,,P,,
+FRSTHM17,C,2,Travel day began at home location,,P,,
+FUELTYPE,C,2,Fuel Type,,,V,
+GASPRICE,C,5,"Price of gasoline, in cents, on respondent's travel day",,,,T
+GCDWORK,N,7,"Minimum geodesic (Great Circle) distance between home location and work location in meters, using WGS84 coordinate system",,P,,
+GSCOST,N,8,Annualized fuel cost in US dollars per equivalent gallon,,,V,
+GSTOTCST,N,8,Annual fuel expenditures in US dollars,,,V,
+GSYRGAL,N,8,Annual fuel consumption in US gallons,,,V,
+GT1JBLWK,C,2,More than One Job,,P,,
+HBHTNRNT,C,2,Category of the percent of renter-occupied housing in the census block group of the household's home location,H,P,V,
+HBHUR,C,2,Urban / Rural indicator - Block group,H,P,V,
+HBPPOPDN,C,5,Category of population density (persons per square mile) in the census block group of the household's home location,H,P,V,
+HBRESDN,C,5,Category of housing units per square mile in the census block group of the household's home location,H,P,V,
+HEALTH,C,2,Opinion of Health,,P,,
+HFUEL,C,2,Type of Hybrid Vehicle,,,V,
+HHFAMINC,C,2,Household income,H,P,V,T
+HHMEMDRV,C,2,Household member drove on trip,,,,T
+HHRELATD,C,2,At least two household persons are related,H,,,
+HHRESP,C,2,Person identifier of household respondent,H,P,,T
+HHSIZE,N,3,Count of household members,H,P,V,T
+HHSTATE,C,2,Household state,H,P,V,T
+HHSTFIPS,C,2,State FIPS for household address,H,P,V,T
+HHVEHCNT,N,3,Count of household vehicles,H,P,V,T
+HH_CBSA,C,5,Core Based Statistical Area (CBSA) FIPS code for the respondent's home address,H,P,V,T
+HH_HISP,C,2,Hispanic status of household respondent,H,P,V,T
+HH_ONTD,N,3,Number of household members on trip including respondent,,,,T
+HH_RACE,C,2,Race of household respondent,H,P,V,T
+HOMEOWN,C,2,Home Ownership,H,P,V,T
+HOUSEID,C,8,Household Identifier,H,P,V,T
+HTEEMPDN,C,4,Category of workers per square mile in the census tract of the household's home location,H,P,V,
+HTHTNRNT,C,2,Category of the percent of renter-occupied housing in the census tract of the household's home location,H,P,V,
+HTPPOPDN,C,5,Category of population density (persons per square mile) in the census tract of the household's home location,H,P,V,
+HTRESDN,C,5,Category of housing units per square mile in the census tract of the household's home location,H,P,V,
+HYBRID,C,2,Hybrid vehicle,,,V,
+LIF_CYC,C,2,"Life Cycle classification for the household, derived by attributes pertaining to age, relationship, and work status.",H,P,V,T
+LOOP_TRIP,C,2,Trip origin and destination at identical location,,,,T
+LPACT,N,3,Count of Times of Light or Moderate Physical Activity in Past Week,,P,,
+LSTTRDAY17,C,2,Last trip before travel day,,P,,
+MAKE,C,3,Vehicle Make,,,V,
+MCUSED,N,3,Count of Motorcycle or Moped Trips,,P,,
+MEDCOND,C,2,Medical Condition,,P,,
+MEDCOND6,C,2,"Medical Condition, How Long",,P,,
+MODEL,C,5,Vehicle Model,,,V,
+MSACAT,C,2,"Metropolitan Statistical Area (MSA) category for the household's home address, based on household's home geocode and TIGER/Line Shapefiles.",H,P,V,T
+MSASIZE,C,2,"Population size category of the Metropolitan Statistical Area (MSA), from the 2010-2014 five-year American Community Survey (ACS) API.",H,P,V,T
+NBIKETRP,N,3,Count of Bike Trips,,P,,
+NOCONG,N,3,Trip Time in Minutes to Work without Traffic,,P,,
+NONHHCNT,N,3,Number of non-household members on trip,,,,T
+NUMADLT,N,3,Count of adult household members at least 18 years old,H,P,V,T
+NUMONTRP,N,3,Number of people on trip including respondent,,,,T
+NUMTRANS,N,3,Count of Transfers,,,,T
+NWALKTRP,N,3,Count of Walk Trips,,P,,
+OBHTNRNT,C,2,Category of the percent of renter-occupied housing in the census block group of the trip origin's location,,,,T
+OBHUR,C,2,Urban / Rural indicator - Trip Origin Block group,,,,T
+OBPPOPDN,C,5,Category of population density (persons per square mile) in the census block group of the trip origin's location,,,,T
+OBRESDN,C,5,Category of housing units per square mile in the census block group of the trip origin's location,,,,T
+OCCAT,C,2,Job Category,,P,,
+OD_READ,N,6,Odometer Reading,,,V,
+ONTD_P1,C,2,Household Person Identifier on Trip: 1,,,,T
+ONTD_P10,C,2,Household Person Identifier on Trip: 10,,,,T
+ONTD_P11,C,2,Household Person Identifier on Trip: 11,,,,T
+ONTD_P12,C,2,Household Person Identifier on Trip: 12,,,,T
+ONTD_P13,C,2,Household Person Identifier on Trip: 13,,,,T
+ONTD_P2,C,2,Household Person Identifier on Trip: 2,,,,T
+ONTD_P3,C,2,Household Person Identifier on Trip: 3,,,,T
+ONTD_P4,C,2,Household Person Identifier on Trip: 4,,,,T
+ONTD_P5,C,2,Household Person Identifier on Trip: 5,,,,T
+ONTD_P6,C,2,Household Person Identifier on Trip: 6,,,,T
+ONTD_P7,C,2,Household Person Identifier on Trip: 7,,,,T
+ONTD_P8,C,2,Household Person Identifier on Trip: 8,,,,T
+ONTD_P9,C,2,Household Person Identifier on Trip: 9,,,,T
+OTEEMPDN,C,4,Category of workers per square mile in the census tract of the trip origin's location,,,,T
+OTHTNRNT,C,2,Category of the percent of renter-occupied housing in the census tract of the trip origin's location,,,,T
+OTPPOPDN,C,5,Category of population density (persons per square mile) in the census tract of the trip origin's location,,,,T
+OTRESDN,C,5,Category of housing units per square mile in the census tract of the trip origin's location,,,,T
+OUTCNTRY,C,2,Respondent was out of the country on travel day.,,P,,
+OUTOFTWN,C,2,Away from home for entire travel day,,P,,
+PARA,C,2,Frequency of Paratransit Use for Travel,H,,,
+PAYPROF,C,2,Work for Pay in Previous Week,,P,,
+PC,C,2,Frequency of Desktop or Laptop Computer Use to Access the Internet,H,,,
+PERSONID,C,2,Person Identifier,,P,V,T
+PHYACT,C,2,Level of Physical Activity,,P,,
+PLACE,C,2,Travel is a Financial Burden,H,,,
+PRICE,C,2,Price of Gasoline Affects Travel,H,,,
+PRMACT,C,2,Primary Activity in Previous Week,,P,,T
+PROXY,C,2,Trip info from respondent or proxy,,P,,T
+PSGR_FLG,C,2,Respondent was passenger on trip,,,,T
+PTRANS,C,2,Public Transportation to Reduce Financial Burden of Travel,H,,,
+PTUSED,N,3,Count of Public Transit Usage,,P,,
+PUBTIME,N,3,Minutes Spent Transferring to Work,,P,,
+PUBTRANS,C,2,Public transportation used on trip,,,,T
+RAIL,C,2,MSA heavy rail status for household,H,P,V,T
+RESP_CNT,N,3,Count of responding persons per household,H,,,
+RIDESHARE,N,3,Count of Rideshare App Usage,,P,,
+R_AGE,N,3,Age,,P,,T
+R_AGE_IMP,N,3,Age (imputed),,P,,T
+R_HISP,C,2,Hispanic or Latino Origin,,P,,
+R_RACE,C,2,Race,,P,,
+R_RELAT,C,2,Relationship,,P,,
+R_SEX,C,2,Gender,,P,,T
+R_SEX_IMP,C,2,Gender (imputed),,P,,T
+SAMEPLC,C,2,Reason for No Trips,,P,,
+SAMPSTRAT,C,2,Primary Sampling Stratum Assignment,H,,,
+SCHTRN1,C,2,Mode to School,,P,,
+SCHTRN2,C,2,Mode from School,,P,,
+SCHTYP,C,2,Student Status,,P,,
+SCRESP,C,2,"Person identifier of mail screener respondent, always 1 to roster self first",H,,,
+SMPLSRCE,C,2,Sample where the case originated,H,P,V,T
+SPHONE,C,2,Frequency of Smartphone Use to Access the Internet,H,,,
+STRTTIME,C,4,Trip Start Time (HHMM),,,,T
+TAB,C,2,Frequency of Tablet Use to Access the Internet,H,,,
+TAXI,C,2,Frequency of Taxi Service or Rideshare Use for Travel,H,,,
+TDAYDATE,C,6,Date of travel day (YYYYMM),H,P,V,T
+TDCASEID,C,12,Unique identifier for every trip record in the file,,,,T
+TDTRPNUM,C,2,"Incrementing travel day trip number, starting at 1 for each person in the file",,,,T
+TDWKND,C,2,Weekend trip,,,,T
+TIMETOWK,N,3,Trip Time to Work in Minutes,,P,,
+TRACCTM,N,3,Trip Time to Transit Station in Minutes,,,,T
+TRACC_BUS,C,2,Bus as mode used to get to public transit?,,,,T
+TRACC_CRL,C,2,Rail as mode used to get to public transit?,,,,T
+TRACC_OTH,C,2,Other mode used to get to public transit?,,,,T
+TRACC_POV,C,2,POV as mode used to get to public transit?,,,,T
+TRACC_SUB,C,2,Subway as mode used to get to public transit?,,,,T
+TRACC_WLK,C,2,Walk as mode used to get to public transit?,,,,T
+TRAIN,C,2,Frequency of Train Use for Travel,H,,,
+TRAVDAY,C,2,Travel day - day of week,H,P,V,T
+TREGRTM,N,3,Time to Destination from Transit in Minutes,,,,T
+TREGR_BUS,C,2,Bus as mode used to get from public transit?,,,,T
+TREGR_CRL,C,2,Rail as mode used to get from public transit?,,,,T
+TREGR_OTH,C,2,Other mode used to get from public transit?,,,,T
+TREGR_POV,C,2,POV as mode used to get from public transit?,,,,T
+TREGR_SUB,C,2,Subway as mode used to get from public transit?,,,,T
+TREGR_WLK,C,2,Walk as mode used to get from public transit?,,,,T
+TRIPPURP,C,8,"Generalized purpose of trip, home-based and non-home based",,,,T
+TRPACCMP,N,3,Count of People on Trip,,,,T
+TRPHHACC,N,3,Count of Household Members on Trip,,,,T
+TRPHHVEH,C,2,Household Vehicle Used on Trip,,,,T
+TRPMILAD,N,8,"Trip distance in miles, adjusted for comparability to past surveys",,,,T
+TRPMILES,N,8,"Trip distance in miles, derived from route geometry returned by Google Maps API, or from reported loop-trip distance",,,,T
+TRPTRANS,C,2,"Trip Mode, derived",,,,T
+TRVLCMIN,N,4,Trip Duration in Minutes,,,,T
+TRWAITTM,N,3,Transit wait time in minutes,,,,T
+URBAN,C,2,"Household's urban area classification, based on home address and 2014 TIGER/Line Shapefile",H,P,V,T
+URBANSIZE,C,2,Urban area size where home address is located,H,P,V,T
+URBRUR,C,2,Household in urban/rural area,H,P,V,T
+USEPUBTR,C,2,"Public Transit Usage on Travel Date, derived",,P,,
+VEHAGE,N,3,"Age of vehicle, based on model year",,,V,
+VEHID,C,2,Household Vehicle Identifier Used on Trip,,,V,T
+VEHOWNED,C,2,Owned Vehicle Longer than a Year,,,V,
+VEHOWNMO,C,2,Months of Vehicle Ownership,,,V,
+VEHTYPE,C,2,Vehicle Type,,,V,T
+VEHYEAR,N,4,Vehicle Year,,,V,
+VMT_MILE,N,8,"Trip distance in miles for personally driven vehicle trips, derived from route geometry returned by Google Maps API",,,,T
+VPACT,N,3,Count of Times of Vigorous Physical Activity in Past Week,,P,,
+WALK,C,2,Frequency of Walking for Travel,H,,,
+WALK2SAVE,C,2,Walk to Reduce Financial Burden of Travel,H,,,
+WALK4EX,N,3,Count of Walk Trips for Exercise,,P,,
+WALK_DEF,C,2,Reason for Not Walking More: Infrastructure,,P,,
+WALK_GKQ,C,2,Reason for Not Walking More: Safety,,P,,
+WEBUSE17,C,2,Frequency of internet use,H,,,
+WHODROVE,C,2,Person Identifier Who Drove on Trip,,,,T
+WHOMAIN,C,2,Vehicle Main Driver,,,V,
+WHOPROXY,C,2,Household Person Identifier Responsible for Trip Reporting,,P,,
+WHYFROM,C,2,Trip Origin Purpose,,,,T
+WHYTO,C,2,Trip Destination Purpose,,,,T
+WHYTRP1S,C,2,Trip purpose summary,,,,T
+WHYTRP90,C,2,Travel day trip purpose consistent with 1990 NPTS design.,,,,T
+WKFMHMXX,N,3,Count of Days Worked From Home in Last Month,,P,,
+WKFTPT,C,2,Full-Time or Part-Time Worker,,P,,
+WKRMHM,C,2,Option of Working from Home,,P,,
+WKSTFIPS,C,2,The state FIPS code for the respondent's geocoded work address. The state FIPS codes were identified using United States Census Bureau 2016 TIGER/Line Shapefiles.,,P,,
+WORKER,C,2,Worker status,,P,,T
+WRKCOUNT,N,3,Number of workers in household,H,P,V,T
+WRKTIME,C,8,Arrival Time at Work,,P,,
+WRKTRANS,C,2,Mode to Work,,P,,
+WRK_HOME,C,2,Work from Home,,P,,
+WTHHFIN,N,8,Final HH weight,H,,V,
+WTPERFIN,N,8,Final Person weight,,P,,
+WTTRDFIN,N,8,Final trip weight,,,,T
+W_CANE,C,2,Medical Device Used: Cane,,P,,
+W_CHAIR,C,2,Medical Device Used: Wheelchair,,P,,
+W_CRUTCH,C,2,Medical Device Used: Crutches,,P,,
+W_DOG,C,2,Medical Device Used: Dog Assistance,,P,,
+W_MTRCHR,C,2,Medical Device Used: Motorized Wheelchair,,P,,
+W_NONE,C,2,Medical Device Used: None,,P,,
+W_SCOOTR,C,2,Medical Device Used: Motorized Scooter,,P,,
+W_WHCANE,C,2,Medical Device Used: White Cane,,P,,
+W_WLKR,C,2,Medical Device Used: Walker,,P,,
+YEARMILE,N,6,Miles Personally Driven in all Vehicles,,P,,
+YOUNGCHILD,N,3,Count of persons with an age between 0 and 4 in household,H,,,
+YRTOUS,N,4,Year of Arrival in United States,,P,,

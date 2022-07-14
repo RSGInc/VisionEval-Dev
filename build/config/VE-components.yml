@@ -84,14 +84,17 @@ Components:
     Path: sources/modules
     Test: { Script: tests/scripts/test.R, Group: 1 }
 
-  VE2001NHTS:
-    # VE2001NHTS is only used internally for estimating other models
-    # Rethink how it is packaged and used for local re-estimation (future change)
+  VENHTS:
     Type: module
     Path: sources/modules
     Test: { Script: tests/scripts/test.R, Group: 1 }
-    
-  VENHTS:
+    CRAN:
+      - pbapply
+      - parallel
+
+  VE2001NHTS:
+    # VE2001NHTS is only used internally for estimating other models
+    # Rethink how it is packaged and used for local re-estimation (future change)
     Type: module
     Path: sources/modules
     Test: { Script: tests/scripts/test.R, Group: 1 }

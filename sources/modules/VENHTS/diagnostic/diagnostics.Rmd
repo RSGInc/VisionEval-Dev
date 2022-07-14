@@ -61,28 +61,39 @@ DiagrammeR::grViz("digraph {
 
 It is clear that Vision Evals' usage of NHTS throughout the Vision Eval ecosystem is complex. It is also important to note that modules do not use the same NHTS data. For example, the VEHouseholdVehicles uses the vehicle data tables in NHTS while VEHouseholdTravel uses the household and person data tables.
 
-
 ## Overview
+
 This document performs a high level comparison of the new (e.g., 2017) NHTS data to the original 2001 data that VE was originally developed using. This high level comparison is performed for each of the four primary modules receiving NHTS data:
 
-  - VEHouseholdTravel
-  - VEHouseholdVehicles
-  - VEPowertrainsAndFuels
-  - VELandUse
-
-
-
-
+-   VEHouseholdTravel
+-   VEHouseholdVehicles
+-   VEPowertrainsAndFuels
+-   VELandUse
 
 ### Data
+
 ```{r load_data, eval=T}
 # Read in the data for both 2001 and 2017. Convert to data.table for performance
+maxlen <- 0
 for(x in c('Hh_df', 'Per_df', 'Veh_df', 'HhTours_df')) {
   assign(x,
          list('Old' = data.table(visioneval::loadPackageDataset(x,"VE2001NHTS")),
               'New' = data.table(visioneval::loadPackageDataset(x,"VENHTS")))
   )
+  maxlen <- ifelse(length(get(x)$Old) > maxlen, length(get(x)$Old), maxlen)
 }
+
+colname_df <- lapply(c('Hh_df', 'Per_df', 'Veh_df', 'HhTours_df'), function(x){
+  c(
+    colnames(get(x)$Old),
+    rep("", maxlen-length(colnames(get(x)$Old)))
+    )
+})
+
+colname_df <- do.call('cbind', colname_df)
+colnames(colname_df) <- c('Hh_df', 'Per_df', 'Veh_df', 'HhTours_df')
+# colname_df
+
 ```
 
 ### Overall Summary Statistics
@@ -95,23 +106,31 @@ is_integer <- function(x) ifelse(is.numeric(x),
 auto_type <- function(x) {
   if((is_integer(x) & length(unique(x)) <= 30) | class(x) %in% c('character', 'factor')) {
     'frequency'
-  } else if(# If too few cases, use histogram instead of smoothed density
-    class(x) %in% c('numeric', 'integer') &
-    length(unique(x)) < 100 & 
-    length(unique(x)) > 30
-    ) {
-    'histogram'
   } else {
-    'density'
+  # else if(# If too few cases, use histogram instead of smoothed density
+  #   class(x) %in% c('numeric', 'integer') &
+  #   length(unique(x)) < 100 & 
+  #   length(unique(x)) > 30
+  #   ) {
+    'histogram'
   }
+  # else {
+  #   'density'
+  # }
   
 }
 
 
-compare_plot <- function(var) {
+compare_plot <- function(params) {
   fill_colors <- c("Old" = "#8da0cb", "New" = "#66c2a5")
 
-  if(compare_vars[var] == 'frequency') {
+  for(n in colnames(params)) {
+    assign(n, params[[n]])
+  }
+  var = variable
+  
+  
+  if(plot_type == 'frequency') {
     agg <- merge(
       Hh_df$Old[,.(Old = .N), by=var],
       Hh_df$New[,.(New = .N), by=var],
@@ -135,57 +154,47 @@ compare_plot <- function(var) {
     
     plot <- ggplot(agg, aes(x=UQ(as.name(var)), y=pct, fill=NHTS)) + 
       geom_col(position = 'dodge') +
-      scale_x_discrete(limits=sort(unique(agg[[var]]))) +
-      scale_y_continuous("Percent of sample", labels=scales::percent_format(accuracy=1))
-  } else {
-    
+      scale_x_discrete(limits=sort(unique(agg[[var]])))
+  } 
+  if(plot_type == 'histogram') {
     # Setup data
     tmp <- rbind(data.table(NHTS='Old', value=Hh_df$Old[[var]]),
                  data.table(NHTS='New', value=Hh_df$New[[var]]))
     tmp[!is.finite(value), value := 0]
+    
+    # Bin widths
+    bw <- 4 * IQR(tmp$value, na.rm = T) / (max(tmp$value, na.rm=T) - min(tmp$value, na.rm=T))^(1/3)
 
     # Initialize plot
-    plot <- ggplot(tmp, aes(x=value, fill=NHTS))
-    
-    # Histogram or density plot
-    if(compare_vars[var] == 'density') {
-      plot <- plot + geom_density(alpha=0.5) + 
-                scale_y_continuous("Density of sample")
-    } else {
-      bw <- 4 * IQR(tmp$value, na.rm = T) / (max(tmp$value, na.rm=T) - min(tmp$value, na.rm=T))^(1/3)
-      
-      plot <- plot + 
-        geom_histogram(position = 'dodge', binwidth = bw,
-                       aes(y=after_stat(
-                         c(count[group==1]/sum(count[group==1]),
-                           count[group==2]/sum(count[group==2]))))) +
-        scale_y_continuous("Percent of sample",
-                           labels=scales::percent_format(accuracy=1))
+    plot <- ggplot(tmp, aes(x=value, fill=NHTS)) +
+      geom_histogram(position = 'dodge', binwidth = bw,
+                     aes(y=after_stat(
+                       c(count[group==1]/sum(count[group==1]),
+                         count[group==2]/sum(count[group==2])))))
     }
-    
-  }
+  
+  # # Histogram or density plot
+  # if(plot_type == 'density') {
+  #   plot <- plot + geom_density(alpha=0.5) + 
+  #             scale_y_continuous("Density of sample")
+  # }
   # Update some aesthetics
   plot <- plot + 
     xlab(var) +
+    scale_y_continuous("Percent of sample",
+                       labels=scales::percent_format(accuracy=1),
+                       trans = ylog) +
     theme_classic() + 
+    theme(axis.text.x = element_text(angle = xangle)) +
     scale_fill_manual(values = fill_colors)
   return(plot)
 }
 ```
 
-
 ```{r hh_comparison, eval=T}
-# Set comparison type automatically by data type
-compare_vars <- sapply(Hh_df$Old, auto_type)
-
-
 # Check any column differences
 notinOld <- setdiff(colnames(Hh_df$Old),colnames(Hh_df$New))
 notinNew <- setdiff(colnames(Hh_df$New), colnames(Hh_df$Old))
-
-# Cols to ignore
-compare_vars <- compare_vars[!(names(compare_vars) %in% c('Houseid','Expflhhn','Expfllhh','Flgfincm','Hhc_msa'))]
-compare_vars <- compare_vars[!(names(compare_vars) %in% notinOld)]
 
 
 # Setup custom analysis separately
@@ -193,7 +202,20 @@ age_cols <- colnames(Hh_df$Old)[grepl('^Age', colnames(Hh_df$Old))]
 drv_cols <- colnames(Hh_df$Old)[grepl('^Drv', colnames(Hh_df$Old))]
 wkr_cols <- colnames(Hh_df$Old)[grepl('^Wkr', colnames(Hh_df$Old))]
 
-compare_vars <- compare_vars[!(names(compare_vars) %in% c(age_cols, drv_cols, wkr_cols))]
+
+# # Set comparison type automatically by data type
+# compare_vars <- sapply(Hh_df$Old, auto_type)
+# # Cols to ignore
+# compare_vars <- compare_vars[!(names(compare_vars) %in% c('Houseid','Expflhhn','Expfllhh','Flgfincm','Hhc_msa'))]
+# compare_vars <- compare_vars[!(names(compare_vars) %in% notinOld)]
+# compare_vars <- compare_vars[!(names(compare_vars) %in% c(age_cols, drv_cols, wkr_cols))]
+# compare_vars <- data.frame(variable=names(compare_vars),
+#                            plot_type=compare_vars,
+#                            xlog=F, ylog=F, xangle=0, yangle=0)
+
+# Manually set plot settings
+compare_vars <- fread('./plot_settings.csv')
+
 
 print(paste("Columns in 2001 missing from candidate:",
             paste(notinOld, collapse = ", ")))
@@ -201,11 +223,13 @@ print(paste("Columns in candidate missing from 2001:",
             paste(notinNew, collapse = ", ")))
 ```
 
-```{r hh_plots, eval=T, out.width="100%", warning=TRUE}
-chunker <- function(x, n) split(x, sort(x %% (length(x) %/% n)))
+```{r hh_plots, eval=T, out.height="20%", out.width="100%", warning=FALSE}
+# chunker <- function(x, n) split(x, sort(x %% (length(x) %/% n)))
+chunker <- function(x, n) split(x, ceiling(seq_along(x) / n))
 
-hh_plots <- lapply(names(compare_vars), compare_plot)
-chunks <- chunker(1:length(hh_plots), 4)
+hh_plots <- lapply(split(compare_vars, compare_vars$variable), compare_plot)
+
+chunks <- chunker(1:length(hh_plots), 6)
 
 for(p in chunks) {
   do.call("grid.arrange", c(hh_plots[p], ncol=2))
@@ -213,16 +237,10 @@ for(p in chunks) {
 
 ```
 
-
-
-```{r Hh_df_plots, eval=T}
-
-```
-
-
 ### VEHouseholdTravel
 
 #### CalculateVehicleTrips.R
+
 ```{r CalculateVehicleTrips, eval=F, fig.cap=""}
 plot(density(Hh_df$AveVehTrpLen[Hh_df$IsMetro], na.rm = TRUE),
      xlab = "Average Vehicle Trip Length (miles)",
@@ -248,6 +266,7 @@ legend("topright", lty = 1, col = c(1,2), bty = "n",
 ```
 
 #### CalculateHouseholdDvmt.R
+
 ```{r CalculateHouseholdDvmt, eval=F, fig.cap=""}
 
 plot(
@@ -274,6 +293,7 @@ legend("topright", legend = c("Simulated", "Predicted"), lty = c(1,2))
 ### VEHouseholdVehicles
 
 #### CalculateVehicleOwnCost.R
+
 ```{r CalculateVehicleOwnCost, eval=F, fig.cap=""}
 
 matplot(Depr_AgVt, type = "l", lty = c(1,2), col = "black",
@@ -292,6 +312,7 @@ legend("topleft", legend = c("Auto", "Light Truck"), lty = c(1,2))
 ```
 
 #### AssignVehicleAge.R
+
 ```{r AssignVehicleAge, eval=F, fig.cap=""}
 
 #Cumulate age proportions
@@ -321,7 +342,9 @@ legend("topright", lty = 1:6, col = 1:6, legend = colnames(LtTrkAgeIncDF_AgIg))
 ```
 
 ### VEPowertrainsAndFuels
+
 #### AssignHhVehiclePowertrain.R
+
 ```{r AssignHhVehiclePowertrain, eval=F, fig.cap=""}
 
 #Plot metropolitan lookup for documentation
@@ -350,12 +373,4 @@ legend("topright", legend = c("5-mile range", "150-mile range"), lty = 1,
 
 ```
 
-
 ### VELandUse
-
-
-
-
-
-
-

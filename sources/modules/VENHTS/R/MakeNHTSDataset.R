@@ -1,14 +1,15 @@
-# This script provides the main entry point to this program.
-# Allows a switch between NHTS years and keeps the processing in separate R scripts
-
 #### SETUP PARAMETERS
-globalVariables("Per_df")
+NHTSYEAR = 2001
+# NHTSYEAR = 2017
 
-#NHTSYEAR = 2001
-NHTSYEAR = 2017
+# Additional parameters
 RAW_DIR = file.path('./data-raw', NHTSYEAR)
 PARALLEL = TRUE
 
+
+library(pbapply)
+library(parallel)
+globalVariables("Per_df")
 
 #Identify NHTS data directory
 #----------------------------
@@ -296,16 +297,23 @@ if(NHTSYEAR == 2017) {
 	  flist <- unzip(tf, list = TRUE)$Name
 	  flist <- flist[grepl('.csv', flist)]
 	  
+	  # Column classes
+	  dictionary <- read.csv('./inst/extdata/dictionary2017.csv', colClasses = 'character')
+	  
 	  # Read all the files into memory
 	  raw_dflist <- lapply(flist, function(x) {
-		con <- unz(tf, x)
-		read.csv(con)
+	    # idx <- dictionary[[toupper(gsub('pub.csv','',x))]]!="" & dictionary$Type=='C'
+	    # colClasses <- setNames(rep('character',sum(idx)), dictionary[idx, 'Name'])
+	    colClasses <- c('HOUSEID'='character')
+	    con <- unz(tf, x)
+	    read.csv(con, colClasses = colClasses)
 	  })
+	  
 	  names(raw_dflist) <- gsub('.csv', '', flist)
 	  unlink(tf)
 	  rm(tf, flist)
-	  save(raw_dflist, file = file.path(RAW_DIR, "nhts_dflist.rda"),
-	       compress = TRUE)
+	  
+	  save(raw_dflist, file = file.path(RAW_DIR, "nhts_dflist.rda"), compress = T)
 	} else {
 	  #Otherwise read in from 'data-raw' directory
 	  load(file.path(RAW_DIR, "nhts_dflist.rda"))
@@ -320,7 +328,6 @@ if(NHTSYEAR == 2017) {
 	  # Hh_df <- read.csv(unz(tf, "hhpub.csv"))
 	  Hh_df <- raw_dflist[['hhpub']]
 	  Hh_df <- Hh_df[, Keep_cols[['2017']][['hh']]]
-	  
 	  
 	  # HH_CBSA to HHC_MSA
 	  Hh_df <- merge(Hh_df, msa_xwalk[,c('MSA','CBSA')], 
@@ -382,7 +389,7 @@ if(NHTSYEAR == 2017) {
 				   'MSA' = 'HHC_MSA')
 	  
 	  for(n in names(renames)) {
-		names(Hh_df)[names(Hh_df) == n] <- renames[n]
+	    names(Hh_df)[names(Hh_df) == n] <- renames[n]
 	  }
 	  
 	  rm(HHR_, wrk_df, drv_df, age_df, RATIO16V, n, renames)
@@ -411,6 +418,9 @@ if(NHTSYEAR == 2017) {
 	  # Rename EIADMPG
 	  names(Veh_df)[names(Veh_df) == 'FEGEMPG'] <- 'EIADMPG'
 	  names(Veh_df)[names(Veh_df) == 'ANNMILES'] <- 'VEHMILES'
+	  
+	  # Gas dollars to cents
+	  Veh_df$GSCOST <- Veh_df$GSCOST*100
 	  
 	  save(Veh_df, file = file.path(RAW_DIR, "Veh_df.rda"), compress = TRUE)
 	} else {
@@ -558,6 +568,7 @@ rm(TransitInp_ls)
 rm(Nhts2001Repo)
 
 
+
 #### PROCESS DATASETS ####
 codebook <- read.csv('./inst/extdata/codebook.csv')
 codebook <- codebook[codebook$year == NHTSYEAR, ]
@@ -627,27 +638,48 @@ rm(AgeFields_, AgeBreaks, Ages_HhAg, Drvs_HhAg, Wkrs_HhAg)
 #Process household income data
 #Define income groupings from NHTS code book
 #Assume top value of high income group to be 200K
-IncGrp_ls <-
-  list(
-    c(0, 4999),
-    c(5000, 9999),
-    c(10000, 14999),
-    c(15000, 19999),
-    c(20000, 24999),
-    c(25000, 29999),
-    c(30000, 34999),
-    c(35000, 39999),
-    c(40000, 44999),
-    c(45000, 49999),
-    c(50000, 54999),
-    c(55000, 59999),
-    c(60000, 64999),
-    c(65000, 69999),
-    c(70000, 74999),
-    c(75000, 79999),
-    c(80000, 99999),
-    c(100000, 199999)
-  )
+
+#Income bins differ from 2001 to 2017
+if(NHTSYEAR == 2001) {
+  IncGrp_ls <-
+    list(
+      c(0, 4999),
+      c(5000, 9999),
+      c(10000, 14999),
+      c(15000, 19999),
+      c(20000, 24999),
+      c(25000, 29999),
+      c(30000, 34999),
+      c(35000, 39999),
+      c(40000, 44999),
+      c(45000, 49999),
+      c(50000, 54999),
+      c(55000, 59999),
+      c(60000, 64999),
+      c(65000, 69999),
+      c(70000, 74999),
+      c(75000, 79999),
+      c(80000, 99999),
+      c(100000, 199999)
+    )
+}
+if(NHTSYEAR == 2017) {
+  IncGrp_ls <-
+    list(
+      c(0, 9999),
+      c(10000, 14999),
+      c(15000, 24999),
+      c(25000, 34999),
+      c(35000, 49999),
+      c(50000, 74999),
+      c(75000, 99999),
+      c(100000, 124999),
+      c(125000, 149999),
+      c(150000, 200000),
+      c(200000, 299999)
+    )
+}
+
 #Calculate midpoints in income ranges
 MidPtInc_ <- unlist(lapply(IncGrp_ls, mean))
 #Assign income values
@@ -655,8 +687,7 @@ Hh_df$Income <- MidPtInc_[Hh_df$Hhincttl]
 rm(IncGrp_ls, MidPtInc_)
 #Assign income group variable
 IncBreaks_ <- c( 0, 20000, 40000, 60000, 80000, 100000, 150000 )
-Ig <- c( "0to20K", "20Kto40K", "40Kto60K", "60Kto80K", "80Kto100K",
-         "100KPlus" )
+Ig <- c( "0to20K", "20Kto40K", "40Kto60K", "60Kto80K", "80Kto100K", "100KPlus" )
 Hh_df$IncGrp <- cut(Hh_df$Income, IncBreaks_, labels=Ig, include.lowest=TRUE)
 rm(IncBreaks_, Ig)
 
@@ -837,7 +868,7 @@ if (file.exists(file.path(RAW_DIR, "ToursByHh_df.Rda"))) {
   if(PARALLEL) {
     cl <- parallel::makeCluster(parallel::detectCores() - 1)
     parallel::clusterExport(cl=cl, list("getPersonTours",'Per_df'), envir=environment())
-    ToursByHh_ls <- pblapply(HTrp_ls, getHouseholdTours, cl=cl)
+    ToursByHh_ls <- pbapply::pblapply(HTrp_ls, getHouseholdTours, cl=cl)
     parallel::stopCluster(cl)
   } else {
     ToursByHh_ls <- lapply(HTrp_ls, getHouseholdTours)  

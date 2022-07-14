@@ -197,7 +197,7 @@
 #Set up data and functions to estimate models
 #--------------------------------------------
 #Load NHTS household data
-Hh_df <- loadPackageDataset("Hh_df","VE2001NHTS")
+Hh_df <- loadPackageDataset("Hh_df","VENHTS")
 #Identify records used for estimating metropolitan area models
 IsMetro_ <- Hh_df$Msacat %in% c("1", "2")
 #Add variables to Hh_df
@@ -209,7 +209,7 @@ Hh_df$DrvAgePop <- Hh_df$Hhsize - Hh_df$Age0to14
 Hh_df$Workers <- Hh_df$Wrkcount
 Hh_df$Drivers <- Hh_df$Drvrcnt
 #Convert freeway lane mile per capita from values per 1000 population which is
-#how is represented in household dataset from the VE2001NHTS package to
+#how is represented in household dataset from the VENHTS package to
 #values per person which is how is saved in datastore by VETransportSupply
 #package
 Hh_df$FwyLaneMiPC <- Hh_df$FwyLnMiPC / 1000

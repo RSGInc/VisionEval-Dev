@@ -24,7 +24,7 @@ Imports:
     visioneval
 Suggests:
     knitr,
-    VE2001NHTS,
+    VENHTS,
     NHTS2009,
     SLD
 VignetteBuilder: knitr

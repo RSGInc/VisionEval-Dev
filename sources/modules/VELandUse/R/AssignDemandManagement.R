@@ -13,7 +13,7 @@
 #
 #This module has parameters for the proportional reduction in household vehicle miles traveled (VMT) for worker participation in employee commute options (ECO) program and for household participation in an individualized marketing program (IMP). The default VMT reduction values are contained in the *tdm_parameters.csv* file in the *inst/extdata* directory of this package: 9% for IMP, and 5.4% for ECO. Documentation for those values is in the accompanying *tdm_parameters.txt* file.
 #
-#A model is also estimated to predicts the proportion of household VMT in work tours. The percentage reduction on household VMT as a function of employee commute options programs depends on the number of household workers participating and the proportion of household travel in work tours. A relationship between household size, the number of household workers, and the proportion of household DVMT in work tours is calculated using the *HhTours_df* dataset from the VE2001NHTS package. The following table show the tabulations of total miles, work tour miles, and work tour miles per worker by household size. The proportion of household miles in work tours per household workers is computed from these data.
+#A model is also estimated to predicts the proportion of household VMT in work tours. The percentage reduction on household VMT as a function of employee commute options programs depends on the number of household workers participating and the proportion of household travel in work tours. A relationship between household size, the number of household workers, and the proportion of household DVMT in work tours is calculated using the *HhTours_df* dataset from the VENHTS package. The following table show the tabulations of total miles, work tour miles, and work tour miles per worker by household size. The proportion of household miles in work tours per household workers is computed from these data.
 #
 #<tab:TdmModel_ls$PropMilesPerWkr_df>
 #
@@ -93,8 +93,8 @@ rm(Inp_ls, TdmParameters_df, PropDvmtReduce_)
 #by household including tabulations of total tour mileage, work tour mileage,
 #work tour mileage per worker, number of workers, and household size
 TourMiles_df <- local({
-  NhtsTours_df <- loadPackageDataset("HhTours_df","VE2001NHTS")
-  NhtsHouseholds_df <- loadPackageDataset("Hh_df","VE2001NHTS")
+  NhtsTours_df <- loadPackageDataset("HhTours_df","VENHTS")
+  NhtsHouseholds_df <- loadPackageDataset("Hh_df","VENHTS")
   IsHhVehTour_ <- with(NhtsTours_df, Mode %in% c("Auto", "LtTrk"))
   VehTours_df <- NhtsTours_df[IsHhVehTour_,]
   TourMiles_Hh <-

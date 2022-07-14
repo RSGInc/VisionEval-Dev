@@ -24,7 +24,7 @@ Imports:
     reshape2
 Suggests:
     knitr,
-    VE2001NHTS
+    VENHTS
 Encoding: UTF-8
 VignetteBuilder: knitr
 Roxygen: list(load='source')

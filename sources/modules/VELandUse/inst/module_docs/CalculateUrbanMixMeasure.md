@@ -8,7 +8,7 @@ This module calculates an urban mixed-use measure based on the 2001 National Hou
 
 A binary logit model is used to calculate the probability that a household is located in an urban mixed-use neighborhood as a function of the population density of the Bzone that household resides in and the housing type of the household.
 
-This model is estimated using a household dataset prepared from 2001 National Household Travel Survey public use datasets by the VE2001NHTS package. The HhData_df data frame is loaded from that package and used to estimate the model. Following are the summary statistics for the estimated model:
+This model is estimated using a household dataset prepared from 2001 National Household Travel Survey public use datasets by the VENHTS package. The HhData_df data frame is loaded from that package and used to estimate the model. Following are the summary statistics for the estimated model:
 
 ```
 
