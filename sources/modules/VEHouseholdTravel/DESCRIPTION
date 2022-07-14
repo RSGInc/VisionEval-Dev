@@ -19,7 +19,7 @@ Imports:
     data.table,
     pscl
 Suggests:
-    VE2001NHTS,
+    VENHTS,
     knitr
 Encoding: UTF-8
 VignetteBuilder: knitr

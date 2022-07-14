@@ -16,7 +16,7 @@ NULL
 #
 #This module estimates 2 models. One of them predicts the proportion of household travel occurring in single-occupant vehicle tours that have round trip distances of 20 miles or less. The other predicts the average length of trips in those tours.
 #
-#Two data frames from the VE2001NHTS package are used to develop these models. The Hh_df data frame includes attributes of households used as dependent variables in the models. The HhTours_df data frame is used to identify qualifying tours. The miles in qualifying tours is summed by household and added to the Hh_df data frame. The number of trips in qualifying tours is also summed by household. The average length of trips in qualifying SOV is calculated from the qualifying DVMT and trips. The average household DVMT model from the CalculateHouseholDvmt model is run to estimate the average DVMT of each survey household. Households having incomplete data (mostly because of missing income data) and zero vehicle households are removed from the dataset resulting in 51,924 household records.
+#Two data frames from the VENHTS package are used to develop these models. The Hh_df data frame includes attributes of households used as dependent variables in the models. The HhTours_df data frame is used to identify qualifying tours. The miles in qualifying tours is summed by household and added to the Hh_df data frame. The number of trips in qualifying tours is also summed by household. The average length of trips in qualifying SOV is calculated from the qualifying DVMT and trips. The average household DVMT model from the CalculateHouseholDvmt model is run to estimate the average DVMT of each survey household. Households having incomplete data (mostly because of missing income data) and zero vehicle households are removed from the dataset resulting in 51,924 household records.
 #
 #### Model of Proportion of DVMT in Qualifying SOV Tours
 #
@@ -127,7 +127,7 @@ SovModel_ls <- list(
 #Load household data and calculate added variables
 #-------------------------------------------------
 #Load NHTS household data
-Hh_df <- loadPackageDataset("Hh_df","VE2001NHTS")
+Hh_df <- loadPackageDataset("Hh_df","VENHTS")
 #Add variables to Hh_df
 Hh_df$Density <- Hh_df$Hbppopdn
 Hh_df$LogDensity <- log(Hh_df$Density)
@@ -194,7 +194,7 @@ rm(Include_, IsMetro, Keep_)
 #Calculate mileage in SOV tours having lengths 20 miles or shorter
 #-----------------------------------------------------------------
 #Load NHTS tour data
-HhTours_df <- loadPackageDataset("HhTours_df","VE2001NHTS")
+HhTours_df <- loadPackageDataset("HhTours_df","VENHTS")
 HhTours_dt <- data.table(HhTours_df[,c("Houseid", "Distance", "Persons", "Trips")])
 rm(HhTours_df)
 #Select SOV tours with distances of 20 miles or less

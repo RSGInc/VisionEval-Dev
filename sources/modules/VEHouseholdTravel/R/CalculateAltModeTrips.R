@@ -52,7 +52,7 @@ NULL
 #=============================================
 #Load NHTS household data
 #------------------------
-Hh_df <- loadPackageDataset("Hh_df","VE2001NHTS")
+Hh_df <- loadPackageDataset("Hh_df","VENHTS")
 
 #Estimate the average household DVMT for NHTS households
 #-------------------------------------------------------
