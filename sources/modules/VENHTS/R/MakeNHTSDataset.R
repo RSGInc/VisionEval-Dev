@@ -1,6 +1,6 @@
 #### SETUP PARAMETERS
-NHTSYEAR = 2001
-# NHTSYEAR = 2017
+# NHTSYEAR = 2001
+NHTSYEAR = 2017
 
 # Additional parameters
 RAW_DIR = file.path('./data-raw', NHTSYEAR)
@@ -24,8 +24,16 @@ Nhts2017Repo <-
 
 
 #### INITIALIZE DIRECTORIES
-if(!dir.exists(RAW_DIR)) dir.create(RAW_DIR, recursive=T)
-if(!dir.exists('./data')) dir.create('./data')
+# if(!dir.exists(RAW_DIR)) dir.create(RAW_DIR, recursive=T)
+# if(!dir.exists('./data')) dir.create('./data')
+
+# dfs = ls()
+# for(d in dfs) {
+#   d2 <- paste0(d,'2001')
+#   assign(d2, get(d))
+#   # save(list = d2, file = file.path(RAW_DIR, paste0(d2,".rda")), compress = TRUE)
+# }
+# save(list=paste0(dfs,'2001'), file = './data2001.rda')
 
 
 # DEFINE FUNCTIONS -------------------------------------------------------------
@@ -149,24 +157,22 @@ getHouseholdTours <- function(HTrp_df) {
   HTours_df[, -which(names(HTours_df) == "Signature")]
 }
 
-
-# GET NHTS DATA for 2001 ----------------------------------------------------------------
+#### COLUMN XWALK ####
 # NHTS column xwalk
 nhts_xwalk <- read.csv('./inst/extdata/nhts_xwalk.csv')
 Keep_cols <- list('2001' = split(nhts_xwalk[,c('NHTS2001')], nhts_xwalk$File),
                   '2017' = split(nhts_xwalk[,c('NHTS2017')], nhts_xwalk$File))
 
 Keep_cols <- lapply(Keep_cols, function(k) 
-  lapply(k, function(x) x[!is.na(x) & x!=""]))
+  lapply(k, function(x) unique(x[!is.na(x) & x!=""])))
 
 
+# GET NHTS DATA for 2001 ----------------------------------------------------------------
 if(NHTSYEAR == 2001) {
   Keep_cols2001 <- split(nhts_xwalk[,c('NHTS2001')], nhts_xwalk$File)
   
-  
 	#Load NHTS household data
 	#Download data from repository and process if it has not already been done
-
 	if (!file.exists(file.path(RAW_DIR, "Hh_df.rda"))) {
 	  Hh_df <- getZipDatasetFromRepo(Nhts2001Repo, "HHPUB")
 	  Hh_df <- Hh_df[, Keep_cols[['2001']][['hh']]]
@@ -240,7 +246,6 @@ if(NHTSYEAR == 2001) {
 	#Convert negative values to NA
 	Dt_df[Dt_df < 0] <- NA
 	rm(AllTripsHh_)
-
 }
 
 # GET NHTS DATA for 2017 ----------------------------------------------------------------
@@ -323,9 +328,6 @@ if(NHTSYEAR == 2017) {
 	#Load NHTS household data
 	#Download data from repository and process if it has not already been done
 	if (!file.exists(file.path(RAW_DIR, "Hh_df.rda"))) {
-	  # Keep_ <- colxwalk[colxwalk$File=='hh','NHTS2017']
-	  # Keep_ <- Keep_[Keep_!=""]
-	  # Hh_df <- read.csv(unz(tf, "hhpub.csv"))
 	  Hh_df <- raw_dflist[['hhpub']]
 	  Hh_df <- Hh_df[, Keep_cols[['2017']][['hh']]]
 	  
@@ -376,18 +378,33 @@ if(NHTSYEAR == 2017) {
 	  ]
 	  Hh_df <- merge(HHR_, Hh_df, by='HOUSEID')
 	  
-	  # HHINCTTL 
+	  # HHINCTTL & FLGFINCM
 	  Hh_df$HHINCTTL <- Hh_df$HHFAMINC
+
+	  #MSAPOP imputed
+	  Hh_df <- merge(Hh_df, 
+	        data.frame(MSASIZE=1:6,
+	                   MSAPOP=c(125000, 375000, 750000,2000000, 4000000, -1))
+	  )
 	  
+	  # Fill in missing columns as place holders
+	  if(!('HOMETYPE' %in% colnames(Hh_df))) Hh_df$HOMETYPE <- -8
+	  if(!('HHNUMBIK' %in% colnames(Hh_df))) Hh_df$HHNUMBIK <- -8
+	  if(!('FLGFINCM' %in% colnames(Hh_df))) Hh_df$FLGFINCM <- 1
+	  if(!('EXPFLLHH' %in% colnames(Hh_df))) Hh_df$EXPFLLHH <- Hh_df$WTHHFIN
+	  if(!('EXPFLHHN' %in% colnames(Hh_df))) Hh_df$EXPFLHHN <- Hh_df$WTHHFIN
+	  if(!('HTHUR' %in% colnames(Hh_df))) Hh_df$HTHUR <- Hh_df$HBHUR
+	
 	  # Rename HTHUR
-	  renames <- c('HTHUR' = 'HBHUR',
-				   'R_SEX' = 'HHR_SEX',
-				   'R_AGE' = 'HHR_AGE',
-				   'R_RACE' = 'HHR_RACE',
-				   'DRIVER' = 'HHR_DRVR',
-				   'WTHHFIN' = 'EXPFLLHH',
-				   'MSA' = 'HHC_MSA')
+	  renames <- c('R_SEX' = 'HHR_SEX',
+	               'R_AGE' = 'HHR_AGE',
+	               'R_RACE' = 'HHR_RACE',
+	               'DRIVER' = 'HHR_DRVR',
+	               'HBRESDN' = 'HBHRESDN',
+	               'HTRESDN' = 'HTHRESDN',
+	               'MSA' = 'HHC_MSA')
 	  
+
 	  for(n in names(renames)) {
 	    names(Hh_df)[names(Hh_df) == n] <- renames[n]
 	  }
@@ -479,6 +496,10 @@ if(NHTSYEAR == 2017) {
 	  names(Per_df)[names(Per_df) == 'DISTTOWK17'] <- 'DISTTOWK'
 	  names(Per_df)[names(Per_df) == 'PRICE'] <- 'DTGAS'
 	  
+	  # Fill in missing columns as place holders
+	  if(!('WRKDRIVE' %in% colnames(Per_df))) Per_df$WRKDRIVE <- -1
+	  if(!('COMMDRVR' %in% colnames(Per_df))) Per_df$COMMDRVR <- -1
+	  
 	  save(Per_df, file = file.path(RAW_DIR, "Per_df.rda"), compress = TRUE)
 	} else {
 	  load(file.path(RAW_DIR, "Per_df.rda"))
@@ -492,7 +513,6 @@ if(NHTSYEAR == 2017) {
 	#Convert negative values to NA
 	Per_df[Per_df < 0] <- NA
 }
-
 
 # LOAD METROPOLITAN ROAD AND TRANSIT DATA -------------------------------------------------
 #Describe specifications for road supply data file
@@ -1070,22 +1090,38 @@ Hh_df$Census_r <-
   factor(Hh_df$Census_r,
          labels = c("Northeast", "Midwest", "South", "West"))
 
-Hh_df$Flgfincm <- 1
+
+# Replace as NA with -8
+Hh_df$Flgfincm[is.na(Hh_df$Flgfincm)] <- -8
+Hh_df$Hometype[is.na(Hh_df$Hometype)] <- -8
+
+#
 Hh_df$Flgfincm <-
   factor(Hh_df$Flgfincm,
          levels = c("-7", "-8", "-9", "1", "2"),
          labels = c("Refused", "Don't Know", "Not Ascertained", "Yes", "No"))
+
+Hh_df$Hometype <-
+  factor(Hh_df$Hometype,
+         levels = c("-7", "-8", "1", "2","3","4","5","6","91"),
+         labels = c("Refused", "Don't know", "Single Family", "Duplex", "Attached", "Multi-family",
+                    "Mobile Home", "Dorm", "Other"))
+
 # Hh_df$Flgfincm <-
 #   factor(Hh_df$Flgfincm,
-#          levels = c("-7", "-8", "-9", "1", "2"),
-#          labels = c("Refused", "Don't Know", "Not Ascertained", "Yes", "No"))
+#          levels = c(NA, "1", "2"),
+#          labels = c("Not Ascertained", "Yes", "No"))
+# 
+# Hh_df$Hometype <-
+#   factor(Hh_df$Hometype,
+#          levels = c(NA, "1", "2","3","4","5","6","91"),
+#          labels = c("Don't know", "Single Family", "Duplex", "Attached", "Multi-family",
+#                     "Mobile Home", "Dorm", "Other"))
+
 Hh_df$Hhr_drvr <- factor(Hh_df$Hhr_drvr, labels = c("Yes", "No"))
 Hh_df$Hhr_race <- factor( Hh_df$Hhr_race )
 Hh_df$Hhr_sex <- factor( Hh_df$Hhr_sex, labels = c( "Male", "Female" ) )
-# Hh_df$Hometype <-
-#   factor(Hh_df$Hometype,
-#          labels = c("Single Family", "Duplex", "Attached", "Multi-family",
-#                     "Mobile Home", "Dorm", "Other"))
+
 Hh_df$Lif_cyc <- factor(Hh_df$Lif_cyc)
 Hh_df$Msacat <- factor(Hh_df$Msacat)
 Hh_df$Msasize <- factor(Hh_df$Msasize)
@@ -1285,6 +1321,17 @@ if ( exists("HhTours_df") ) visioneval::savePackageDataset(HhTours_df, overwrite
 #'  @source 2001 National Household Travel Survey and Make2001NHTSDataset.R script.
 "Per_df"
 if ( exists( "Per_df" ) ) visioneval::savePackageDataset(Per_df, overwrite = TRUE)
+
+
+# # Check any missing?
+# load('./data2001.rda')
+# for(x in c('Hh_df', 'Per_df', 'Veh_df', 'HhTours_df')) {
+#   n <- colnames(eval(parse(text=x)))
+#   n2001 <- colnames(eval(parse(text=paste0(x,'2001'))))
+#   print(paste0('Missing columns in ', x, ": ", 
+#                paste(n2001[!(n2001 %in% n)], collapse = ", ")))
+# }
+
 
 # rm(list=ls())
 rm( list=grep("_$",ls(),value=TRUE) )

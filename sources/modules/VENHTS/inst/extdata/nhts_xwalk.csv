@@ -68,29 +68,29 @@ hh,DRV_P11,,From person table
 hh,DRV_P12,,From person table
 hh,DRV_P13,,From person table
 hh,DRV_P14,,From person table
-hh,EXPFLHHN,NA,
+hh,EXPFLHHN,WTHHFIN,
 hh,EXPFLLHH,WTHHFIN,
-hh,FLGFINCM,NA,
+hh,FLGFINCM,,"Assume all captured, yes"
 hh,HBHRESDN,HBRESDN,
 hh,HBHUR,HBHUR,
 hh,HBPPOPDN,HBPPOPDN,
 hh,HHC_MSA,HH_CBSA,From msa_xwalk of HH_CBSA
 hh,HHFAMINC,HHFAMINC,
-hh,HHINCTTL,HHFAMINC,Copy
-hh,HHNUMBIK,NA,
+hh,HHINCTTL,HHFAMINC,
+hh,HHNUMBIK,NA,"Assume -8, missing"
 hh,HHR_AGE,,From persons table 
 hh,HHR_DRVR,,From persons table 
 hh,HHR_RACE,HH_RACE,From persons table 
 hh,HHR_SEX,,From persons table 
 hh,HHSIZE,HHSIZE,
 hh,HHVEHCNT,HHVEHCNT,
-hh,HOMETYPE,NA,
+hh,HOMETYPE,NA,"Assume -8, missing"
 hh,HTEEMPDN,HTEEMPDN,
 hh,HTHRESDN,HTRESDN,
 hh,HTHUR,HBHUR,
 hh,HTPPOPDN,HTPPOPDN,
 hh,LIF_CYC,LIF_CYC,
-hh,MSAPOP,NA,
+hh,MSAPOP,NA,Imputed as mean value of bin
 hh,MSACAT,MSACAT,
 hh,MSASIZE,MSASIZE,
 hh,RAIL,RAIL,
