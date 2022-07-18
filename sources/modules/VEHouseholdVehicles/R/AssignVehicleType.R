@@ -156,7 +156,9 @@ VehicleTypeModelTerms_ <-
     "IsUrbanMixNbrhd"
   )
 #Estimate model
-VehicleTypeModel_ls <- estimateVehicleTypeModel(Hh_df, DepVar_mx, VehicleTypeModelTerms_)
+VehicleTypeModel_ls <- estimateVehicleTypeModel(EstData_df = Hh_df,
+                                                Counts_mx = DepVar_mx, 
+                                                StartTerms_ = VehicleTypeModelTerms_)
 
 #Check the model
 #---------------

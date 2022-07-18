@@ -49,11 +49,14 @@
 #Prepare 2001 NHTS data
 #----------------------
 #Load 2001 NHTS household and vehicle data
-Hh_df <- loadPackageDataset("Hh_df","VENHTS")
-Veh_df <- loadPackageDataset("Veh_df","VENHTS")
+Hh_df <- visioneval::loadPackageDataset("Hh_df","VENHTS")
+Veh_df <- visioneval::loadPackageDataset("Veh_df","VENHTS")
 #Create a vehicle age variable and cap at 30 years
+
+# Choose the closest, infers NHTS year
+NHTSYEAR <- c(2001, 2009, 2017)[which.min(abs(c(2001, 2009, 2017) - max(Veh_df$Vehyear, na.rm=T)))]
 MaxAge <- 30
-Veh_df$VehAge <- 2002 - Veh_df$Vehyear
+Veh_df$VehAge <- max(Veh_df$Vehyear, na.rm=T) - Veh_df$Vehyear
 Veh_df <- Veh_df[Veh_df$VehAge <= MaxAge,]
 #Recode the vehicle type field
 Veh_df$Type[Veh_df$Type == "LightTruck"] <- "LtTrk"
@@ -97,7 +100,7 @@ LtTrkAgeCDF_Ag <- cumsum(rowSums(LtTrkAgeIncDF_AgIg))
 #Document vehicle age proportions
 #--------------------------------
 #Cumulate age proportions
-png("data/cum_age_props_by_veh-type.png", height = 480, width = 480)
+png(paste0("data/cum_age_props_by_veh-type_", NHTSYEAR, ".png"), height = 480, width = 480)
 plot(0:30, AutoAgeCDF_Ag, type = "l", xlab = "Vehicle Age (years)",
      ylab = "Proportion of Vehicles",
      main = "Cumulative Proportion of Vehicles by Age")
@@ -106,7 +109,7 @@ legend("bottomright", lty = c(1,2), legend = c("Auto", "Light Truck"),
        bty = "n")
 dev.off()
 #Document auto age proportions by household income group
-png("data/auto_age_props_by_inc.png", height = 480, width = 480)
+png(paste0("data/auto_age_props_by_inc_", NHTSYEAR, ".png"), height = 480, width = 480)
 Temp_AgIg <- sweep(AutoAgeIncDF_AgIg, 2, colSums(AutoAgeIncDF_AgIg), "/")
 matplot(Temp_AgIg, type = "l", xlab = "Vehicle Age (years)",
         ylab = "Proportion of Vehicles",
@@ -115,7 +118,7 @@ legend("topright", lty = 1:6, col = 1:6, legend = colnames(AutoAgeIncDF_AgIg))
 rm(Temp_AgIg)
 dev.off()
 #Document light truck age proportions by household income group
-png("data/lttrk_age_props_by_inc.png", height = 480, width = 480)
+png(paste0("data/lttrk_age_props_by_inc_", NHTSYEAR, ".png"), height = 480, width = 480)
 Temp_AgIg <- sweep(LtTrkAgeIncDF_AgIg, 2, colSums(LtTrkAgeIncDF_AgIg), "/")
 matplot(Temp_AgIg, type = "l", xlab = "Vehicle Age (years)",
         ylab = "Proportion of Vehicles",

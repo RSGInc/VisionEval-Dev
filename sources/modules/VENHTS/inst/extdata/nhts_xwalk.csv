@@ -31,57 +31,57 @@ person,USEPUBTR,USEPUBTR,
 person,WRKDRIVE,NA,
 person,WRKTRANS,WRKTRANS,
 person,WORKER,WORKER,
-person,DTGAS,,PRICE from HH file
+person,DTGAS,,Derived from PRICE variable in households file
 person,DISTTOWK,DISTTOWK17,
 person,DRIVER,DRIVER,
 person,R_AGE,R_AGE,
 person,R_SEX,R_SEX,
 hh,HOUSEID,HOUSEID,
-hh,AGE_P1,,From person table
-hh,AGE_P2,,From person table
-hh,AGE_P3,,From person table
-hh,AGE_P4,,From person table
-hh,AGE_P5,,From person table
-hh,AGE_P6,,From person table
-hh,AGE_P7,,From person table
-hh,AGE_P8,,From person table
-hh,AGE_P9,,From person table
-hh,AGE_P10,,From person table
-hh,AGE_P11,,From person table
-hh,AGE_P12,,From person table
-hh,AGE_P13,,From person table
-hh,AGE_P14,,From person table
+hh,AGE_P1,,Derived from persons file
+hh,AGE_P2,,Derived from persons file
+hh,AGE_P3,,Derived from persons file
+hh,AGE_P4,,Derived from persons file
+hh,AGE_P5,,Derived from persons file
+hh,AGE_P6,,Derived from persons file
+hh,AGE_P7,,Derived from persons file
+hh,AGE_P8,,Derived from persons file
+hh,AGE_P9,,Derived from persons file
+hh,AGE_P10,,Derived from persons file
+hh,AGE_P11,,Derived from persons file
+hh,AGE_P12,,Derived from persons file
+hh,AGE_P13,,Derived from persons file
+hh,AGE_P14,,Derived from persons file
 hh,CENSUS_D,CENSUS_D,
 hh,CENSUS_R,CENSUS_R,
 hh,DRVRCNT,DRVRCNT,
-hh,DRV_P1,,From person table
-hh,DRV_P2,,From person table
-hh,DRV_P3,,From person table
-hh,DRV_P4,,From person table
-hh,DRV_P5,,From person table
-hh,DRV_P6,,From person table
-hh,DRV_P7,,From person table
-hh,DRV_P8,,From person table
-hh,DRV_P9,,From person table
-hh,DRV_P10,,From person table
-hh,DRV_P11,,From person table
-hh,DRV_P12,,From person table
-hh,DRV_P13,,From person table
-hh,DRV_P14,,From person table
+hh,DRV_P1,,Derived from persons file
+hh,DRV_P2,,Derived from persons file
+hh,DRV_P3,,Derived from persons file
+hh,DRV_P4,,Derived from persons file
+hh,DRV_P5,,Derived from persons file
+hh,DRV_P6,,Derived from persons file
+hh,DRV_P7,,Derived from persons file
+hh,DRV_P8,,Derived from persons file
+hh,DRV_P9,,Derived from persons file
+hh,DRV_P10,,Derived from persons file
+hh,DRV_P11,,Derived from persons file
+hh,DRV_P12,,Derived from persons file
+hh,DRV_P13,,Derived from persons file
+hh,DRV_P14,,Derived from persons file
 hh,EXPFLHHN,WTHHFIN,
 hh,EXPFLLHH,WTHHFIN,
-hh,FLGFINCM,,"Assume all captured, yes"
+hh,FLGFINCM,,Assumed all household members incomes are included
 hh,HBHRESDN,HBRESDN,
 hh,HBHUR,HBHUR,
 hh,HBPPOPDN,HBPPOPDN,
-hh,HHC_MSA,HH_CBSA,From msa_xwalk of HH_CBSA
+hh,HHC_MSA,HH_CBSA,Derived from msa_xwalk of HH_CBSA
 hh,HHFAMINC,HHFAMINC,
 hh,HHINCTTL,HHFAMINC,
-hh,HHNUMBIK,NA,"Assume -8, missing"
-hh,HHR_AGE,,From persons table 
-hh,HHR_DRVR,,From persons table 
-hh,HHR_RACE,HH_RACE,From persons table 
-hh,HHR_SEX,,From persons table 
+hh,HHNUMBIK,NA,Assuming missing for all: -8
+hh,HHR_AGE,,Derived from persons file
+hh,HHR_DRVR,,Derived from persons file
+hh,HHR_RACE,HH_RACE,Derived from persons file
+hh,HHR_SEX,,Derived from persons file
 hh,HHSIZE,HHSIZE,
 hh,HHVEHCNT,HHVEHCNT,
 hh,HOMETYPE,NA,"Assume -8, missing"
@@ -98,18 +98,18 @@ hh,RATIO16V,,From persons and hh table
 hh,URBAN,URBAN,
 hh,URBRUR,URBRUR,
 hh,WRKCOUNT,WRKCOUNT,
-hh,WKR_P1,,From person table
-hh,WKR_P2,,From person table
-hh,WKR_P3,,From person table
-hh,WKR_P4,,From person table
-hh,WKR_P5,,From person table
-hh,WKR_P6,,From person table
-hh,WKR_P7,,From person table
-hh,WKR_P8,,From person table
-hh,WKR_P9,,From person table
-hh,WKR_P10,,From person table
-hh,WKR_P11,,From person table
-hh,WKR_P12,,From person table
-hh,WKR_P13,,From person table
-hh,WKR_P14,,From person table
+hh,WKR_P1,,Derived from persons file
+hh,WKR_P2,,Derived from persons file
+hh,WKR_P3,,Derived from persons file
+hh,WKR_P4,,Derived from persons file
+hh,WKR_P5,,Derived from persons file
+hh,WKR_P6,,Derived from persons file
+hh,WKR_P7,,Derived from persons file
+hh,WKR_P8,,Derived from persons file
+hh,WKR_P9,,Derived from persons file
+hh,WKR_P10,,Derived from persons file
+hh,WKR_P11,,Derived from persons file
+hh,WKR_P12,,Derived from persons file
+hh,WKR_P13,,Derived from persons file
+hh,WKR_P14,,Derived from persons file
 hh,CNTTDHH,CNTTDHH,
