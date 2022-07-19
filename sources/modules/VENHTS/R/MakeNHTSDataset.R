@@ -500,6 +500,9 @@ if(NHTSYEAR == 2017) {
 	  if(!('WRKDRIVE' %in% colnames(Per_df))) Per_df$WRKDRIVE <- -1
 	  if(!('COMMDRVR' %in% colnames(Per_df))) Per_df$COMMDRVR <- -1
 	  
+	  # Driver status for 0 to 14 years
+	  Per_df[Per_df$R_AGE < 15,'DRIVER'] <- 2	  
+	  
 	  save(Per_df, file = file.path(RAW_DIR, "Per_df.rda"), compress = TRUE)
 	} else {
 	  load(file.path(RAW_DIR, "Per_df.rda"))

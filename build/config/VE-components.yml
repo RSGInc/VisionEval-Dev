@@ -92,7 +92,6 @@ Components:
       - pbapply
       - parallel
       - nnet
-
   VE2001NHTS:
     # VE2001NHTS is only used internally for estimating other models
     # Rethink how it is packaged and used for local re-estimation (future change)
@@ -118,7 +117,7 @@ Components:
       - ordinal
       - reshape2
     VE:
-      - VE2001NHTS
+      - VENHTS
   VELandUse:
     Type: module
     Path: sources/modules
@@ -127,7 +126,7 @@ Components:
       - fields
       - geosphere
     VE:
-      - VE2001NHTS
+      - VENHTS
       - VESimHouseholds
   VEPowertrainsAndFuels:
     Type: module
@@ -136,7 +135,7 @@ Components:
     CRAN:
       - data.table
     VE:
-      - VE2001NHTS
+      - VENHTS
       - VEHouseholdTravel
   VESimLandUse:
     Type: module
