@@ -38,6 +38,7 @@ Components:
       - yaml
       - stringr
       - knitr
+      - bookdown            # for rendering documentation
     BioC:
       - rhdf5
   VEModel: # End-user R API
@@ -285,7 +286,6 @@ Components:
     Path: sources # copies sources/runtime/* to ve.runtime recursively
 
 # "Type: script" components are copied to the runtime root under their name
-# Use 
   LICENSE:
     Type: script
     Path: "."
@@ -295,13 +295,17 @@ Components:
     CRAN:
       - import
       - jsonlite
-  walkthrough:
+  walkthrough/[01]*.R: # Walkthrough script files
     Type: script
     Path: sources/framework/VEModel/inst
+  Readme.md: # Walkthrough detailed instructions
+    Type: script
+    Path: sources/framework/VEModel/inst/walkthrough
+    Target: walkthrough              # output path relative to "ve.runtime" for scripts
   api:                               # "package" for 'docs' type is the last element (can be file name)
     Type: docs
     Path: "."                        # base directory below root to gather docs
-    Target: visioneval/api           # output path relative to "ve.docs"
+    Target: visioneval/api           # output path relative to "ve.docs" for docs
   RStudio.md:
     Type: docs
     Path: build

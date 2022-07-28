@@ -15,25 +15,25 @@ source(file.path(ve.installer,"scripts","get-runtime-config.R"))
 # Build tool dependencies
 require(tools,quietly=TRUE)
 if ( ! suppressWarnings(requireNamespace("devtools",quietly=TRUE)) ) {
-  install.packages("devtools", lib=dev.lib, type=.Platform$pkgType )
+  install.packages("devtools", lib=dev.lib, repos=CRAN.mirror, type=.Platform$pkgType )
 }
 if ( ! suppressWarnings(requireNamespace("roxygen2",quietly=TRUE)) ) {
-  install.packages("roxygen2", lib=dev.lib, type=.Platform$pkgType )
+  install.packages("roxygen2", lib=dev.lib, repos=CRAN.mirror, type=.Platform$pkgType )
 }
 if ( ! suppressWarnings(requireNamespace("rcmdcheck",quietly=TRUE)) ) {
-  install.packages("rcmdcheck", lib=dev.lib, type=.Platform$pkgType )
+  install.packages("rcmdcheck", lib=dev.lib, repos=CRAN.mirror, type=.Platform$pkgType )
 }
 if ( ! suppressWarnings(requireNamespace("withr",quietly=TRUE)) ) {
-  install.packages("withr", lib=dev.lib, type=.Platform$pkgType )
+  install.packages("withr", lib=dev.lib, repos=CRAN.mirror, type=.Platform$pkgType )
 }
 # We're not using 'markdown', but some vignette creation fails if it's not present.
 # even though we're using knitr as the vignette engine, which gets dragged in from
 # elsewhere...
 if ( ! suppressWarnings(requireNamespace("markdown",quietly=TRUE)) ) {
-  install.packages("markdown", lib=dev.lib, type=.Platform$pkgType )
+  install.packages("markdown", lib=dev.lib, repos=CRAN.mirror, type=.Platform$pkgType )
 }
 if ( ! suppressWarnings(requireNamespace("rmarkdown",quietly=TRUE)) ) {
-  install.packages("rmarkdown", lib=dev.lib, type=.Platform$pkgType )
+  install.packages("rmarkdown", lib=dev.lib, repos=CRAN.mirror, type=.Platform$pkgType )
 }
 
 message("========== BUILD MODULES ==========")
@@ -282,7 +282,7 @@ for ( module in seq_along(package.names) ) {
     if ( ".VEbuildignore" %in% dot.files ) {
       ignore.files <- ".VEbuildignore"
       # These are patterns to ignore when copying to src/ folder for build
-      # Generally a subset of .Rbuilditnore (keeping things like the VEModel walkthrough
+      # Generally a subset of .Rbuildignore (keeping things like the VEModel walkthrough)
     } else {
       ignore.files <- ".Rbuildignore"
       # Do not copy anything that will be ignored during the R build
@@ -541,6 +541,7 @@ for ( module in seq_along(package.names) ) {
           # On Windows, install from the binary package
           cat("++++++++++ Installing built package:",built.package,"\n")
           install.packages(built.package, repos=NULL, lib=ve.lib, type=ve.build.type) # so they will be available for later modules
+          cat("++++++++++ DONE",package.names[module],"\n\n")
         }
       } else { # source build
         # Just do installation directly from source package (no binary package created)

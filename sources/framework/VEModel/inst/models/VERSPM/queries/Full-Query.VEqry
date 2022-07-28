@@ -920,7 +920,7 @@ QuerySpec <- list(
   #---------------------------------
   list(
     Name = "UrbanAveHhIncomeLowInc",
-    Function = "UrbanTotalHhIncomeLowInc.min / UrbanHhNumLowInc.min",
+    Function = "UrbanTotalHhIncomeLowInc / UrbanHhNumLowInc",
     Units = "USD per year",
     Description = "Average annual low household income (0to20K 2010$) in the urban area"
   ),
@@ -1019,7 +1019,7 @@ QuerySpec <- list(
   #Low income household vehicle Own & out-of-pocket costs share of HH low Income total (all low income HHs)
   list(
     Name = "HhVehTravCostShareLowInc",
-    Function = "(UrbanVehOperatingCostLowInc.min  + UrbanVehOwnershipCostLowInc.min * UrbanHhNumLowInc.min)/ UrbanTotalHhIncomeLowInc.min",
+    Function = "(UrbanVehOperatingCostLowInc  + UrbanVehOwnershipCostLowInc * UrbanHhNumLowInc)/ UrbanTotalHhIncomeLowInc",
     Units = "Proportion",
     Description = "Low income (0to20K 2010$) household vehicle Own & out-of-pocket costs share of HH low income total (all low income HHs)in urban area"
   ),
@@ -1035,7 +1035,7 @@ QuerySpec <- list(
   #urban DVMT per Capita in LowInc HHs
   list(
     Name = "UrbanLdvDmvtPerCapLowInc",
-    Function = "UrbanHhDvmtLowInc.min / UrbanHhPopLowInc.min",
+    Function = "UrbanHhDvmtLowInc / UrbanHhPopLowInc",
     Units = "Dvmt per person",
     Description = "daily vehicle miles traveled per person in low income (0to20K 2010$) households residing in the urban area."
   ),
@@ -1083,7 +1083,6 @@ QuerySpec <- list(
     Name = "MedianBzonePopDen",
     RequireNot = c(Dataset="LocType",Table="Bzone"),
     Summarize = list(
-      # Not clear why some UrbanArea==0...
       Expr = "median(UrbanPop[UrbanArea!=0] / UrbanArea[UrbanArea!=0])",
       Units = c(
         UrbanPop = "PRSN",
