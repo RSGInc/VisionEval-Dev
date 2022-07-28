@@ -69,7 +69,6 @@ getZipDatasetFromRepo <- function(Repo, DatasetName) {
   Data_df
 }
 
-
 #Define function to convert name to proper name (only first letter capitalized)
 toProperName <- function(X){
   EndX <- nchar(X)
@@ -156,6 +155,77 @@ getHouseholdTours <- function(HTrp_df) {
   }))
   HTours_df[, -which(names(HTours_df) == "Signature")]
 }
+
+
+loadRData <- function(fileName){
+  #loads an RData file, and returns it
+  load(fileName)
+  get(ls()[ls() != "fileName"])
+}
+
+# Estimate hometype from 2001.
+impute_hometype_model <- function(df) {
+  # IMPUTE HOMETYPE
+  Hh_df2001 <- loadRData(file.path('./data-raw', 2001, "Hh_df.rda"))
+  #load('./inst/extdata/data2001.Rda')
+  
+  # Fetch age cols to stash
+  int_cols <- colnames(Hh_df2001)[grepl('AGE_|DRV_|WKR_', colnames(Hh_df2001))]
+  int_cols <- c(int_cols, "WRKCOUNT", "DRVRCNT", "HHSIZE", "HHVEHCNT")
+  chr_cols <- c(
+    #"MSASIZE", "HBPPOPDN", "HHR_RACE", "HBHRESDN", "HTHRESDN", 
+    "HBHUR", "RAIL", "HTEEMPDN", "HTPPOPDN", "LIF_CYC", "HHINCTTL"
+    )
+  num_cols <- c('RATIO16V')
+  
+  # Set integer floor
+  Hh_df2001[,int_cols][Hh_df2001[,int_cols]<0] <- 0L
+  df[,int_cols][df[,int_cols]<0] <- 0L
+  df[,int_cols][is.na(df[,int_cols])] <- 0L
+  
+  # Convert to characters
+  Hh_df2001[,chr_cols] <- lapply(Hh_df2001[,chr_cols], as.character)
+  df[,chr_cols] <- lapply(df[,chr_cols], as.character)
+  
+  # ConverT to factor
+  Hh_df2001$HOMETYPE <- as.character(Hh_df2001$HOMETYPE)
+  Hh_df2001$HOMETYPE <- as.factor(Hh_df2001$HOMETYPE)
+  
+  # colnames(Hh_df)[colnames(Hh_df) %in% colnames(Hh_df2001)]
+  
+  
+  # ### TEST RUN FOR ACCURACY
+  # # 75% of the sample size
+  # smp_size <- floor(0.75 * nrow(Hh_df2001))
+  # 
+  # ## set the seed to make your partition reproducible
+  # train_ind <- sample(seq_len(nrow(Hh_df2001)), size = smp_size)
+  # train_df <- Hh_df2001[train_ind, ]
+  # test_df <- Hh_df2001[-train_ind, ]
+  # 
+  # 
+  # formula <- as.formula(paste('HOMETYPE ~',
+  #                             paste(c(int_cols, chr_cols), collapse = ' + ')))
+  # 
+  # testmodel <- nnet::multinom(formula, data=train_df)
+  # 
+  # test_df$HOMETYPE_PRED <- predict(testmodel, newdata = test_df)
+  # 
+  # print(as.matrix(table(Actual_Values = test_df$HOMETYPE, 
+  #                 Predicted_Values = test_df$HOMETYPE_PRED)))
+  print(paste0('Overall accuracy: ',
+               round(
+                 100*sum(test_df$HOMETYPE == test_df$HOMETYPE_PRED) / nrow(test_df)
+                 ), "%"))
+  
+  
+  #### Full model run
+  fullmodel <- nnet::multinom(formula, data=Hh_df2001)
+  HOMETYPE_PRED <- predict(fullmodel, newdata = df)
+  
+  return(as.integer(as.character(HOMETYPE_PRED)))
+}
+
 
 #### COLUMN XWALK ####
 # NHTS column xwalk
@@ -369,6 +439,8 @@ if(NHTSYEAR == 2017) {
 	  )
 	  
 	  RATIO16V$RATIO16V <- RATIO16V$Freq / RATIO16V$HHVEHCNT
+	  RATIO16V$RATIO16V <- ifelse(is.finite(RATIO16V$RATIO16V), RATIO16V$RATIO16V, 0)
+	  
 	  Hh_df <- merge(Hh_df, RATIO16V[,c('HOUSEID',"RATIO16V")])
 	  
 	  # Sex, Age, Race of household respondent
@@ -409,6 +481,11 @@ if(NHTSYEAR == 2017) {
 	    names(Hh_df)[names(Hh_df) == n] <- renames[n]
 	  }
 	  
+	  
+	  #### IMPUTE HOMETYPE
+	  Hh_df$HOMETYPE <- impute_hometype_model(Hh_df)
+	  
+	  # Cleanup
 	  rm(HHR_, wrk_df, drv_df, age_df, RATIO16V, n, renames)
 	  save(Hh_df, file = file.path(RAW_DIR, "Hh_df.rda"), compress = TRUE)
 	} else {
@@ -423,7 +500,7 @@ if(NHTSYEAR == 2017) {
 	names(Hh_df) <- toProperName(names(Hh_df))
 	#Convert negative values to NA
 	Hh_df[Hh_df < 0] <- NA
-
+	
 
 	#Load NHTS vehicle data
 	#Download data from repository and process if it has not already been done
@@ -1134,6 +1211,7 @@ Hh_df$Urbrur <- factor(Hh_df$Urbrur)
 Hh_df$LargeHh <- Hh_df$Hhsize * 0
 Hh_df$LargeHh[Hh_df$Hhsize > 3] <- 1
 Hh_df$LargeHh <- factor(Hh_df$LargeHh, labels = c("Small", "Large"))
+
 #Clean up workspace
 rm(Dt_df, toProperName, toVecFrom1DAry)
 
