@@ -11,7 +11,7 @@ for(Year in getYears()) {
   runModule("CalculateUrbanMixMeasure",        "VELandUse",             RunFor = "AllYears",    RunYear = Year)
   runModule("AssignParkingRestrictions",       "VELandUse",             RunFor = "AllYears",    RunYear = Year)
   runModule("AssignDemandManagement",          "VELandUse",             RunFor = "AllYears",    RunYear = Year)
-  runModule("AssignCarSvcAvailability",        "VELandUse",             RunFor = "AllYears",    RunYear = Year)
+  runModule("AssignCarSvcAvailability",        "VEFHWAAV",              RunFor = "AllYears",    RunYear = Year)
   runModule("AssignTransitService",            "VETransportSupply",     RunFor = "AllYears",    RunYear = Year)
   runModule("AssignRoadMiles",                 "VETransportSupply",     RunFor = "AllYears",    RunYear = Year)
   runModule("AssignDrivers",                   "VEHouseholdVehicles",   RunFor = "AllYears",    RunYear = Year)

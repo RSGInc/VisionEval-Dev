@@ -18,3 +18,7 @@ Seed           : 1  # Same seed used for all scenarios
 Model          : VERSPM 3.0 AV
 Region         : RVMPO
 State          : OR
+Scenario       : VERSPM RVMPO AV
+Description    : Base + Future Year AV Scenario
+BaseYear       : 2010
+Years          : [2010, 2038]
