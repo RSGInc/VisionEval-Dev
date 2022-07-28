@@ -1,3 +1,4 @@
+
 for(Year in getYears()) {
   runModule("CreateHouseholds",                "VESimHouseholds",       RunFor = "AllYears",    RunYear = Year)
   runModule("PredictWorkers",                  "VESimHouseholds",       RunFor = "AllYears",    RunYear = Year)
@@ -10,7 +11,7 @@ for(Year in getYears()) {
   runModule("CalculateUrbanMixMeasure",        "VELandUse",             RunFor = "AllYears",    RunYear = Year)
   runModule("AssignParkingRestrictions",       "VELandUse",             RunFor = "AllYears",    RunYear = Year)
   runModule("AssignDemandManagement",          "VELandUse",             RunFor = "AllYears",    RunYear = Year)
-  runModule("AssignCarSvcAvailability",        "VEFHWAAV",              RunFor = "AllYears",    RunYear = Year)
+  runModule("AssignCarSvcAvailability",        "VELandUse",             RunFor = "AllYears",    RunYear = Year)
   runModule("AssignTransitService",            "VETransportSupply",     RunFor = "AllYears",    RunYear = Year)
   runModule("AssignRoadMiles",                 "VETransportSupply",     RunFor = "AllYears",    RunYear = Year)
   runModule("AssignDrivers",                   "VEHouseholdVehicles",   RunFor = "AllYears",    RunYear = Year)
@@ -27,15 +28,15 @@ for(Year in getYears()) {
   runModule("DivertSovTravel",                 "VEHouseholdTravel",     RunFor = "AllYears",    RunYear = Year)
   runModule("CalculateCarbonIntensity",        "VEPowertrainsAndFuels", RunFor = "AllYears",    RunYear = Year)
   runModule("AssignHhVehiclePowertrain",       "VEPowertrainsAndFuels", RunFor = "AllYears",    RunYear = Year)
-  # for (i in 1:2) {
-  #   runModule("CalculateRoadDvmt",             "VEFHWAAV",              RunFor = "AllYear",    RunYear = Year)
-  #   runModule("CalculateRoadPerformance",      "VEFHWAAV",              RunFor = "AllYears",    RunYear = Year)
-  #   runModule("CalculateMpgMpkwhAdjustments",  "VETravelPerformance",   RunFor = "AllYears",    RunYear = Year)
-  #   runModule("AdjustHhVehicleMpgMpkwh",       "VETravelPerformance",   RunFor = "AllYears",    RunYear = Year)
-  #   runModule("CalculateVehicleOperatingCost", "VEFHWAAV",              RunFor = "AllYears",    RunYear = Year)
-  #   runModule("BudgetHouseholdDvmt",           "VETravelPerformance",   RunFor = "AllYears",    RunYear = Year)
-  #   runModule("BalanceRoadCostsAndRevenues",   "VETravelPerformance",   RunFor = "AllYears",    RunYear = Year)
-  # }
-  # runModule("CalculateComEnergyAndEmissions",  "VETravelPerformance",   RunFor = "AllYears",    RunYear = Year)
-  # runModule("CalculatePtranEnergyAndEmissions","VETravelPerformance",   RunFor = "AllYears",    RunYear = Year)
+  for (i in 1:2) {
+    runModule("CalculateRoadDvmt",             "VEFHWAAV",              RunFor = "AllYear",    RunYear = Year)
+    runModule("CalculateRoadPerformance",      "VEFHWAAV",              RunFor = "AllYears",    RunYear = Year)
+    runModule("CalculateMpgMpkwhAdjustments",  "VEFHWAAV",              RunFor = "AllYears",    RunYear = Year)
+    runModule("AdjustHhVehicleMpgMpkwh",       "VETravelPerformance",   RunFor = "AllYears",    RunYear = Year)
+    runModule("CalculateVehicleOperatingCost", "VEFHWAAV",              RunFor = "AllYears",    RunYear = Year)
+    runModule("BudgetHouseholdDvmt",           "VEFHWAAV",              RunFor = "AllYears",    RunYear = Year)
+    runModule("BalanceRoadCostsAndRevenues",   "VETravelPerformance",   RunFor = "AllYears",    RunYear = Year)
+  }
+  runModule("CalculateComEnergyAndEmissions",  "VETravelPerformance",   RunFor = "AllYears",    RunYear = Year)
+  runModule("CalculatePtranEnergyAndEmissions","VETravelPerformance",   RunFor = "AllYears",    RunYear = Year)
 }

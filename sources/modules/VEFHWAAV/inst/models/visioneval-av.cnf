@@ -12,17 +12,9 @@ GeoFile        : geo.csv
 ModelParamFile : model_parameters.json # Located in InputDir
 QueryDir       : queries
 resultsPath    : results
-LoadDatastore  : true
 Seed           : 1  # Same seed used for all scenarios
 
 # Model description
 Model          : VERSPM 3.0 AV
 Region         : RVMPO
 State          : OR
-ModelStages    : # specify explicitly to avoid processing base scenario
-    "assign-drivers":
-      Dir: assign-drivers
-      Reportable: true
-    "av-base":
-      Dir: av-base
-      Reportable: true
