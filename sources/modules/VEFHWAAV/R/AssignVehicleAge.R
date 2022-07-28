@@ -599,7 +599,7 @@ AssignVehicleAge <- function(L) {
   set.seed(L$G$Seed)
   #Create index to match household records with vehicle records
   HhToVehIdx_Ve <- match(L$Year$Vehicle$HhId, L$Year$Household$HhId)
-
+  
   #Create an income group datase
   #-----------------------------
   Ig <- c("0to20K", "20Kto40K", "40Kto60K", "60Kto80K", "80Kto100K", "100KPlus")
@@ -611,7 +611,7 @@ AssignVehicleAge <- function(L) {
                labels = Ig,
                include.lowest = TRUE))[HhToVehIdx_Ve]
     )
-
+  
   #Iterate by Azone and assign vehicle age for non-automated vehicles
   #------------------------------------------------------------------
   NumVeh <- length(L$Year$Vehicle$VehId)
@@ -628,54 +628,58 @@ AssignVehicleAge <- function(L) {
     Own_df <-
       data.frame(lapply(L$Year$Vehicle[Fields_], function(x) x[UseOwn]), stringsAsFactors = FALSE)
     Own_df$Age <- NA
-    #Calculate income group proportions by vehicle type
-    NumVeh_IgTy <- with(Own_df, table(IncGrp, Type))
-    IncProp_IgTy <- sweep(NumVeh_IgTy, 2, colSums(NumVeh_IgTy), "/")
-    #Calculate cumulative age distributions by type
-    VehicleAgeModel_ls <- loadPackageDataset("VehicleAgeModel_ls","VEFHWAAV")
-    AutoAgeProp_Ag <-
-      adjustAgeDistribution(
-        VehicleAgeModel_ls$Auto$AgeCDF_Ag,
-        AutoMeanAge)$Dist
-    LtTrkAgeProp_Ag <-
-      adjustAgeDistribution(
-        VehicleAgeModel_ls$LtTrk$AgeCDF_Ag,
-        LtTrkMeanAge)$Dist
-    #Calculate age distributions by income group
-    AutoAgePropByInc_AgIg <-
-      calcAgeDistributionByInc(
-        VehicleAgeModel_ls$Auto$AgeIncJointProp_AgIg,
-        AutoAgeProp_Ag,
-        IncProp_IgTy[,"Auto"]
-      )
-    LtTrkAgePropByInc_AgIg <-
-      calcAgeDistributionByInc(
-        VehicleAgeModel_ls$LtTrk$AgeIncJointProp_AgIg,
-        LtTrkAgeProp_Ag,
-        IncProp_IgTy[,"LtTrk"]
-      )
-    #Assign ages for automobiles
-    for (ig in Ig) {
-      Ages_ <-
-        sample(
-          0:30,
-          NumVeh_IgTy[ig, "Auto"],
-          replace = TRUE,
-          prob = AutoAgePropByInc_AgIg[,ig])
-      Own_df$Age[Own_df$IncGrp == ig & Own_df$Type == "Auto"] <- Ages_
+    if(nrow(Own_df) > 0){
+      #Calculate income group proportions by vehicle type
+      NumVeh_IgTy <- with(Own_df, table(IncGrp, Type=factor(Type, levels = c("Auto", "LtTrk"))))
+      IncProp_IgTy <- sweep(NumVeh_IgTy, 2, colSums(NumVeh_IgTy), "/")
+      IncProp_IgTy[is.na(IncProp_IgTy)] <- 1/length(IncProp_IgTy[is.na(IncProp_IgTy)])
+      #Calculate cumulative age distributions by type
+      VehicleAgeModel_ls <- loadPackageDataset("VehicleAgeModel_ls","VEFHWAAV")
+      AutoAgeProp_Ag <-
+        adjustAgeDistribution(
+          VehicleAgeModel_ls$Auto$AgeCDF_Ag,
+          AutoMeanAge)$Dist
+      LtTrkAgeProp_Ag <-
+        adjustAgeDistribution(
+          VehicleAgeModel_ls$LtTrk$AgeCDF_Ag,
+          LtTrkMeanAge)$Dist
+      #Calculate age distributions by income group
+      AutoAgePropByInc_AgIg <-
+        calcAgeDistributionByInc(
+          VehicleAgeModel_ls$Auto$AgeIncJointProp_AgIg,
+          AutoAgeProp_Ag,
+          IncProp_IgTy[,"Auto"]
+        )
+      LtTrkAgePropByInc_AgIg <-
+        calcAgeDistributionByInc(
+          VehicleAgeModel_ls$LtTrk$AgeIncJointProp_AgIg,
+          LtTrkAgeProp_Ag,
+          IncProp_IgTy[,"LtTrk"]
+        )
+      #Assign ages for automobiles
+      for (ig in Ig) {
+        Ages_ <-
+          sample(
+            0:30,
+            NumVeh_IgTy[ig, "Auto"],
+            replace = TRUE,
+            prob = AutoAgePropByInc_AgIg[,ig])
+        Own_df$Age[Own_df$IncGrp == ig & Own_df$Type == "Auto"] <- Ages_
+      }
+      #Assign ages for light trucks
+      for (ig in Ig) {
+        Ages_ <-
+          sample(
+            0:30,
+            NumVeh_IgTy[ig, "LtTrk"],
+            replace = TRUE,
+            prob = LtTrkAgePropByInc_AgIg[,ig])
+        Own_df$Age[Own_df$IncGrp == ig & Own_df$Type == "LtTrk"] <- Ages_
+      }
+      #Add vehicle age for owned vehicles in Azone
+      Age_Ve[Own_df$VehId] <- Own_df$Age
     }
-    #Assign ages for light trucks
-    for (ig in Ig) {
-      Ages_ <-
-        sample(
-          0:30,
-          NumVeh_IgTy[ig, "LtTrk"],
-          replace = TRUE,
-          prob = LtTrkAgePropByInc_AgIg[,ig])
-      Own_df$Age[Own_df$IncGrp == ig & Own_df$Type == "LtTrk"] <- Ages_
-    }
-    #Add vehicle age for owned vehicles in Azone
-    Age_Ve[Own_df$VehId] <- Own_df$Age
+    
     #Add car service average vehicle age
     CarSvcAge <- with(L$Year$Azone, AveCarSvcVehicleAge[Azone == az])
     CarSvcVehId_ <-
@@ -687,99 +691,103 @@ AssignVehicleAge <- function(L) {
   #---------------------------------
   # Calculate the maximum age of AVs based on earliest availability
   MaxAVVehYear <- max(min(15,as.integer(L$G$Year)-L$Global$Model$AVAvailability),-1)
-
+  
   #Calculate income group proportions by vehicle type
   UseAv <- with(L$Year$Vehicle, VehicleAccess == "Own" & AVLvl != "L0")
   Fields_ <- c("VehId", "Type", "IncGrp")
   Own_df <-
     data.frame(lapply(L$Year$Vehicle[Fields_], function(x) x[UseAv]), stringsAsFactors = FALSE)
-  if(MaxAVVehYear == 0){
-    # If earliest availability is the same as model year then all vehicles
-    # will have same age
-    Own_df$Age <- 0L
-  } else if (MaxAVVehYear > 0){
-    Own_df$Age <- NA
-    AVNumVeh_IgTy <- with(Own_df, table(IncGrp, Type))
-    AVIncProp_IgTy <- sweep(AVNumVeh_IgTy, 2, colSums(AVNumVeh_IgTy), "/")
-    
-    AvAgeModel_ls <- loadPackageDataset("AvAgeModel_ls","VEFHWAAV")
-    AVAutoMeanAge <- 3
-    AVLtTrkMeanAge <- 4
-    AVAutoAgeCDF_Ag <- c(plnorm(c(0.8,seq(1,14,1)), 1, .55), rep(1,16))
-    names(AVAutoAgeCDF_Ag) <- 0:30
-    AVLtTrkAgeCDF_Ag <- c(plnorm(c(0.8,seq(1,14,1)), 1, .75), rep(1,16))
-    names(AVLtTrkAgeCDF_Ag) <- 0:30
-    AVAutoAgeProp_Ag <-
-      adjustAgeDistribution(
-        AVAutoAgeCDF_Ag,
-        AVAutoMeanAge)$Dist
-    AVLtTrkAgeProp_Ag <-
-      adjustAgeDistribution(
-        AVLtTrkAgeCDF_Ag,
-        AVLtTrkMeanAge)$Dist
-    
-    #Calculate age distributions by income group
-    AVAgeIncJointProp_AgIg <- VehicleAgeModel_ls$Auto$AgeIncJointProp_AgIg
-    AVAgeIncJointProp_AgIg[as.character(16:30),] <- min(AVAgeIncJointProp_AgIg)*1E-2
-    AVAgeIncJointProp_AgIg <- AVAgeIncJointProp_AgIg/sum(AVAgeIncJointProp_AgIg)
-    AVAutoAgePropByInc_AgIg <-
-      calcAgeDistributionByInc(
-        AVAgeIncJointProp_AgIg,
-        AVAutoAgeProp_Ag,
-        AVIncProp_IgTy[,"Auto"]
-      )
-    AVAutoAgePropByInc_AgIg <- AVAutoAgePropByInc_AgIg[as.character(0:MaxAVVehYear),]
-    AVAutoAgePropByInc_AgIg[AVAutoAgePropByInc_AgIg<1E-4] <- 0
-    AVAutoAgePropByInc_AgIg <- sweep(AVAutoAgePropByInc_AgIg, 2, colSums(AVAutoAgePropByInc_AgIg),"/")
-    
-    AVAgeIncJointProp_AgIg <- VehicleAgeModel_ls$LtTrk$AgeIncJointProp_AgIg
-    AVAgeIncJointProp_AgIg[as.character(16:30),] <- min(AVAgeIncJointProp_AgIg)*1E-2
-    AVAgeIncJointProp_AgIg <- AVAgeIncJointProp_AgIg/sum(AVAgeIncJointProp_AgIg)
-    AVLtTrkAgePropByInc_AgIg <-
-      calcAgeDistributionByInc(
-        AVAgeIncJointProp_AgIg,
-        AVLtTrkAgeProp_Ag,
-        AVIncProp_IgTy[,"LtTrk"]
-      )
-    
-    AVLtTrkAgePropByInc_AgIg <- AVLtTrkAgePropByInc_AgIg[as.character(0:MaxAVVehYear),]
-    AVLtTrkAgePropByInc_AgIg[AVLtTrkAgePropByInc_AgIg<1E-4] <- 0
-    AVLtTrkAgePropByInc_AgIg <- sweep(AVLtTrkAgePropByInc_AgIg, 2, colSums(AVLtTrkAgePropByInc_AgIg),"/")
-    
-    #Assign ages for automobiles
-    for (ig in Ig) {
-      Ages_ <-
-        sample(
-          0:MaxAVVehYear,
-          AVNumVeh_IgTy[ig, "Auto"],
-          replace = TRUE,
-          prob = AVAutoAgePropByInc_AgIg[,ig])
-      Own_df$Age[Own_df$IncGrp == ig & Own_df$Type == "Auto"] <- Ages_
+  if(nrow(Own_df) > 0){
+    if(MaxAVVehYear == 0){
+      # If earliest availability is the same as model year then all vehicles
+      # will have same age
+      Own_df$Age <- 0L
+    } else if (MaxAVVehYear > 0){
+      Own_df$Age <- NA
+      AVNumVeh_IgTy <- with(Own_df, table(IncGrp, Type=factor(Type, levels = c("Auto", "LtTrk"))))
+      AVIncProp_IgTy <- sweep(AVNumVeh_IgTy, 2, colSums(AVNumVeh_IgTy), "/")
+      AVIncProp_IgTy[is.na(AVIncProp_IgTy)] <- 1/length(AVIncProp_IgTy[is.na(AVIncProp_IgTy)])
+      
+      AvAgeModel_ls <- loadPackageDataset("AvAgeModel_ls","VEFHWAAV")
+      AVAutoMeanAge <- 3
+      AVLtTrkMeanAge <- 4
+      AVAutoAgeCDF_Ag <- c(plnorm(c(0.8,seq(1,14,1)), 1, .55), rep(1,16))
+      names(AVAutoAgeCDF_Ag) <- 0:30
+      AVLtTrkAgeCDF_Ag <- c(plnorm(c(0.8,seq(1,14,1)), 1, .75), rep(1,16))
+      names(AVLtTrkAgeCDF_Ag) <- 0:30
+      AVAutoAgeProp_Ag <-
+        adjustAgeDistribution(
+          AVAutoAgeCDF_Ag,
+          AVAutoMeanAge)$Dist
+      AVLtTrkAgeProp_Ag <-
+        adjustAgeDistribution(
+          AVLtTrkAgeCDF_Ag,
+          AVLtTrkMeanAge)$Dist
+      
+      #Calculate age distributions by income group
+      AVAgeIncJointProp_AgIg <- VehicleAgeModel_ls$Auto$AgeIncJointProp_AgIg
+      AVAgeIncJointProp_AgIg[as.character(16:30),] <- min(AVAgeIncJointProp_AgIg)*1E-2
+      AVAgeIncJointProp_AgIg <- AVAgeIncJointProp_AgIg/sum(AVAgeIncJointProp_AgIg)
+      AVAutoAgePropByInc_AgIg <-
+        calcAgeDistributionByInc(
+          AVAgeIncJointProp_AgIg,
+          AVAutoAgeProp_Ag,
+          AVIncProp_IgTy[,"Auto"]
+        )
+      AVAutoAgePropByInc_AgIg <- AVAutoAgePropByInc_AgIg[as.character(0:MaxAVVehYear),]
+      AVAutoAgePropByInc_AgIg[AVAutoAgePropByInc_AgIg<1E-4] <- 0
+      AVAutoAgePropByInc_AgIg <- sweep(AVAutoAgePropByInc_AgIg, 2, colSums(AVAutoAgePropByInc_AgIg),"/")
+      
+      AVAgeIncJointProp_AgIg <- VehicleAgeModel_ls$LtTrk$AgeIncJointProp_AgIg
+      AVAgeIncJointProp_AgIg[as.character(16:30),] <- min(AVAgeIncJointProp_AgIg)*1E-2
+      AVAgeIncJointProp_AgIg <- AVAgeIncJointProp_AgIg/sum(AVAgeIncJointProp_AgIg)
+      AVLtTrkAgePropByInc_AgIg <-
+        calcAgeDistributionByInc(
+          AVAgeIncJointProp_AgIg,
+          AVLtTrkAgeProp_Ag,
+          AVIncProp_IgTy[,"LtTrk"]
+        )
+      
+      AVLtTrkAgePropByInc_AgIg <- AVLtTrkAgePropByInc_AgIg[as.character(0:MaxAVVehYear),]
+      AVLtTrkAgePropByInc_AgIg[AVLtTrkAgePropByInc_AgIg<1E-4] <- 0
+      AVLtTrkAgePropByInc_AgIg <- sweep(AVLtTrkAgePropByInc_AgIg, 2, colSums(AVLtTrkAgePropByInc_AgIg),"/")
+      
+      #Assign ages for automobiles
+      for (ig in Ig) {
+        Ages_ <-
+          sample(
+            0:MaxAVVehYear,
+            AVNumVeh_IgTy[ig, "Auto"],
+            replace = TRUE,
+            prob = AVAutoAgePropByInc_AgIg[,ig])
+        Own_df$Age[Own_df$IncGrp == ig & Own_df$Type == "Auto"] <- Ages_
+      }
+      #Assign ages for light trucks
+      for (ig in Ig) {
+        Ages_ <-
+          sample(
+            0:MaxAVVehYear,
+            AVNumVeh_IgTy[ig, "LtTrk"],
+            replace = TRUE,
+            prob = AVLtTrkAgePropByInc_AgIg[,ig])
+        Own_df$Age[Own_df$IncGrp == ig & Own_df$Type == "LtTrk"] <- Ages_
+      }
+    } else {
+      Own_df$Age <- numeric(0)
     }
-    #Assign ages for light trucks
-    for (ig in Ig) {
-      Ages_ <-
-        sample(
-          0:MaxAVVehYear,
-          AVNumVeh_IgTy[ig, "LtTrk"],
-          replace = TRUE,
-          prob = AVLtTrkAgePropByInc_AgIg[,ig])
-      Own_df$Age[Own_df$IncGrp == ig & Own_df$Type == "LtTrk"] <- Ages_
-    }
-  } else {
-    Own_df$Age <- numeric(0)
   }
+  
   #Add vehicle age for owned autonomous vehicles in Azone
   Age_Ve[Own_df$VehId] <- Own_df$Age
-    
-    #Return the results
-    #------------------
-    #Initialize output list
-    Out_ls <- initDataList()
-    Out_ls$Year$Vehicle$Age <- unname(Age_Ve)
-    #Return the outputs list
-    Out_ls
-  }
+  
+  #Return the results
+  #------------------
+  #Initialize output list
+  Out_ls <- initDataList()
+  Out_ls$Year$Vehicle$Age <- unname(Age_Ve)
+  #Return the outputs list
+  Out_ls
+}
 
 
 #===============================================================

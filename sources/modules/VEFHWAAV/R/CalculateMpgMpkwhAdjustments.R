@@ -405,12 +405,12 @@ CalculateMpgMpkwhAdjustmentsSpecifications <- list(
       NAME = "Beta",
       TABLE = "AVLvl5EffectAdjParam",
       GROUP = "Global",
-      TYPE = "integer",
-      UNITS = "integer",
+      TYPE = "double",
+      UNITS = "multiplier",
       NAVALUE = "NA",
       SIZE = 0,
-      PROHIBIT = "",
-      ISELEMENTOF = c(1:10)
+      PROHIBIT = c("<= 0", "> 10"),
+      ISELEMENTOF = ""
     ),
     item(
       NAME = "Marea",

@@ -740,6 +740,7 @@ AssignVehicleOwnership <- function(L) {
   #Identify number of households for AV candidacy based on target market shares
   #----------------------------------------------------------------------------
   # AV Level 5 Market Share
+  AVLvl5Vehicles_ <- integer(length(Vehicles_))
   if(TargetShareLvl5 > 0){
     # Check the candidacy first
     # Count existing number of Lvl5 candidates
@@ -787,18 +788,21 @@ AssignVehicleOwnership <- function(L) {
     #Calculate changes if the number of automation level 5 vehicles to 
     # change is not 0
     while ((PrevNumChgVehLvl5 - NumChgVehLvl5)> 0 & iter < 20) {
-      AVLvl5Vehicles_[IsAVLvl5Candidate_] <- adjVehicles(
-        NumChgVeh = NumChgVehLvl5,
-        Vehicles_ = AVLvl5Vehicles_[IsAVLvl5Candidate_],
-        Hh_df = Hh_df[IsAVLvl5Candidate_,],
-        VehicleProb_mx = AVLvl5Prob_HhNv[IsAVLvl5Candidate_,],
-        MaxVehicles_ = Vehicles_[IsAVLvl5Candidate_])
+      if(NumChgVehLvl5 != 0){
+        AVLvl5Vehicles_[IsAVLvl5Candidate_] <- adjVehicles(
+          NumChgVeh = NumChgVehLvl5,
+          Vehicles_ = AVLvl5Vehicles_[IsAVLvl5Candidate_],
+          Hh_df = Hh_df[IsAVLvl5Candidate_,],
+          VehicleProb_mx = AVLvl5Prob_HhNv[IsAVLvl5Candidate_,],
+          MaxVehicles_ = Vehicles_[IsAVLvl5Candidate_])
+      }
       PrevNumChgVehLvl5 <- NumChgVehLvl5
       NumChgVehLvl5 <- TargetNumVehLvl5 - sum(AVLvl5Vehicles_)
       iter <- iter + 1
     }
   }
   # AV Level 3 Market Share
+  AVLvl3Vehicles_ <- integer(length(Vehicles_))
   if(TargetShareLvl3 > 0){
     # Count existing number of Lvl5 candidates
     Hh_df$AVLvl3Candidate <- Hh_df$AVLvl5Candidate
@@ -846,12 +850,14 @@ AssignVehicleOwnership <- function(L) {
     #Calculate changes if the number of automation level 5 vehicles to 
     # change is not 0
     while ((PrevNumChgVehLvl3 - NumChgVehLvl3)> 0 & iter < 20) {
-      AVLvl3Vehicles_[IsAVLvl3Candidate_] <- adjVehicles(
-        NumChgVeh = NumChgVehLvl3,
-        Vehicles_ = AVLvl3Vehicles_[IsAVLvl3Candidate_],
-        Hh_df = Hh_df[IsAVLvl3Candidate_,],
-        VehicleProb_mx = AVLvl3Prob_HhNv[IsAVLvl3Candidate_,],
-        MaxVehicles_ = RemVehicles_[IsAVLvl3Candidate_])
+      if(NumChgVehLvl3 != 0){
+        AVLvl3Vehicles_[IsAVLvl3Candidate_] <- adjVehicles(
+          NumChgVeh = NumChgVehLvl3,
+          Vehicles_ = AVLvl3Vehicles_[IsAVLvl3Candidate_],
+          Hh_df = Hh_df[IsAVLvl3Candidate_,],
+          VehicleProb_mx = AVLvl3Prob_HhNv[IsAVLvl3Candidate_,],
+          MaxVehicles_ = RemVehicles_[IsAVLvl3Candidate_])
+      }
       PrevNumChgVehLvl3 <- NumChgVehLvl3
       NumChgVehLvl3 <- TargetNumVehLvl3 - sum(AVLvl3Vehicles_)
       iter <- iter + 1

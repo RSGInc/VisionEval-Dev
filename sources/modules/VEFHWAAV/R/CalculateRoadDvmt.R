@@ -271,11 +271,31 @@ CalculateRoadDvmtSpecifications <- list(
       TYPE = "double",
       UNITS = "proportion",
       PROHIBIT = c("NA", "< 0", "> 1"),
-      ISELEMENTOF = ""
+      ISELEMENTOF = "",
+      OPTIONAL = TRUE
     ),
     item(
       NAME = "AVLvl3DvmtProp",
       TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = "",
+      OPTIONAL = TRUE
+    ),
+    item(
+      NAME = "AVLvl5Share",
+      TABLE = "Marea",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "proportion",
+      PROHIBIT = c("NA", "< 0", "> 1"),
+      ISELEMENTOF = ""
+    ),
+    item(
+      NAME = "AVLvl3Share",
+      TABLE = "Marea",
       GROUP = "Year",
       TYPE = "double",
       UNITS = "proportion",
@@ -1009,6 +1029,12 @@ CalculateRoadDvmt <- function(L) {
   #Calculate household DVMT proportion by automation level for each Marea
   # ComSvcDriverlessProp <- unattr(RegionDriverlessProps_["ComSvc"])
   # PtVanDriverlessProp <- unattr(RegionDriverlessProps_["PtVan"])
+  if(all(is.null(L$Year$Household$AVLvl5DvmtProp))){
+    MaToHhIdx_Hh <- match(L$Year$Household$Marea, L$Year$Marea$Marea)
+    L$Year$Household$AVLvl5DvmtProp <- runif(length(L$Year$Household$Dvmt),
+                                             min=.01,
+                                             max=1) * L$Year$Marea$AVLvl5Share[MaToHhIdx_Hh]
+  }
   HhAVLvl5DvmtProp_Ma <- setNames(numeric(length(Ma)), Ma)
   for (ma in Ma) {
     HhAVLvl5DvmtProp_Ma[ma] <- local({
@@ -1017,6 +1043,12 @@ CalculateRoadDvmt <- function(L) {
       AVLvl5Prop_Hh <- L$Year$Household$AVLvl5DvmtProp[IsMa]
       sum(AVLvl5Prop_Hh * Dvmt_Hh) / sum(Dvmt_Hh)
     })
+  }
+  if(all(is.null(L$Year$Household$AVLvl3DvmtProp))){
+    MaToHhIdx_Hh <- match(L$Year$Household$Marea, L$Year$Marea$Marea)
+    L$Year$Household$AVLvl3DvmtProp <- runif(length(L$Year$Household$Dvmt),
+                                             min=.01,
+                                             max=1) * L$Year$Marea$AVLvl3Share[MaToHhIdx_Hh]
   }
   HhAVLvl3DvmtProp_Ma <- setNames(numeric(length(Ma)), Ma)
   for (ma in Ma) {
@@ -1038,10 +1070,10 @@ CalculateRoadDvmt <- function(L) {
     # ComSvcAVLvl5Prop * ComSvcDvmtWts_Ma + 
     # PtVanAVLvl5Prop * PtVanDvmtWts_Ma
   #Assign values to outputs list
-  Out_ls$Year$Marea$LdvAVLvl5Prop <- LdvAVLvl5Prop_Ma
-  Out_ls$Year$Marea$LdvAVLvl3Prop <- LdvAVLvl3Prop_Ma
-  Out_ls$Year$Marea$HhAVLvl5DvmtProp <- HhAVLvl5DvmtProp_Ma
-  Out_ls$Year$Marea$HhAVLvl3DvmtProp <- HhAVLvl3DvmtProp_Ma
+  Out_ls$Year$Marea$LdvAVLvl5Prop <- as.vector(LdvAVLvl5Prop_Ma[Ma])
+  Out_ls$Year$Marea$LdvAVLvl3Prop <- as.vector(LdvAVLvl3Prop_Ma[Ma])
+  Out_ls$Year$Marea$HhAVLvl5DvmtProp <- as.vector(HhAVLvl5DvmtProp_Ma[Ma])
+  Out_ls$Year$Marea$HhAVLvl3DvmtProp <- as.vector(HhAVLvl3DvmtProp_Ma[Ma])
 
   #Calculate household proportion of DVMT on urban roads
   #-----------------------------------------------------

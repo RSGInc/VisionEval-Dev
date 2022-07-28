@@ -954,7 +954,9 @@ calculateSpeeds <- function(OpsDeployment_, OtherOpsEffects_mx = NULL,
       OtherOpsFactor_mx <-
         1 - sweep(OtherOpsEffects_mx, 2, OtherOpsDeploy_Ty, "*") / 100
       #Select the maximum reduction. This is the minimum factor.
+      # MaxFactor_mx <- pmax(DelayFactor_mx, OtherOpsFactor_mx)
       DelayFactor_mx <- pmin(DelayFactor_mx, OtherOpsFactor_mx)
+      # DelayFactor_mx[DelayFactor_mx==1] <- MaxFactor_mx[DelayFactor_mx==1]
     } else {
       OtherOpsDeploy_Ty <- setNames(numeric(length(Ty)), Ty)
       OtherOpsDeploy_Ty[c("Fwy_Rcr", "Fwy_NonRcr")] <-
@@ -1254,11 +1256,11 @@ CalculateRoadPerformanceSpecifications <- list(
       FILE = "av_lev5_effect_adj_param.csv",
       TABLE = "AVLvl5EffectAdjParam",
       GROUP = "Global",
-      TYPE = "integer",
-      UNITS = "integer",
+      TYPE = "double",
+      UNITS = "multiplier",
       NAVALUE = "NA",
       SIZE = 0,
-      PROHIBIT = c("< 1", "> 10"),
+      PROHIBIT = c("<= 0", "> 10"),
       ISELEMENTOF = "",
       UNLIKELY = "",
       TOTAL = "",
@@ -1381,11 +1383,11 @@ CalculateRoadPerformanceSpecifications <- list(
       NAME = "Beta",
       TABLE = "AVLvl5EffectAdjParam",
       GROUP = "Global",
-      TYPE = "integer",
-      UNITS = "integer",
+      TYPE = "double",
+      UNITS = "multiplier",
       NAVALUE = "NA",
       SIZE = 0,
-      PROHIBIT = c("< 1", "> 10"),
+      PROHIBIT = c("<= 0", "> 10"),
       ISELEMENTOF = ""
     ),
     item(
@@ -1559,7 +1561,8 @@ CalculateRoadPerformanceSpecifications <- list(
     ),
     item(
       NAME = items(
-        "LdvAVLvl5Prop"),
+        "LdvAVLvl5Prop",
+        "LdvAVLvl3Prop"),
         # "HvyTrkAVLvl5Prop",
         # "BusAVLvl5Prop"),
       TABLE = "Marea",
@@ -1940,7 +1943,7 @@ CalculateRoadPerformance <- function(L) {
   
   # Calculate capacity adjustment factors based on AV penetration
   AVCapacityFactors <- as.data.frame(L$Global$AVCapacityFactors)
-  AvMpr_ma <- L$Year$Marea$LdvAVLvl5Prop
+  AvMpr_ma <- pmin(L$Year$Marea$LdvAVLvl5Prop + L$Year$Marea$LdvAVLvl3Prop,1)
   names(AvMpr_ma) <- L$Year$Marea$Marea
   
   FwyAdjFactors_ma <- numeric(length = length(Ma))
