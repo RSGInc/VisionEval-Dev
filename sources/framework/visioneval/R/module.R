@@ -1172,11 +1172,11 @@ fetchModuleData <- function(ModuleName, PackageName, Year, Geo = NULL, envir=mod
   #If RunBy is 'Region' get all data
   if (M$Specs$RunBy == "Region") {
     #Get data from datastore
-    L <- getFromDatastore(M$Specs, RunYear = Year)
+    L <- getFromDatastore(M$Specs, RunYear = Year, envir=envir)
     if (exists("Call")) {
       for (Alias in names(Call$Specs)) {
         L[[Alias]] <-
-          getFromDatastore(Call$Specs[[Alias]], RunYear = Year)
+          getFromDatastore(Call$Specs[[Alias]], RunYear = Year, envir=envir)
       }
     }
   #If RunBy is not 'Region' get data for Geo
@@ -1201,11 +1201,11 @@ fetchModuleData <- function(ModuleName, PackageName, Year, Geo = NULL, envir=mod
     }
     #Get data from datastore for Geo
     L <-
-      getFromDatastore(M$Specs, RunYear = Year, Geo, GeoIndex_ls)
+      getFromDatastore(M$Specs, RunYear = Year, Geo, GeoIndex_ls, envir=envir)
     if (exists("Call")) {
       for (Alias in names(Call$Specs)) {
         L[[Alias]] <-
-          getFromDatastore(Call$Specs[[Alias]], RunYear = Year, Geo, GeoIndex_ls = GeoIndex_ls[[Alias]])
+          getFromDatastore(Call$Specs[[Alias]], RunYear = Year, Geo, GeoIndex_ls = GeoIndex_ls[[Alias]], envir=envir)
       }
     }
   }

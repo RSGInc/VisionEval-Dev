@@ -312,10 +312,14 @@ pums_data[ , PINCADJ := PINCP * as.numeric(ADJINC)]
 #pums_data[ , HHRAC := ifelse(uniqueN(RAC1P)>1,9,RAC1P), by = SERIALNO]
 
 # Number of workers
+work_codes <- c(1,2,4,5)
 pums_data <- merge(pums_data, 
-                   pums_data[ESR %in% c(1,2,4,5), .(NW=.N), by=SERIALNO],
+                   pums_data[ESR %in% work_codes, .(NW=.N), by=SERIALNO],
                    all=T)
 pums_data[is.na(NW), NW := 0]
+
+# If person is a worker
+pums_data[,WORKER:=as.integer(ESR %in% work_codes)]
 
 # Housing type
 pums_data[BLD %in% sprintf("%02d",c(1,10)), HTYPE := "MH"]
@@ -330,7 +334,7 @@ pums_data[ , hhnum := .GRP, by = SERIALNO]
 # HH/PER vars
 base_vars <- c('SERIALNO', 'hhnum', 'PUMA', 'REGION')
 hh_vars <- c(base_vars, 'NP', 'NW', 'HHINCADJ', 'WGTP', 'HTYPE')
-per_vars <- c(base_vars, 'SPORDER', 'PWGTP', 'RAC1P', 'AGEP', 'PINCADJ')
+per_vars <- c(base_vars, 'SPORDER', 'PWGTP', 'RAC1P', 'AGEP', 'PINCADJ', 'WORKER')
 
 
 #### FINAL PUMS SEED DATA ###

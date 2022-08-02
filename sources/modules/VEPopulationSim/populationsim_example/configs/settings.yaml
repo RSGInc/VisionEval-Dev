@@ -130,6 +130,8 @@ output_synthetic_population:
       - AGEP
       - RAC1P
       - PINCADJ
+      - WORKER
+     
 
 
 # Model steps for base mode
@@ -149,4 +151,4 @@ models:
     - write_tables
     - write_synthetic_population
 
-resume_after:
+resume_after: write_tables

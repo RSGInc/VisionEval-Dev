@@ -240,6 +240,7 @@ persons,PWGTP,int64,input_pre_processor
 persons,RAC1P,int64,input_pre_processor
 persons,AGEP,int64,input_pre_processor
 persons,PINCADJ,float64,input_pre_processor
+persons,WORKER,int64,input_pre_processor
 household_groups,group_id,int32,setup_data_structures
 household_groups,sample_weight,int64,setup_data_structures
 household_groups,hh_id,int64,setup_data_structures

@@ -72,6 +72,12 @@ Components:
     Test:
       Group: 1
 #     Script: tests/scripts/test.R
+  VEPopulationSim:
+    Type: module
+    Path: sources/modules
+    Test:
+      Group: 1
+#     Script: tests/scripts/test.R
   VESimLandUseData:
     Type: module
     Path: sources/modules

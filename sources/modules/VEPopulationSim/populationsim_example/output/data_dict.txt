@@ -297,7 +297,7 @@ WGTP                          int64     input_pre_processor
 HTYPE                         object    input_pre_processor            
 
 ###
-### persons (196436, 9)
+### persons (196436, 10)
 ###
 
 column_name                   dtype     checkpoint                     
@@ -310,6 +310,7 @@ PWGTP                         int64     input_pre_processor
 RAC1P                         int64     input_pre_processor            
 AGEP                          int64     input_pre_processor            
 PINCADJ                       float64   input_pre_processor            
+WORKER                        int64     input_pre_processor            
 
 ###
 ### household_groups (4023, 3)
@@ -389,7 +390,7 @@ PUMA                          int64     sub_balancing.geography=TRACT
 REGION                        int64     sub_balancing.geography=TRACT  
 
 ###
-### TRACT_weights_sparse (2313, 6)
+### TRACT_weights_sparse (2314, 6)
 ###
 
 column_name                   dtype     checkpoint                     
@@ -426,7 +427,7 @@ REGION                        int64     sub_balancing.geography=BG
 PUMA                          int64     sub_balancing.geography=BG     
 
 ###
-### BG_weights_sparse (3491, 7)
+### BG_weights_sparse (3493, 7)
 ###
 
 column_name                   dtype     checkpoint                     
