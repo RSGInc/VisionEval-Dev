@@ -204,19 +204,19 @@ impute_hometype_model <- function(df) {
   # test_df <- Hh_df2001[-train_ind, ]
   # 
   # 
-  # formula <- as.formula(paste('HOMETYPE ~',
-  #                             paste(c(int_cols, chr_cols), collapse = ' + ')))
-  # 
+  formula <- as.formula(paste('HOMETYPE ~',
+                              paste(c(int_cols, chr_cols), collapse = ' + ')))
+
   # testmodel <- nnet::multinom(formula, data=train_df)
   # 
   # test_df$HOMETYPE_PRED <- predict(testmodel, newdata = test_df)
   # 
   # print(as.matrix(table(Actual_Values = test_df$HOMETYPE, 
   #                 Predicted_Values = test_df$HOMETYPE_PRED)))
-  print(paste0('Overall accuracy: ',
-               round(
-                 100*sum(test_df$HOMETYPE == test_df$HOMETYPE_PRED) / nrow(test_df)
-                 ), "%"))
+  # print(paste0('Overall accuracy: ',
+  #              round(
+  #                100*sum(test_df$HOMETYPE == test_df$HOMETYPE_PRED) / nrow(test_df)
+  #                ), "%"))
   
   
   #### Full model run
