@@ -70,7 +70,7 @@ bg_list <- data.table(geo)[as.numeric(within_id), GEOID]
 tract_list <- unique(substr(bg_list, 0, 11))
 
 # Convert from 2020 to 2010, this is a one off process because PUMS 2020 relations are not yet available.
-bgto20 <- fread(file.path(PATH, 'inst/dataprep_sources/', 'tab20_blkgrp20_blkgrp10_st41.txt'), colClasses = 'character')
+# bgto20 <- fread(file.path(PATH, 'inst/dataprep_sources/', 'tab20_blkgrp20_blkgrp10_st41.txt'), colClasses = 'character')
 tractto20 <- fread(file.path(PATH, 'inst/dataprep_sources/', 'tab20_tract20_tract10_st41.txt'), colClasses = 'character')
 
 # Tract to PUMAS
