@@ -1220,7 +1220,7 @@ rm(list=ls()[!(ls() %in% c('Hh_df', 'Per_df', 'Veh_df', 'HhTours_df'))])
 
 
 ##### SAVE THE HOUSEHOLD DATASET ####
-#' Household travel from the National Household Travel Survey
+#' Household travel from the 2001 or 2017 National Household Travel Survey
 #'
 #' A household dataset containing the data used for estimating VisionEval
 #' travel models derived from the National Household Travel Survey, USDOT
@@ -1315,17 +1315,17 @@ rm(list=ls()[!(ls() %in% c('Hh_df', 'Per_df', 'Veh_df', 'HhTours_df'))])
 #'   \item{BusEqRevMiPC}{Annual bus equivalent transit revenue miles per capita}
 #'   \item{LargeHh}{Flag identifying whether household size is large}
 #' }
-#' @source 2001 National Household Travel Survey, Highway Statistics (2001),
-#' National Transit Database (2002), and Make2001NHTSDataset.R script.
+#' @source 2001 or 2017 National Household Travel Survey, Highway Statistics (2001, 2017),
+#' National Transit Database (2002), and MakeNHTSDataset.R script.
 "Hh_df"
 if ( exists("Hh_df") ) visioneval::savePackageDataset(Hh_df, overwrite = TRUE)
 
 
 #SAVE THE VEHICLE DATASET
-#' Vehicle dataset from the 2001 National Household Travel Survey
+#' Vehicle dataset from the 2001 or 2017 National Household Travel Survey
 #'
 #' A vehicle dataset containing the data used for estimating VisionEval
-#' vehicle models derived from the 2001 National Household Travel Survey.
+#' vehicle models derived from the 2001 or 2017 National Household Travel Survey.
 #'
 #' @format A data frame with 112697 rows and 10 variables
 #' \describe{
@@ -1340,15 +1340,15 @@ if ( exists("Hh_df") ) visioneval::savePackageDataset(Hh_df, overwrite = TRUE)
 #'   \item{Type}{Auto or light truck}
 #'   \item{Gscostmile2}{Estimated gas cost per mile of travel}
 #' }
-#' @source 2001 National Household Travel Survey and Make2001NHTSDataset.R script.
+#' @source 2001 or 2017 National Household Travel Survey and MakeNHTSDataset.R script.
 "Veh_df"
 if ( exists("Veh_df") ) visioneval::savePackageDataset(Veh_df, overwrite = TRUE)
 
 
 #SAVE THE TOUR DATASET
-#' Household tour dataset from the 2001 National Household Travel Survey
+#' Household tour dataset from the 2001 or 2017 National Household Travel Survey
 #'
-#' A dataset of household tours (shared person tours) derived from the 2001
+#' A dataset of household tours (shared person tours) derived from the 2001 or 2017
 #' National Household Travel Survey and used in the estimation of several
 #' VisionEval models.
 #'
@@ -1371,15 +1371,15 @@ if ( exists("Veh_df") ) visioneval::savePackageDataset(Veh_df, overwrite = TRUE)
 #'    \item{Mode}{Simplified travel mode category (see script for definitions)}
 #'    \item{IncludesWork}{Logical identifying whether tour includes a work activity (codes 10, 11, 12, 13, 14)}
 #'  }
-#'  @source 2001 National Household Travel Survey and Make2001NHTSDataset.R script.
+#'  @source 2001 or 2017 National Household Travel Survey and MakeNHTSDataset.R script.
 "HhTours_df"
 if ( exists("HhTours_df") ) visioneval::savePackageDataset(HhTours_df, overwrite = TRUE)
 
 
 #SAVE THE PERSON DATASET
-#' Person dataset from the 2001 National Household Travel Survey
+#' Person dataset from the 2001 or 2017 National Household Travel Survey
 #'
-#' A dataset of person characteristics derived from the 2001 National Household
+#' A dataset of person characteristics derived from the 2001 or 2017 National Household
 #' Travel Survey and used in the estimation of several VisionEval models.
 #'
 #'  @format A data frame with 144884 rows and 14 columns.
@@ -1400,7 +1400,7 @@ if ( exists("HhTours_df") ) visioneval::savePackageDataset(HhTours_df, overwrite
 #'    \item{R_sex}{Sex}
 #'    \item{AgeGroup}{AgeGroup: Age0to14, Age15to19, Age20to29, Age30to54, Age55to64, Age65Plus}
 #'  }
-#'  @source 2001 National Household Travel Survey and Make2001NHTSDataset.R script.
+#'  @source 2001 or 2017 National Household Travel Survey and MakeNHTSDataset.R script.
 "Per_df"
 if ( exists( "Per_df" ) ) visioneval::savePackageDataset(Per_df, overwrite = TRUE)
 

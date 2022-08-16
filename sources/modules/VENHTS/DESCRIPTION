@@ -1,14 +1,14 @@
 Package: VENHTS
 Type: Package
-Title: Create 2001 and beyond, NHTS datasets for model estimation
+Title: Create 2001 or 2017 NHTS datasets for model estimation
 Version: 2.0.0
 Date: 2022-07-11
-Author: Brian Gregor [aut, cre],
-Maintainer: Brian Gregor <gregorb@or-analytics.com>
+Author: Brian Gregor [aut], Nick Fournier [aut, cre]
+Maintainer: Nick Fournier <nick.fournier@rsginc.com>
 Copyright: AASHTO
 Description: This package creates and saves 3 data frames that are used to 
     estimate various VisionEval models. These data frames are created from
-    the publically available data from the 2001/2017 National Household Travel Survey 
+    the publically available data from either the 2001 or the 2017 National Household Travel Survey 
     (NHTS) augmented with data on metropolitan area freeway supply and transit
     supply. The package produces a data frames of household characteristics and
     travel, vehicle characteristics, household tours .

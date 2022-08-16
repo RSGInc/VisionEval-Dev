@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(data.table)
 library(gridExtra)
 library(ggplot2)
+library(DiagrammR)
 ```
 
 ## Purpose
