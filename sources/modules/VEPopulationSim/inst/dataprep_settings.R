@@ -1,7 +1,8 @@
 
 params = list(
-  geography = "tl_2020_41_bg.zip",
-  zone_list = "bzone_lat_lon.csv",
+  #geography = "tl_2020_41_bg.zip",
+  geography = "tl_2010_41_bg10.zip", # https://www2.census.gov/geo/tiger/TIGER2010/BG/2010/
+  zone_list = "bzone_lat_lon.csv", # This is for VERSPM
   pumaxwalk = "2010_Census_Tract_to_2010_PUMA.txt",
   popsim_dir = 'populationsim_example'
 )

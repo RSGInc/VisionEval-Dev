@@ -6,7 +6,7 @@ library(dplyr)
 
 # Easier than changing the working directory
 PATH = file.path(here(),'sources/modules/VEPopulationSim')
-YEAR=2020
+YEAR=2017
 STATE=41 # Oregon
 
 
@@ -33,11 +33,11 @@ source(file.path(PATH, 'inst/dataprep_settings.R'))
 
 
 # Fetch the table column variables
-acs_vars <- data.table(load_variables('2020', 'acs5'))
+acs_vars <- data.table(load_variables(YEAR, 'acs5'))
 
 
 #### GEO CROSSWALK & ADDITIONAL ZONE NAMES ####
-# Calculate centroids - If we want
+# Function to calculate centroids (If we don't have bzone_lat_lon.csv)
 get_centroids <- function(geo) {
   centroids <- st_centroid(geo$geometry)
   coords <- data.table(st_coordinates(centroids))
@@ -61,6 +61,8 @@ unzip(file.path(PATH, 'inst/dataprep_sources', params$geography), exdir=tf)
 geo <- st_read(file.path(tf, paste0(sub('\\..*$', '', params$geography), '.shp')))
 unlink(tf)
 
+# Remove '10' from GEOID10
+colnames(geo) <- gsub('10', '', colnames(geo))
 
 # Get blocks that bzones are within
 bpoints <- st_as_sf(bzones, coords = c("Longitude", "Latitude"), crs = 4326)
@@ -69,31 +71,40 @@ within_id <- st_within(st_transform(bpoints, crs=st_crs(geo$geometry)), geo$geom
 bg_list <- data.table(geo)[as.numeric(within_id), GEOID]
 tract_list <- unique(substr(bg_list, 0, 11))
 
-# Convert from 2020 to 2010, this is a one off process because PUMS 2020 relations are not yet available.
-# bgto20 <- fread(file.path(PATH, 'inst/dataprep_sources/', 'tab20_blkgrp20_blkgrp10_st41.txt'), colClasses = 'character')
-tractto20 <- fread(file.path(PATH, 'inst/dataprep_sources/', 'tab20_tract20_tract10_st41.txt'), colClasses = 'character')
-
 # Tract to PUMAS
 t2p10 <- fread(file.path(PATH, 'inst/dataprep_sources', params$pumaxwalk), colClasses = 'character')
 t2p10[ , GEOID_TRACT_10 := paste0(STATEFP, COUNTYFP, TRACTCE)]
 
-# Find which 2020 blocks are in the 2010 pumas
-t2p20 <- merge(tractto20, t2p10, by='GEOID_TRACT_10')
-t2p20 <- t2p20[GEOID_TRACT_20 %in% tract_list, .(GEOID_TRACT_20, GEOID_TRACT_10, PUMA5CE, AREALAND_PART)]
-
-# Remove multiple overlaps. messy but whatever...
-t2p20 <- t2p20[t2p20[, .I[which.max(AREALAND_PART)], by=GEOID_TRACT_20]$V1, .(GEOID_TRACT_20, PUMA5CE)]
+# # Convert from 2020 to 2010, this is a one off process because PUMS 2020 relations are not yet available.
+# # bgto20 <- fread(file.path(PATH, 'inst/dataprep_sources/', 'tab20_blkgrp20_blkgrp10_st41.txt'), colClasses = 'character')
+# tractto20 <- fread(file.path(PATH, 'inst/dataprep_sources/', 'tab20_tract20_tract10_st41.txt'), colClasses = 'character')
+# 
+# # Find which 2020 blocks are in the 2010 pumas
+# t2p20 <- merge(tractto20, t2p10, by='GEOID_TRACT_10')
+# t2p20 <- t2p20[GEOID_TRACT_20 %in% tract_list, .(GEOID_TRACT_20, GEOID_TRACT_10, PUMA5CE, AREALAND_PART)]
+# 
+# # Remove multiple overlaps. messy but whatever...
+# t2p20 <- t2p20[t2p20[, .I[which.max(AREALAND_PART)], by=GEOID_TRACT_20]$V1, .(GEOID_TRACT_20, PUMA5CE)]
+# 
+# # Re-format
+# t2p <- t2p20[ , .(STATEFP = substr(GEOID_TRACT_20, 0, 2),
+#                     COUNTYFP = substr(GEOID_TRACT_20, 3, 5),
+#                     TRACTCE = substr(GEOID_TRACT_20, 6, 11),
+#                     PUMA = PUMA5CE,
+#                     REGION = 1)]
 
 # Re-format
-t2p20 <- t2p20[ , .(STATEFP = substr(GEOID_TRACT_20, 0, 2),
-                    COUNTYFP = substr(GEOID_TRACT_20, 3, 5),
-                    TRACTCE = substr(GEOID_TRACT_20, 6, 11),
-                    PUMA = PUMA5CE,
-                    REGION = 1)]
+t2p <- t2p10[GEOID_TRACT_10 %in% tract_list, .(GEOID_TRACT_10, GEOID_TRACT_10, PUMA5CE)]
+t2p <- t2p10[ , .(STATEFP = substr(GEOID_TRACT_10, 0, 2),
+                  COUNTYFP = substr(GEOID_TRACT_10, 3, 5),
+                  TRACTCE = substr(GEOID_TRACT_10, 6, 11),
+                  PUMA = PUMA5CE,
+                  REGION = 1)]
+t2p$REGION <- 1
 
 # Get basic elements
 geo_cross_walk <- data.table(geo)[as.numeric(within_id), .(STATEFP, COUNTYFP, TRACTCE, BLKGRPCE, GEOID)]
-geo_cross_walk <- unique(merge(geo_cross_walk, t2p20))
+geo_cross_walk <- unique(merge(geo_cross_walk, t2p))
 geo_cross_walk[ , TRACTGEOID := paste0(STATEFP, COUNTYFP, TRACTCE)]
 
 length(unique(geo_cross_walk$TRACTGEOID))
@@ -267,13 +278,11 @@ tract_data <- dcast(tract_agg,
 setnames(tract_data,'GEOID','TRACTGEOID')
 
 
-
 #### PUMS SEED ####
-
 # Latest pums year
 PUMS_YEAR <- pums_variables %>% 
   mutate(year=as.integer(year)) %>%
-  filter(year <= 2020) %>% 
+  filter(year <= YEAR) %>% 
   select(year) %>% max()
 
 # use this to look for the vars we need
