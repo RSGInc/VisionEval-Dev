@@ -1,0 +1,15 @@
+# POPULATIONSIM SETUP CONIGS
+MODEL_DIR: models/VERSPM-popsim
+
+# Optionally use the automated data preparation tool
+AUTO_DATA_PREP:
+    CENSUS_KEY: a644088215170b8a69f61aa350ed780b124ab174
+    ACS_YEAR: 2019
+    STATE: OR
+    SOURCE_DATA:
+        GEOGRAPHY: popsim_sources/tl_2010_41_bg10.zip                  # https://www2.census.gov/geo/tiger/TIGER2010/BG/2010/
+        BZONE_LATLON: inputs/bzone_lat_lon.csv
+        PUMA_XWALK: popsim_sources/2010_Census_Tract_to_2010_PUMA.txt
+
+# Otherwise specify the DATA_DIR manually [ not yet implemented ]
+# DATA_DIR: 
