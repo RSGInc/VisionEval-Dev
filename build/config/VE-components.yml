@@ -71,6 +71,11 @@ Components:
     Path: sources/modules
     Test:
       Group: 1
+  VESimHouseholdsCCRPC:
+    Type: module
+    Path: sources/modules
+    Test:
+      Group: 1
 #     Script: tests/scripts/test.R
   VEPopulationSim:
     Type: module
@@ -133,6 +138,16 @@ Components:
       - reshape2
     VE:
       - VE2001NHTS
+  VEHouseholdVehiclesCCRPC:
+    Type: module
+    Path: sources/modules
+    Test:
+      Group: 2
+    CRAN:
+      - ordinal
+      - reshape2
+    VE:
+      - VE2001NHTS
   VELandUse:
     Type: module
     Path: sources/modules
@@ -147,6 +162,16 @@ Components:
 
 # Group 3 Packages
   VEPowertrainsAndFuels:
+    Type: module
+    Path: sources/modules
+    Test:
+      Group: 3
+    CRAN:
+      - data.table
+    VE:
+      - VE2001NHTS
+      - VEHouseholdTravel
+  VEPowertrainsAndFuelsCCRPC:
     Type: module
     Path: sources/modules
     Test:
@@ -296,6 +321,13 @@ Components:
     Type: script
     Path: sources/framework/VEModel/inst/walkthrough
     Target: walkthrough              # output path relative to "ve.runtime" for scripts
+  populationsim/[01]*.R: # PopulationSim script files
+    Type: script
+    Path: sources/framework/VEModel/inst
+  Readme.md: # Walkthrough detailed instructions
+    Type: script
+    Path: sources/framework/VEModel/inst/populationsim
+    Target: populationsim
   api:                               # "package" for 'docs' type is the last element (can be file name)
     Type: docs
     Path: "."                        # base directory below root to gather docs
