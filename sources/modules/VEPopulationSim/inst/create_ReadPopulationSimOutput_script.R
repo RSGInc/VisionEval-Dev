@@ -12,7 +12,7 @@ output_dir <- "output"                                          # This should po
 popsim_output_dir <- here(popsim_example_dir, output_dir)
 syn_pop_file <- "synthetic_persons.csv"                         # Name of the synthetic person file
 syn_hh_file <- "synthetic_households.csv"                       # Name of the syntthetic household file
-Year <- "2020"                                                  # Year for which the PopulationSim synthesizer is run
+Year <- "2017"                                                  # Year for which the PopulationSim synthesizer is run
 
 # Write the R script
 source(here(module_dir, "inst", create_spec_file), echo = TRUE)
