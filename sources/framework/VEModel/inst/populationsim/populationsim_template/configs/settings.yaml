@@ -41,13 +41,13 @@ input_table_list:
     rename_columns:
       # not sure what SERIALNO is, but it is not unique
       #SERIALNO: hh_id
-      hhnum: hh_id
+      HHNUM: hh_id
   - tablename: persons
     # expression_filename: seed_persons_expressions.csv
     filename : seed_persons.csv
     rename_columns:
       # SERIALNO: hh_id
-      hhnum: hh_id
+      HHNUM: hh_id
       SPORDER: per_num
     # drop unused mixed type fields to avoid PyTables pipeline performance issues
     # (PyTables will pickle object types that it cannot map directly to c-types)
@@ -64,13 +64,13 @@ input_table_list:
     filename : geo_cross_walk.csv
     column_map:
       TRACTGEOID: TRACT
-      GEOID: BG
+      BzoneID: BG
       
   - tablename: BG_control_data
     filename : control_totals_bg.csv
     column_map:
       TRACTGEOID: TRACT
-      GEOID: BG
+      BzoneID: BG
       
   - tablename: TRACT_control_data
     filename : control_totals_tract.csv

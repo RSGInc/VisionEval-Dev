@@ -1,0 +1,19 @@
+var_code,var_label,data_type,level
+SERIALNO,Housing unit/GQ person serial number,chr,
+PUMA,"Public use microdata area code (PUMA) based on 2010 Census definition (areas with population of 100,000 or more, use with ST for unique code)",chr,
+ST,State code based on 2010 Census definitions,chr,
+ADJINC,Adjustment factor for income and earnings dollar amounts (6 implied decimal places),chr,housing
+WGTP,Housing Unit Weight,num,housing
+NP,Number of persons associated with this housing record,num,housing
+TYPE,Type of unit,chr,housing
+ACCESS,Access to the Internet,chr,housing
+BLD,Units in structure,chr,housing
+HINCP,"Household income (past 12 months, use ADJINC to adjust HINCP to constant dollars)",num,housing
+SPORDER,Person number,chr,person
+PWGTP,Person weight,num,person
+AGEP,Age,num,person
+COW,Class of worker,chr,person
+ENG,Ability to speak English,chr,person
+ESR,Employment status recode,chr,person
+PINCP,"Person income (past 12 months, use ADJINC to adjust PINCP to constant dollars)",num,person
+RAC1P,pums_variables,chr,person

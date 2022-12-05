@@ -1,0 +1,70 @@
+PUMS_VARS:
+    BASE:
+        - var_code: SERIALNO
+          var_label: Housing unit/GQ person serial number
+          data_type: chr
+        - var_code: PUMA
+          var_label: Public use microdata area code (PUMA) based on 2010 Census definition
+              (areas with population of 100,000 or more, use with ST for unique code)
+          data_type: chr
+        - var_code: ST
+          var_label: State code based on 2010 Census definitions
+          data_type: chr
+    HOUSEHOLD:
+        - var_code: ADJINC
+          var_label: Adjustment factor for income and earnings dollar amounts (6 implied decimal
+              places)
+          data_type: chr
+        - var_code: WGTP
+          var_label: Housing Unit Weight
+          data_type: num
+        - var_code: NP
+          var_label: Number of persons associated with this housing record
+          data_type: num
+        - var_code: TYPE
+          var_label: Type of unit
+          data_type: chr
+        - var_code: ACCESS
+          var_label: Access to the Internet
+          data_type: chr
+        - var_code: BLD
+          var_label: Units in structure
+          data_type: chr
+        - var_code: HINCP
+          var_label: Household income (past 12 months, use ADJINC to adjust HINCP to constant
+              dollars)
+          data_type: num
+    PERSON:
+        - var_code: SPORDER
+          var_label: Person number
+          data_type: chr
+        - var_code: PWGTP
+          var_label: Person weight
+          data_type: num
+        - var_code: AGEP
+          var_label: Age
+          data_type: num
+        - var_code: COW
+          var_label: Class of worker
+          data_type: chr
+        - var_code: ENG
+          var_label: Ability to speak English
+          data_type: chr
+        - var_code: ESR
+          var_label: Employment status recode
+          data_type: chr
+        - var_code: PINCP
+          var_label: Person income (past 12 months, use ADJINC to adjust PINCP to constant
+              dollars)
+          data_type: num
+TRANSFORMATION:
+    - expr: pums_data = merge(pums_data, pums_data[SPORDER==1, .(AGEHOH=AGEP), by = SERIALNO], all = T)
+      desc: Age of reference person "head of household"
+    - expr: pums_data[ , HHINCADJ := HINCP * as.numeric(ADJINC)]
+      desc: Adjusted household income
+    - expr: pums_data[ , PINCADJ := PINCP * as.numeric(ADJINC)]
+      desc: Adjusted person income
+    - expr: pums_data[PINCADJ < 0 , PINCADJ := 0]
+      desc: Zero out negative income
+    - expr: pums_data = merge(pums_data, pums_data[ESR %in% c(1,2,4,5), .(NW=.N), by=SERIALNO], all=T)
+      desc: Number of workers

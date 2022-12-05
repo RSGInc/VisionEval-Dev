@@ -1,7 +1,7 @@
 # POPULATIONSIM SETUP CONIGS
 
 # VE-MODEL CONFIGS
-MODEL_DIR: models/VERSPM-run
+MODEL_DIR: models/VERSPM-CCRPC
 
 
 # POPULATIONSIM CONFIGS
@@ -18,17 +18,30 @@ POPSIM_OUTPUTS:
 AUTO_DATA_PREP:
     CENSUS_KEY: a644088215170b8a69f61aa350ed780b124ab174
     ACS_YEAR: 2017
-    STATE: OR
+    STATE: VT
     SOURCE_DATA:
+      USE: BZONE_GEOGRAPHY
       CENSUS:
-        GEOGRAPHY: popsim_sources/tl_2010_41_bg10.zip                  # https://www2.census.gov/geo/tiger/TIGER2010/BG/2010/
-        PUMA_XWALK: popsim_sources/2010_Census_Tract_to_2010_PUMA.txt
+        GEOGRAPHY: 
+            FILE: popsim_sources/tl_2010_50_bg10.zip                  # https://www2.census.gov/geo/tiger/TIGER2010/BG/2010/
+        PUMA_XWALK: 
+            FILE: popsim_sources/2010_Census_Tract_to_2010_PUMA.txt
+        BZONE_GEOGRAPHY:
+            FILE: popsim_sources/Bzones.zip
+            MINAREA: .05
+            BZONEID: BzoneID
+        ACS_VARS:
+            FILE: popsim_sources/acs_variables.csv
+        PUMS_VARS:
+            FILE: popsim_sources/pums_variables.csv
       MODEL:
-        BZONE_LATLON: inputs/bzone_lat_lon.csv
-        DEFLATORS: defs/deflators.csv
+        BZONE_LATLON:
+            FILE: inputs/bzone_lat_lon.csv
       DATA_DICTIONARY:
         POPSIM: PopulationSim_DataDictionary.csv
         VEHOUSEHOLD: VESimHousehold_DataDictionary.csv
+      MODULE_SCRIPT:
+        FILE: ReadPopulationSimOutput_CCRPC.R
 
 # Otherwise specify the DATA_DIR manually [ not yet implemented ]
 # DATA_DIR: 
