@@ -15,6 +15,7 @@ NULL
 ##############################################
 # VisionEval Model Manager Class and Functions
 ##############################################
+
 #' VisionEval model manager class and functions
 #'
 #' The VisionEval model manager (VEModel) provides a simple way to run VisionEval models, and to
@@ -666,8 +667,8 @@ ve.model.init <- function(modelPath) {
 # Copy a model to a new directory
 # Use the newName to create the model's new directory
 # Update directory locations
-#   Change the ModelDir in the model's RunParams_ls
-#   Update RunPath for each stage in its RunParams_ls and ModelState_ls if copyResults
+#   Change the ModelDir in the model's RunParam_ls
+#   Update RunPath for each stage in its RunParam_ls and ModelState_ls if copyResults
 #   Identify other elements of ModelState and RunParams that will change if the
 #     the ModelDir changes (everything built from ModelDir)
 ve.model.copy <- function(newName=NULL,newPath=NULL,copyResults=TRUE,copyArchives=FALSE,log="warn") {
@@ -2890,7 +2891,6 @@ visualize <- function(Model, Query, Year, categories, measures,saveTo,maxMeasure
 
 # Here is the VEModel R6 class
 # One of these objects is returned by "openModel"
-
 #' @export
 VEModel <- R6::R6Class(
   "VEModel",

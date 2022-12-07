@@ -1523,9 +1523,7 @@ getFromDatastore <- function(ModuleSpec_ls, RunYear, Geo = NULL, GeoIndex_ls = N
   G <- getModelState(envir=envir)
   G$Year <- RunYear
   L$G <- G
-  #Get data specified in list
-  for (i in 1:length(GetSpec_ls)) {
-    Spec_ls <- GetSpec_ls[[i]]
+  for ( Spec_ls in GetSpec_ls ) { # unlike the original (1:length range), this works with empty GetSpec_ls
     Group <- Spec_ls$GROUP
     Table <- Spec_ls$TABLE
     Name <- Spec_ls$NAME
@@ -1547,7 +1545,7 @@ getFromDatastore <- function(ModuleSpec_ls, RunYear, Geo = NULL, GeoIndex_ls = N
       if ( ! is.numeric(Length) ) {
         msg <- writeLog(paste("getFromDatastore: Table length not available for",file.path(Group,Table)),Level="error")
         stop(msg)
-      }
+s      }
       attributes(L[[Group]][[Table]]) <- list(LENGTH = Length)
     }
     #Make an index to the data

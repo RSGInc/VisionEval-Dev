@@ -872,7 +872,7 @@ log.function <- list(
 #' @return TRUE if the message is written to the log successfully ("as-is")
 #' @export
 writeLogMessage <- function(Msg = "", Logger="ve.logger", Level="") {
-  if ( missing(Msg) || length(Msg)==0 || ! nzchar(Msg) ) {
+  if ( missing(Msg) || length(Msg)==0 || ! nzchar(Msg[1]) ) {
     message(
       "writeLogMessage(Msg): No message supplied\n",
     )
@@ -917,7 +917,7 @@ writeLogMessage <- function(Msg = "", Logger="ve.logger", Level="") {
 writeLog <- function(Msg = "", Level="NONE", Logger="") {
   noLevel <- ( missing(Level) || ! (Level <- toupper(Level) ) %in% log.threshold )
   if ( noLevel ) Level <- "FATAL"
-  if ( missing(Msg) || length(Msg)==0 || ! nzchar(Msg) ) {
+  if ( missing(Msg) || length(Msg)==0 || ! nzchar(Msg[1]) ) {
     message(
       "writeLog(Msg,Level,Logger): No message supplied\n",
       "Available Log Levels:\n",

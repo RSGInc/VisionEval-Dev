@@ -17,7 +17,7 @@ ve.env$RunParam_ls <- list()
 #'
 #' \code{modelEnvironment} returns an environment for managing the ve.runtime directory and its
 #' components, the default runtime parameters and other runtime needs. That environment contains the
-#' default RunParams_ls structure plus other components needed to manage global state for VEModel
+#' default RunParam_ls structure plus other components needed to manage global state for VEModel
 #' classes.
 #'
 #' \code{modelEnvironment} holds the RunParam_ls settings from the runtime directory (or its
