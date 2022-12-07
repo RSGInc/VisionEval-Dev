@@ -465,7 +465,7 @@ loadModel <- function(
     }
   }
 
-  # Generate the model loading message
+  # Generate the model loading 
   writeLog(Message,Level="warn")
 
   #===============================================
@@ -1034,7 +1034,6 @@ runModule <- function(ModuleName, PackageName, RunFor, RunYear, Instance=charact
   #---------------------------
   M <- list()
   M$Func <- eval(parse(text = ModuleFunction))
-
   # use Cache parameter to avoid regenerating function-based specifications - those were built and
   # cached during initialization
   M$Specs <- processModuleSpecs(getModuleSpecs(ModuleName,PackageName,Instance=Instance,Cache=TRUE))
