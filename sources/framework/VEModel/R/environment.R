@@ -131,8 +131,8 @@ default.parameters.table = list(
 #' @import visioneval
 #' @export
 VEPackageRunParameters <- function() {
-  # Add the source attribute to the default.parameters.table and return the resulting list
-  visioneval::addParameterSource(default.parameters.table,"Package VEModel Default")
+  # Add the source attribute to the default.parameters.table
+  defaultParams_ls <- visioneval::addParameterSource(default.parameters.table,"Package VEModel Default")
 }
 
 #LOAD RUNTIME CONFIGURATION
