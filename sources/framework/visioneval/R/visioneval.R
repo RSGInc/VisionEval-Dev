@@ -1034,7 +1034,11 @@ runModule <- function(ModuleName, PackageName, RunFor, RunYear, Instance=charact
   #---------------------------
   M <- list()
   M$Func <- eval(parse(text = ModuleFunction))
-  M$Specs <- processModuleSpecs(getModuleSpecs(ModuleName,PackageName,Instance=Instance))
+
+  # use Cache parameter to avoid regenerating function-based specifications - those were built and
+  # cached during initialization
+  M$Specs <- processModuleSpecs(getModuleSpecs(ModuleName,PackageName,Instance=Instance,Cache=TRUE))
+
   #Load any modules identified by 'Call' spec if any
   if (is.list(M$Specs$Call)) {
     Call <- list(

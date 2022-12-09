@@ -1324,11 +1324,12 @@ checkModuleExists <- function(ModuleName,
 #' not provided, retrieve list of specifications from the ModelState. See how this
 #' function is used in parseModuleCalls in initialization.R.
 #' @param Instance Name of module run instance for which to get specifications
+#' @param Cache passed on to module specification function
 #' @param envir If AllSpecs_ls is not provided, then use this environment to find the
 #' ModelState from which to extract AllSpecs_ls.
 #' @return A specifications list with the items used and created by the module in the package.
 #' @export
-getModuleSpecs <- function(ModuleName, PackageName, AllSpecs_ls=NA, Instance=character(0), envir=modelEnvironment() ) {
+getModuleSpecs <- function(ModuleName, PackageName, AllSpecs_ls=NA, Instance=character(0), Cache=FALSE, envir=modelEnvironment() ) {
   specText <- paste0(PackageName, "::", ModuleName, "Specifications")
   spec_ls <- eval(parse(text = specText))
   if ( ! is.list(spec_ls) ) {
@@ -1340,16 +1341,23 @@ getModuleSpecs <- function(ModuleName, PackageName, AllSpecs_ls=NA, Instance=cha
     )
   }
   if ( "Function" %in% names(spec_ls) ) {
-    if ( !is.list(AllSpecs_ls) ) { # get the model state and pull out AllSpecs_ls
+    specFunc <- paste0(PackageName, "::", spec_ls$Function)
+    specFormals <- names(eval(parse(text=paste0("formals(",specFunc,")"))))
+    wantAllSpecs <- "AllSpecs_ls" %in% specFormals
+    wantCache <- "Cache" %in% specFormals
+    if ( wantAllSpecs && ! is.list(AllSpecs_ls)  ) {
       # The provisional AllSpecs_ls is provided as an argument when getModuleSpecs is called while AllSpecs_ls is being built,
-      # and it will contain all the specifications processed up to the point we encounter this module. See 
+      # and it will contain all the specifications processed up to the point we encounter this module.
       AllSpecs_ls <- getModelState(envir=envir)$AllSpecs_ls
     }
+    wantInstance <- "Instance" %in% specFormals
+
     Args <- character(0)
-    if ( is.list(AllSpecs_ls) && isTRUE(spec_ls$Specs) ) Args[length(Args)+1] <- "AllSpecs_ls"
-    if ( length(Instance)==1 && nzchar(Instance) ) Args[length(Args)+1] <- "Instance"
+    if ( wantAllSpecs && is.list(AllSpecs_ls) && isTRUE(spec_ls$Specs) ) Args[length(Args)+1] <- "AllSpecs_ls=AllSpecs_ls"
+    if ( wantInstance && length(Instance)==1 && nzchar(Instance) ) Args[length(Args)+1] <- "Instance=Instance"
+    if ( wantCache && Cache ) Args[length(Args)+1] <- "Cache=TRUE"
     Args <- paste0("(",paste(collapse=",",Args),")")
-    spec_ls <- eval(parse(text = paste0(PackageName, "::", spec_ls$Function,Args)))
+    spec_ls <- eval(parse(text = paste0(specFunc,Args)))
   }
   spec_ls
 }

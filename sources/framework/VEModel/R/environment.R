@@ -125,22 +125,14 @@ default.parameters.table = list(
 #' call this function directly (e.g. to see what parameters are defined and defaulted in VEModel).
 #' Internally VEModel uses \code{visioneval::defaultVERuntimeParameters} to access these parameters,
 #' so it doesn't have to remember whether specific defaults are defined in visioneval itself or in
-#' VEModel (and one can transparently move the default definitions back and forth).
+#' VEModel, or some other package (and one can transparently move the default definitions back and forth).
 #'
-#' @param Param_ls a list (possibly empty) of already-defined parameters
-#' @return a named list for parameters not present in Param_ls containing default values for those
-#'   parameters
+#' @return a named list of parameters with default values defined in this package
 #' @import visioneval
 #' @export
-VEPackageRunParameters <- function(Param_ls=list()) {
-  defaultParams_ls <- default.parameters.table[
-    which( ! names(default.parameters.table) %in% names(Param_ls) )
-  ]
-  if ( length(defaultParams_ls)>0 ) {
-    defaultParams_ls <- visioneval::addParameterSource(defaultParams_ls,"Package VEModel Default")
-    Param_ls <- visioneval::mergeParameters(defaultParams_ls,Param_ls) # Param_ls will override
-  }
-  return(Param_ls)
+VEPackageRunParameters <- function() {
+  # Add the source attribute to the default.parameters.table
+  defaultParams_ls <- visioneval::addParameterSource(default.parameters.table,"Package VEModel Default")
 }
 
 #LOAD RUNTIME CONFIGURATION
