@@ -1517,6 +1517,7 @@ processModuleSpecs <- function(Spec_ls) {
   if (!is.null(Spec_ls$RunBy)) {
     Out_ls$RunBy <- Spec_ls$RunBy
   } else {
+    writeLog("Forcing RunBy into specification list",Level="info")
     Out_ls$RunBy <- "Region"
   }
   if (!is.null(Spec_ls$NewInpTable)) {
