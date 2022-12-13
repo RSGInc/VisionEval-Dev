@@ -164,6 +164,7 @@ confirmDialog <- function(msg) {
 #  Generate a list of directories that might contain models
 #  referring to getwd(), ve.runtime, and <ModelRoot>
 getModelRoots <- function(get.root=0,Param_ls=NULL) {
+  browser()
   roots <- c( getwd() )
   if ( exists("ve.runtime") ) {
     ve.runtime <- get("ve.runtime")

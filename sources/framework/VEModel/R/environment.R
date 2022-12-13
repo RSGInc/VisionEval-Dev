@@ -251,7 +251,10 @@ updateSetup <- function(object=NULL,inFile=FALSE,Source="interactive",Param_ls=l
 
   # Names to drop from Param_ls
   if ( length(drop)>0 ) {
+    cat("Fields in object config:\n"); print(c(param.name,names(object[[param.name]])))
+    cat("Dropping:\n"); print(drop)
     for ( nm in drop ) object[[param.name]][[nm]] <- NULL
+    cat("Fields after drop:\n"); print(c(param.name,names(object[[param.name]])))
   }
   # Add in other parameters
   object[[param.name]] <- visioneval::mergeParameters(object[[param.name]],Param_ls)
@@ -459,10 +462,19 @@ getModelIndex <- function(reset=FALSE) {
   # Uses the package global ve.env to cache models and variants
   if ( ! reset && "modelIndex" %in% names(ve.env) ) return(ve.env$modelIndex)
 
-  # Hack for developing VEModel with pkgload
+  # Hack for developing packages with pkgload if package is not
+  # already built; not working in 4.1.3 due to environment/search problem
+  # for test functions - usePkgload appears only to work for VEModel
+  # or visioneval (where outside environment doesn't matter)
   pkgs <- utils::installed.packages(fields="Package")
   VE.pkgs <- grep("^VE",pkgs[,"Package"],value=TRUE)
-  if ( ! "VEModel" %in% VE.pkgs ) VE.pkgs <- c(VE.pkgs,VEModel="VEModel")
+  loaded.packages <- grep("package:VE",search(),value=TRUE)
+  for ( pkg.load in loaded.packages ) {
+    pkg <- sub("package:","",pkg.load)
+    if ( ! pkg %in% VE.pkgs ) {
+      VE.pkg[pkg] <- pkg
+    }
+  }
   modelPaths <- sapply(VE.pkgs, function(p) system.file("models",package=p))
   modelPaths <- dir(modelPaths,pattern="model-index.cnf",recursive=TRUE,full.names=T)
   modelIndex <- list()
