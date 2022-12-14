@@ -465,7 +465,7 @@ loadModel <- function(
     }
   }
 
-  # Generate the model loading 
+  # Generate the model loading message
   writeLog(Message,Level="warn")
 
   #===============================================

@@ -131,8 +131,8 @@ default.parameters.table = list(
 #' @import visioneval
 #' @export
 VEPackageRunParameters <- function() {
-  # Add the source attribute to the default.parameters.table
-  defaultParams_ls <- visioneval::addParameterSource(default.parameters.table,"Package VEModel Default")
+  # Add the source attribute to the default.parameters.table and return the resulting list
+  visioneval::addParameterSource(default.parameters.table,"Package VEModel Default")
 }
 
 #LOAD RUNTIME CONFIGURATION
@@ -251,10 +251,7 @@ updateSetup <- function(object=NULL,inFile=FALSE,Source="interactive",Param_ls=l
 
   # Names to drop from Param_ls
   if ( length(drop)>0 ) {
-    cat("Fields in object config:\n"); print(c(param.name,names(object[[param.name]])))
-    cat("Dropping:\n"); print(drop)
     for ( nm in drop ) object[[param.name]][[nm]] <- NULL
-    cat("Fields after drop:\n"); print(c(param.name,names(object[[param.name]])))
   }
   # Add in other parameters
   object[[param.name]] <- visioneval::mergeParameters(object[[param.name]],Param_ls)
