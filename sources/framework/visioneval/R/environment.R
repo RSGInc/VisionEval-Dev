@@ -163,13 +163,18 @@ defaultVERunParameters <- function(Param_ls=list()) {
   if ( length(otherVEDefaults)>0 ) {
     for ( defs in otherVEDefaults[length(otherVEDefaults):1] ) {
       # process in reverse order so most recently loaded packages "win" any collisions
-      packageParams_ls <- as.environment(defs)$VEPackageRunParameters(Param_ls)
-      defaultParams_ls <- mergeParameters(defaultParams_ls,packageParams_ls)
+      packageParams_ls <- as.environment(defs)$VEPackageRunParameters()
+      packageParams_ls <- packageParams_ls[  which( ! names(packageParams_ls) %in% names(Param_ls) ) ]
+      packageParams_ls <- addParameterSource(
+        packageParams_ls,
+        Source=paste("Default from",defs), # VEPackageRunParameterse() should set that to its own notion of Source
+        onlyMissing=TRUE
+      )
+      Param_ls <- mergeParameters(Param_ls,packageParams_ls)
     }
   }
-  Param_ls <- mergeParameters(defaultParams_ls,Param_ls)
-  
-  # Now add the framework defaults (packages take precedence)
+
+  # Finally add the framework defaults (packages take precedence)
   tableParams_ls <- default.parameters.table[
     which( ! names(default.parameters.table) %in% names(Param_ls) )
   ]
@@ -340,6 +345,11 @@ readConfigurationFile <- function(ParamDir=NULL,ParamFile=NULL,ParamPath=NULL,mu
       if ( length(ParamFile_ls)==0 ) {
         writeLog("No parameters read",Level="debug")
       } else {
+        if ( !is.list(ParamFile_ls) ) { # it will be character containg a warning if read failed
+          stop(
+            writeLog(ParamFile_ls,Level="error")
+          )
+        }
         writeLog(paste("Successfully read parameters",if(!is.null(ParamPath)) paste("from", paste0("'",ParamPath,"'")) else ""),Level="debug")
       }
     }
@@ -570,7 +580,7 @@ mergeParameters <- function(Param_ls,Keep_ls) {
 #'   file does not exist, unless "mustWork" is FALSE. ParamFile is ignored if ParamDir is not
 #'   provided.
 #' @param ParamPath The path of the file to open. If provided, then ParamDir/ParamFile are ignored
-#'   and this path is opened directly.
+#'   and this path is opened directly. Relative to ModelDir.
 #' @param keep A named list of run parameters whose values will be added to the items found in
 #'   the configuration file (these values take precedence over what is in the file)
 #' @param override A named list of run parameters whose values will be added to the items found
@@ -633,7 +643,7 @@ loadConfiguration <- function( # if all arguments are defaulted, return an empty
 #' @param Dir Directory (or directories) in which to seek files
 #' @param onlyExists A logical; if TRUE filter the list of files to just those that exist (or NA if
 #'   none); otherwise return all candidate names.
-#' @return the path(s) of files found on all combinations of Root(s), Dir(s) and File(s)
+#' @return the path(s) of files found on all combinations of Root(s), Dir(s) and File(s), or NA if none
 #' @export
 findFileOnPath <- function(File,Dir,onlyExists=TRUE) {
   dir.file <- character(0)
@@ -872,7 +882,7 @@ log.function <- list(
 #' @return TRUE if the message is written to the log successfully ("as-is")
 #' @export
 writeLogMessage <- function(Msg = "", Logger="ve.logger", Level="") {
-  if ( missing(Msg) || length(Msg)==0 || ! nzchar(Msg) ) {
+  if ( missing(Msg) || length(Msg)==0 || ! nzchar(Msg[1]) ) {
     message(
       "writeLogMessage(Msg): No message supplied\n",
     )
@@ -917,7 +927,7 @@ writeLogMessage <- function(Msg = "", Logger="ve.logger", Level="") {
 writeLog <- function(Msg = "", Level="NONE", Logger="") {
   noLevel <- ( missing(Level) || ! (Level <- toupper(Level) ) %in% log.threshold )
   if ( noLevel ) Level <- "FATAL"
-  if ( missing(Msg) || length(Msg)==0 || ! nzchar(Msg) ) {
+  if ( missing(Msg) || length(Msg)==0 || ! nzchar(Msg[1]) ) {
     message(
       "writeLog(Msg,Level,Logger): No message supplied\n",
       "Available Log Levels:\n",

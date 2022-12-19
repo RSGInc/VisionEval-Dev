@@ -283,6 +283,10 @@ ve.query.check <- function(verbose=FALSE) {
 
 ve.query.valid <- function() {
   # summarize outcome of last check (as a logical)
+  cat("CheckMessages length:",length(self$CheckMessages),"\n")
+  print(self$CheckMessages)
+  cat("CheckMessages all empty:",all(!nzchar(self$CheckMessages)),"\n")
+  
   return( length(self$CheckMessages)==0 || all(!nzchar(self$CheckMessages)) )
 }
 
