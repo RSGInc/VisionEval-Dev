@@ -216,32 +216,32 @@ Components:
       - VESimHouseholds
       - VETransportSupply
       - VETravelPerformance
-   VEState:
-    Type: module
-    Path: sources/modules
-    Test:
-      Group: 5
-    # VEState has no package dependencies (only an installable model)
-    VE:
-      - VEHouseholdTravel
-      - VEHouseholdVehicles
-      - VEPowertrainsAndFuels
-      - VESimHouseholds
-      - VESimLandUse
-      - VESimTransportSupply
-      - VETravelPerformance  VEState:
-   VEFHWAAV:
-    Type: module
-    Path: sources/modules
-    Test: { Script: tests/scripts/test.R, Group: 2 }
-    CRAN:
-      - dplyr
-      - purrr
-      - tidyr
-      - ordinal
-    VE:
-      - VEHouseholdTravel
-      - VEHouseholdVehicles
+  VEState:
+   Type: module
+   Path: sources/modules
+   Test:
+     Group: 5
+   # VEState has no package dependencies (only an installable model)
+   VE:
+     - VEHouseholdTravel
+     - VEHouseholdVehicles
+     - VEPowertrainsAndFuels
+     - VESimHouseholds
+     - VESimLandUse
+     - VESimTransportSupply
+     - VETravelPerformance
+  VEFHWAAV:
+   Type: module
+   Path: sources/modules
+   Test: { Script: tests/scripts/test.R, Group: 2 }
+   CRAN:
+     - dplyr
+     - purrr
+     - tidyr
+     - ordinal
+   VE:
+     - VEHouseholdTravel
+     - VEHouseholdVehicles
   VERPAT:
     Type: module
     Path: sources/modules
