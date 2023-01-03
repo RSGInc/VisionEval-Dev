@@ -300,7 +300,12 @@ readConfigurationFile <- function(ParamDir=NULL,ParamFile=NULL,ParamPath=NULL,mu
           tryCatch(
             {
               writeLog(c("Trying JSON parameters from",path),Level="info")
-              jsonlite::fromJSON(path)
+              withCallingHandlers(
+                jsonlite::fromJSON(path),
+                warning = function(w) {
+                  writeLog(c("Warning reading JSON:",conditionMessage(w)),Level="warn")
+                }
+              )
             },
             error = function(e) {
               writeLog("Failed to read JSON file",Level="info")
@@ -315,15 +320,17 @@ readConfigurationFile <- function(ParamDir=NULL,ParamFile=NULL,ParamPath=NULL,mu
         tryCatch(
           {
             writeLog(c("Trying YAML parameters from",ParamPath),Level="info")
-            yaml::yaml.load_file(ParamPath)
+            withCallingHandlers(
+              yaml::yaml.load_file(ParamPath),
+              warning = function(w) {
+                writeLog(c("Warning reading YAML:",conditionMessage(w)),Level="warn")
+              }
+            )
           },
           error = function(e) {
             writeLog("Failed to read YAML file; retrying as JSON...",Level="info")
             writeLog(paste("YAML:",conditionMessage(e)),Level="info")
             invokeRestart("json",ParamPath)
-          },
-          warning = function(w) {
-            formatWarnings <- writeLog(c("Warning reading YAML:",conditionMessage(w)),Level="info")
           }
         )
       )
@@ -345,7 +352,7 @@ readConfigurationFile <- function(ParamDir=NULL,ParamFile=NULL,ParamPath=NULL,mu
       if ( length(ParamFile_ls)==0 ) {
         writeLog("No parameters read",Level="debug")
       } else {
-        if ( !is.list(ParamFile_ls) ) { # it will be character containg a warning if read failed
+        if ( !is.list(ParamFile_ls) ) { # it will be character containing a warning if read failed
           stop(
             writeLog(ParamFile_ls,Level="error")
           )
@@ -622,6 +629,11 @@ loadConfiguration <- function( # if all arguments are defaulted, return an empty
 
   # load the configuration file (empty list returned if mustWork==FALSE and no file found)
   Param_ls <- readConfigurationFile(ParamDir,ParamFile,ParamPath,mustWork) # might be an empty list
+  if ( ! is.list(Param_ls) ) {
+    stop(
+      writeLog("readConfigurationFile returned non-list in visioneval/environment.R, circa line 624",Level="error")
+    )
+  }
   ParamPath <- attr(Param_ls,"FILE") # absolute path of file that was actually read
   Param_ls <- mergeParameters(Param_ls,keep) # items in keep replace Param_ls
   Param_ls <- mergeParameters(override,Param_ls) # items in Param_ls replace items in override
@@ -935,7 +947,7 @@ writeLog <- function(Msg = "", Level="NONE", Logger="") {
     )
   } else {
     # Pick the logger
-    if ( ! is.character(Logger) || ! nzchar(Logger) ) {
+    if ( ! is.character(Logger) || ! nzchar(Logger[1]) ) {
       Logger <- if ( which(log.threshold==Level) >= which(log.threshold=="WARN") ) "stderr" else "ve.logger"
     }
     # Pick the log format 

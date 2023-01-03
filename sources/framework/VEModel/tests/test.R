@@ -45,6 +45,7 @@ test_classic <- function(modelName="VERSPM-classic",clear=TRUE,log="info") {
 
   modelPath <- file.path("models",modelName)
   owd <- getwd()
+  testStep(paste("Runtime is",owd))
   on.exit(setwd(owd))
 
   if ( dir.exists(modelPath) && clear ) {
@@ -61,7 +62,7 @@ test_classic <- function(modelName="VERSPM-classic",clear=TRUE,log="info") {
     rm(rs)  # Don't keep the VEModel around
   }
 
-  testStep(paste("Running",modelName,"by sourcing scripts/run_model.R"))
+  testStep(paste("Running",modelName,"by sourcing scripts/run_model.R in",modelPath))
 
   setwd(modelPath)
   require(visioneval) # Put it on the search path for GetYears, RunModule, etc
@@ -81,7 +82,7 @@ test_install <- function(modelName="VERSPM",variant="base",installAs="",log="inf
   if ( ! missing(log) ) logLevel(log)
 
   if ( ! nzchar(variant) ) variant <- ""
-  if ( missing(installAs) || ! nzchar(installAs) ) {
+  if ( missing(installAs) || ! nzchar(installAs[1]) ) {
     if ( nzchar(variant) && nzchar(modelName) ) {
       installAs <- paste0("test-",modelName,"-",variant)
     }
@@ -176,7 +177,7 @@ test_run <- function(modelName="VERSPM-base",baseModel="VERSPM",variant="base",r
 
   if ( ! missing(log) ) logLevel(log)
   model.dir <- dir("models")
-  if ( missing(modelName) || ! nzchar(modelName) ) {
+  if ( missing(modelName) || ! nzchar(modelName[1]) ) {
     return(model.dir)
   }
   if ( ! modelName %in% model.dir ) {
@@ -1124,7 +1125,7 @@ test_query <- function(log="info",Force=TRUE,runModel=FALSE) {
 
 # Test query dimensions and filtering
 qrydir <- Sys.getenv("VE_test_source",unset=getwd())
-qryfile <- normalizePath(file.path(qrydir,"Filter-Query.VEqry"),winslash="/")
+qryfile <- normalizePath(file.path(qrydir,"Filter-Query.VEqry"),winslash="/",mustWork=FALSE)
 
 # Test query filter mechanism (and basic query processing)
 test_queryfilter <- function(runModel=FALSE,log="info") {

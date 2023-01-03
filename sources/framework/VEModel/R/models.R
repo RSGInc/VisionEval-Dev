@@ -25,10 +25,11 @@ NULL
 #' convenient interface for running a model and exploring its structure and results.
 #'
 #' Creating a model is still a manual process, so you're usually better off duplicating one of the
-#' standard models. The VEModel manager makes that very easy! See \code{vignette('VEModel')} for full
-#' instructions. A simple introduction is found on the VisionEval wiki, in the Getting-Started
-#' document (that document is also included in runtime installations of VisionEval).
-#'
+#' standard models. The VEModel manager makes that very easy! See \code{vignette('VEModel')} for
+#' full instructions, and the "walkthrough" folder with illustrative scripts that is part of the
+#' standard installation. A simple introduction is also found on the VisionEval wiki, in the
+#' Getting-Started document (that document is also included in runtime installations of VisionEval).
+#' 
 #' Here are the details of the VEModel manager.
 #'
 #' @section Usage:
@@ -56,8 +57,7 @@ NULL
 #' \describe{
 #'   \item{modelName}{The path or basename of a directory containing a VisionEval model setup; if
 #'   it's a relative path, the model will be sought in the current directory plus standard places
-#'   like ve.runtime/models. Usually it will just the name of model directory within
-#'   ve.runtime/models.}
+#'   like getwd()/models. Usually it will just be getwd()/models.}
 #'   \item{log}{The error threshold to display within the function (from most detailed to least detailed,
 #'   one of the following: \code{c("trace","debug","info","warn","error","fatal")}. The default can
 #'   be configured in \code{visioneval.cnf} using the LogLevel parameter.}
@@ -78,7 +78,7 @@ NULL
 #'   \item{inputs}{In $dir: Show the model input directories on the InputPath. Directories only unless all.files=TRUE).
 #'   In $list: List input fields descriptions; see Details.}
 #'   \item{all.files}{Show files, rather than just the directory name for result archives, outputs and inputs.}
-#'   \item{shorten}{Remove the ve.runtime directory prefix from the displayed directory and file names. Default is
+#'   \item{shorten}{Remove the runtime directory prefix from the displayed directory and file names. Default is
 #'   TRUE}
 #'   \item{force}{If TRUE, clear results without interaction. Default is TRUE if not interactive, otherwise FALSE. If
 #'   interactive, present a menu of available items and gather user input to determine which to clear.}
@@ -105,8 +105,8 @@ NULL
 #'   NULL, the query FileName will be constructed from the QueryName.}
 #'   \item{newName}{The internal name to attach to a copy of this model. Default is to add a numeric disambiguator to
 #'   the name of the model being copied.}
-#'   \item{newPath}{The directory into which to put the copy of this model. Default if NULL is ve.runtime/models
-#'   directory.}
+#'   \item{newPath}{The directory into which to put the copy of this model. Default (NULL) places
+#'   the model in getwd()/models directory, creating "models" if necsssary.}
 #'   \item{copyResults}{logical: if TRUE, copy the results, otherwise only copy the model setup. If
 #'   the ResultsDir is the same as the root (classic VisionEval), results will always be copied.}
 #'   \item{Model}{A character vector with the new model identifier (name) for each stage in the model}
@@ -162,24 +162,19 @@ confirmDialog <- function(msg) {
 
 ## Helper
 #  Generate a list of directories that might contain models
-#  referring to getwd(), ve.runtime, and <ModelRoot>
+#  referring to getwd() and <ModelRoot>
 getModelRoots <- function(get.root=0,Param_ls=NULL) {
   browser()
   roots <- c( getwd() )
-  if ( exists("ve.runtime") ) {
-    ve.runtime <- get("ve.runtime")
-    if ( ve.runtime != getwd() ) roots <- c( ve.runtime, roots )
-  }
   # Hierarchy of roots:
-  #    ve.runtime/<ModelRoot> (if exists)
   #    getwd()/<ModelRoot> (if exists)
-  #    ve.runtime
   #    getwd()
+  # Note subtle change in behavior: presume VEModel is running in ve.runtime as the working directory.
   modelRoot <- file.path(roots,visioneval::getRunParameter("ModelRoot",Param_ls=Param_ls))
   if ( length(modelRoot)>0 ) {
     if ( isAbsolutePath(modelRoot[1]) ) {
       modelRoot <- modelRoot[1]
-    } else { # happens if ve.runtime is defined but not an absolute pqth (unlikely)
+    } else {
       test.paths <- normalizePath(file.path(roots,modelRoot))
       modelRoot <- test.paths[dir.exists(test.paths)]
       if ( length(modelRoot)==0 || ! nzchar(modelRoot[1]) ) {
@@ -274,7 +269,7 @@ ve.model.configure <- function(modelPath=NULL, fromFile=TRUE) {
   
   self$modelPath <- modelPath;
 
-  # Load any configuration available in modelPath (on top of ve.runtime base configuration)
+  # Load any configuration available in modelPath
   Param_ls <- getSetup() # runtime configuration
   if ( fromFile || is.null(self$loadedParam_ls) ) {
     self$loadedParam_ls <- visioneval::loadConfiguration(ParamDir=modelPath)
@@ -734,8 +729,8 @@ ve.model.archive <- function(SaveDatastore=TRUE) {
 # Collapse model results into a single model run entry (though there are typically three pieces:
 # the ModelState.Rda, the Datastore, and log*.txt). Find current results, as well as archived
 # results from past model runs.
-# "shorten" is a logical parameter - if true, strip off the "ve.runtime" part of any paths, so what
-#   is shown is relative to ve.runtime.
+# "shorten" is a logical parameter - if true, strip off the "runtime" part of any paths, so what
+#   is shown is relative to the runtime directory.
 # Parameters control elements of the display (if all are FALSE, make them all TRUE):
 #   root==TRUE   : show "root" elements (config, scripts/run_model.R) plus InputPath and ParamPath
 #   archive=TRUE : show archived results directories (these are also found and removed from "root")
@@ -1287,7 +1282,7 @@ ve.stage.init <- function(Name=NULL,Model=NULL,ScenarioDir=NULL,modelParam_ls=NU
 
   # Identify "startFrom" stage (VEModelStage$runnable will complete setup)
   # Can find StartFrom through ModelStages or from the stage configuration file/parameters
-  if ( !is.character(self$StartFrom) || length(self$StartFrom)==0 || ! nzchar(self$StartFrom) ) {
+  if ( !is.character(self$StartFrom) || length(self$StartFrom)!=0 || ! nzchar(self$StartFrom) ) {
     # StartFrom was not set previously from stageParam_ls
     if ( "StartFrom" %in% names(self$RunParam_ls) ) {
       self$StartFrom <- self$RunParam_ls$StartFrom
@@ -1312,7 +1307,16 @@ ve.stage.runnable <- function(priorStages) {
 
   writeLog(paste("Checking stage",self$Name,"is runnable"),Level="info")
 
-  # dig out the information from the StartFrom stage
+  # dig out the information from the StartFrom stage (which must be NULL or length 0 or 1)
+  if ( length(self$StartFrom) > 1 ) {
+    stop (
+      writeLog(
+        paste("StartFrom must specify a single stage. Currently has:"),
+        paste(self$StartFrom,collapse=", "),
+        Level="error"
+      )
+    )
+  }
   if ( length(self$StartFrom) > 0 && nzchar(self$StartFrom) ) {
     writeLog(paste("StartFrom:",self$StartFrom),Level="info")
     errMessage <- character(0)
@@ -1574,6 +1578,7 @@ ve.stage.levels <- function(level) {
   return(character(0))
 }
 
+# Return process status
 ve.stage.pstatus <- function(start=FALSE) {
   paste0(
     paste(
@@ -1652,7 +1657,7 @@ ve.stage.completed <- function( runStatus=NULL ) {
 ve.stage.print <- function(details=FALSE,configs=FALSE) {
   cat(if(!is.null(self$IsScenario)) "Scenario" else "Stage",": ",self$Name,sep="")
   if ( details ) {
-    startFrom <- if ( length(self$StartFrom)>0 && nzchar(self$StartFrom) ) paste0("StartFrom: ",self$StartFrom)
+    startFrom <- if ( length(self$StartFrom)==1 && nzchar(self$StartFrom) ) paste0("StartFrom: ",self$StartFrom)
   } else startFrom <- NULL
   statusText <- printStatus(self$RunStatus)
   reportable <- if ( self$Reportable ) "Reportable" else NULL
@@ -2196,6 +2201,11 @@ ve.model.run <- function(run="continue",stage=NULL,watch=TRUE,dryrun=FALSE,log="
         stg$run(log=LogLevel,UseFuture=FALSE)
         # inline execution will mark stage complete and reload the stage
         writeLog( stg$processStatus(), Level="warn")
+        if ( stg$RunStatus != codeStatus("Run Complete") ) {
+          stop (
+            writeLog("Run Failed.",Level="error")
+          )
+        }
       }
     } else {
       lastStatusReport <- NULL
@@ -2790,9 +2800,9 @@ installStandardModel <- function( modelName, modelPath, confirm=TRUE, overwrite=
 #' @param modelName Name of a standard model to install; if empty or NULL (default), list
 #'   available standard models.
 #' @param modelPath Location to place the copy of modelName standard model. Created relative to
-#'   ve.runtime/models. If directory does not exist, create it and copy the modelName into it.
+#'   getwd()/models. If directory does not exist, create it and copy the modelName into it.
 #'   If directory does exist, create a unique variant of modelName adjacent to it. If it is NULL
-#'   create a unique variant of modelName in ve.runtime/models.
+#'   create a unique variant of modelName in getwd()/models.
 #' @param variant the name of a model variant (staging, sample data, etc) to install; empty string
 #'   will list available variants for modelNameb
 #' @param confirm if TRUE (default) and running interactively, prompt user to confirm, otherwise
@@ -2813,7 +2823,6 @@ installModel <- function(modelName=NULL, variant="base", modelPath=NULL, confirm
   }
 }
 
-# TODO: documentation
 # Function requires:
 # a model (openable by name or VEModel object)
 # a query (openable by name through the VEModel or a VEQuery object)

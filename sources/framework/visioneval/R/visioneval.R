@@ -1028,13 +1028,12 @@ runModule <- function(ModuleName, PackageName, RunFor, RunYear, Instance=charact
   #Log and print starting message
   #------------------------------
   ModuleFunction <- paste0(PackageName, "::", ModuleName)
-  Msg <- paste0("Start  module '", ModuleFunction, "' for year '", RunYear, "'. ",memory.size(),"Mb")
+  Msg <- paste0("Start  module '", ModuleFunction, "' for year '", RunYear, "'.")
   writeLog(Msg,Level="warn")
   #Load the package and module
   #---------------------------
   M <- list()
   M$Func <- eval(parse(text = ModuleFunction))
-
   # use Cache parameter to avoid regenerating function-based specifications - those were built and
   # cached during initialization
   M$Specs <- processModuleSpecs(getModuleSpecs(ModuleName,PackageName,Instance=Instance,Cache=TRUE))
@@ -1188,7 +1187,7 @@ runModule <- function(ModuleName, PackageName, RunFor, RunYear, Instance=charact
   }
   #Log and print ending message
   #----------------------------
-  Msg <- paste0("Finish module '", ModuleFunction, "' for year '", RunYear, "'. ",memory.size(),"Mb")
+  Msg <- paste0("Finish module '", ModuleFunction, "' for year '", RunYear, "'.")
   writeLog(Msg,Level="warn")
   gc()
 

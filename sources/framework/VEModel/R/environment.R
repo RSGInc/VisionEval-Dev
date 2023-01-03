@@ -131,8 +131,8 @@ default.parameters.table = list(
 #' @import visioneval
 #' @export
 VEPackageRunParameters <- function() {
-  # Add the source attribute to the default.parameters.table
-  defaultParams_ls <- visioneval::addParameterSource(default.parameters.table,"Package VEModel Default")
+  # Add the source attribute to the default.parameters.table and return the resulting list
+  visioneval::addParameterSource(default.parameters.table,"Package VEModel Default")
 }
 
 #LOAD RUNTIME CONFIGURATION
@@ -251,10 +251,7 @@ updateSetup <- function(object=NULL,inFile=FALSE,Source="interactive",Param_ls=l
 
   # Names to drop from Param_ls
   if ( length(drop)>0 ) {
-    cat("Fields in object config:\n"); print(c(param.name,names(object[[param.name]])))
-    cat("Dropping:\n"); print(drop)
     for ( nm in drop ) object[[param.name]][[nm]] <- NULL
-    cat("Fields after drop:\n"); print(c(param.name,names(object[[param.name]])))
   }
   # Add in other parameters
   object[[param.name]] <- visioneval::mergeParameters(object[[param.name]],Param_ls)
@@ -339,8 +336,7 @@ writeSetup <- function(object=NULL,filename=NULL,overwrite=FALSE) {
 #' \code{setRuntimeDirectory(getRuntimeEnvironment()$start.dir)}
 #'
 #' When that line runs, start.dir will again be reset, so running that line repeatedly will toggle
-#' between two directories (e.g. the one from which \code{R} was started and the one defined in the
-#' VE_RUNTIME environment variable...)
+#' between two directories.
 #'
 #' @param Directory a specific directory (absolute or relative to getwd()) to use as the runtime. If
 #' Directory is not provided, looks for a system environment variable VE_RUNTIME, and if that is not
@@ -349,9 +345,7 @@ writeSetup <- function(object=NULL,filename=NULL,overwrite=FALSE) {
 #' @export
 setRuntimeDirectory <- function(Directory=NULL) {
   if ( is.null(Directory) ) {
-    Directory <- if ( ! exists("ve.runtime",envir=ve.env,inherits=FALSE) ) {
-      Sys.getenv("VE_RUNTIME",unset=getwd())
-    } else ve.env$ve.runtime
+    Directory <- if ( ! exists("ve.runtime",envir=ve.env,inherits=FALSE) ) getwd() else ve.env$ve.runtime
   } else {
     Directory <- normalizePath(Directory,winslash="/",mustWork=FALSE)
     if ( ! dir.exists(Directory) ) {
@@ -471,7 +465,7 @@ getModelIndex <- function(reset=FALSE) {
   loaded.packages <- grep("package:VE",search(),value=TRUE)
   for ( pkg.load in loaded.packages ) {
     pkg <- sub("package:","",pkg.load)
-    if ( ! pkg %in% VE.pkgs ) {
+    if ( ! pkg %in% names(VE.pkgs) ) {
       VE.pkg[pkg] <- pkg
     }
   }
