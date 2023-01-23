@@ -16,5 +16,6 @@ Imports:
 Encoding: UTF-8
 Roxygen: list(load='source')
 RoxygenNote: 7.1.2
-Collate: 
+Collate:  
+    'ReadPopulationSimOutput.R'
     'LocateEmployment.R'

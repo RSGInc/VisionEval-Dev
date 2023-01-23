@@ -5,7 +5,7 @@ VERSPM:
   variants:
     popsim:
       description: VERSPM 3.0 with MultiModal Travel Demand Module
-      config: visioneval-popsim.cnf
+      config: visioneval.cnf
       scripts: scripts
       inputs: inputs
       defs: defs
