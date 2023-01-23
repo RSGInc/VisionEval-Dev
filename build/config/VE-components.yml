@@ -78,12 +78,6 @@ Components:
     Test:
       Group: 1
 #     Script: tests/scripts/test.R
-  VEPopulationSim:
-    Type: module
-    Path: sources/modules
-    Test:
-      Group: 1
-#     Script: tests/scripts/test.R
   VESimLandUseData:
     Type: module
     Path: sources/modules
@@ -192,6 +186,12 @@ Components:
     VE:
       - VELandUse
       - VESimLandUseData
+  VEPopulationSim:
+    Type: module
+    Path: sources/modules
+    Test:
+      Group: 3
+#     Script: tests/scripts/test.R
 
 # Group 4 Packages
   VETravelPerformance:
@@ -325,10 +325,6 @@ Components:
   populationsim/[01]*.R: # PopulationSim script files
     Type: script
     Path: sources/framework/VEModel/inst
-  Readme.md: # Walkthrough detailed instructions
-    Type: script
-    Path: sources/framework/VEModel/inst/populationsim
-    Target: populationsim
   api:                               # "package" for 'docs' type is the last element (can be file name)
     Type: docs
     Path: "."                        # base directory below root to gather docs
