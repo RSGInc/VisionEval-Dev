@@ -1,7 +1,0 @@
-process_name,model_name,seconds,minutes
-MainProcess,input_pre_processor,0.5,0.0
-MainProcess,setup_data_structures,0.7,0.0
-MainProcess,initial_seed_balancing,4.4,0.1
-MainProcess,meta_control_factoring,0.0,0.0
-MainProcess,final_seed_balancing,0.1,0.0
-MainProcess,integerize_final_seed_weights,0.8,0.0
