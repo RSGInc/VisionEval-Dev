@@ -150,7 +150,7 @@ LocateEmploymentSpecifications <- list(
       ISELEMENTOF = ""
     ),
     item(
-      NAME = "HhId",
+      NAME = items("HhId", "PerId"),
       TABLE = "Person",
       GROUP = "Year",
       TYPE = "character",

@@ -26,7 +26,7 @@ Suggests:
     NHTS2009,
     SLD
 VignetteBuilder: knitr
-Roxygen: list(load="source")
+Roxygen: list(load="pkgload")
 RoxygenNote: 7.1.0
 Remotes:
     cities-lab/NHTS2009,

@@ -41,7 +41,7 @@ Model_df$model %>% map(summary)
 Model_df
 
 #' trim model object to save space
-AADVMTModel_df <- model_df %>%
+AADVMTModel_df <- Model_df %>%
   dplyr::select(metro, model, post_func) %>%
   mutate(model=map(model, TrimModel))
 

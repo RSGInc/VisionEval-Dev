@@ -26,5 +26,5 @@ BaseYear       : 2010
 Years          : [ 2010, 2038 ]
 
 # Dynamic configuration
-DynamicDir     : snap-populationsim # uncomment to look in this folder for visioneval.cnf for snap-populationsim 
-                              # sample model places it in the model "inputs" directory
+DynamicDir     : snap-populationsim # Directory in which the populationsim related configuration file and relevant inputs are stored
+                                    # It is in the "inputs" directory in this prototype version
