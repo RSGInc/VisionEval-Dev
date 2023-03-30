@@ -17,7 +17,7 @@ if( !('CENSUS_API_KEY' %in% names(Sys.getenv())) ) readRenviron(file.path(PATH, 
 
 
 # Gather our parameters
-source(file.path(PATH, 'inst/dataprep_settings.R'))
+source(file.path(PATH, 'inst/extdata/dataprep_settings.R'))
 
 # BLOCKGROUP
 # B11016  HOUSEHOLD TYPE BY HOUSEHOLD SIZE
@@ -57,7 +57,7 @@ bzones <- unique(bzones)
 
 # Read geography file
 tf <- tempfile()
-unzip(file.path(PATH, 'inst/dataprep_sources', params$geography), exdir=tf)
+unzip(file.path(PATH, 'inst/extdata/dataprep_sources', params$geography), exdir=tf)
 geo <- st_read(file.path(tf, paste0(sub('\\..*$', '', params$geography), '.shp')))
 unlink(tf)
 
@@ -72,12 +72,12 @@ bg_list <- data.table(geo)[as.numeric(within_id), GEOID]
 tract_list <- unique(substr(bg_list, 0, 11))
 
 # Tract to PUMAS
-t2p10 <- fread(file.path(PATH, 'inst/dataprep_sources', params$pumaxwalk), colClasses = 'character')
+t2p10 <- fread(file.path(PATH, 'inst/extdata/dataprep_sources', params$pumaxwalk), colClasses = 'character')
 t2p10[ , GEOID_TRACT_10 := paste0(STATEFP, COUNTYFP, TRACTCE)]
 
 # # Convert from 2020 to 2010, this is a one off process because PUMS 2020 relations are not yet available.
-# # bgto20 <- fread(file.path(PATH, 'inst/dataprep_sources/', 'tab20_blkgrp20_blkgrp10_st41.txt'), colClasses = 'character')
-# tractto20 <- fread(file.path(PATH, 'inst/dataprep_sources/', 'tab20_tract20_tract10_st41.txt'), colClasses = 'character')
+# # bgto20 <- fread(file.path(PATH, 'inst/extdata/dataprep_sources/', 'tab20_blkgrp20_blkgrp10_st41.txt'), colClasses = 'character')
+# tractto20 <- fread(file.path(PATH, 'inst/extdata/dataprep_sources/', 'tab20_tract20_tract10_st41.txt'), colClasses = 'character')
 # 
 # # Find which 2020 blocks are in the 2010 pumas
 # t2p20 <- merge(tractto20, t2p10, by='GEOID_TRACT_10')
