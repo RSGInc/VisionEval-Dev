@@ -159,6 +159,16 @@ Components:
     VE:
       - VE2001NHTS
       - VEHouseholdTravel
+  VEPowertrainsAndFuelsAP2022:
+    Type: module
+    Path: sources/modules
+    Test:
+      Group: 3
+    CRAN:
+      - data.table
+    VE:
+      - VE2001NHTS
+      - VEHouseholdTravel
   VESimLandUse:
     Type: module
     Path: sources/modules
@@ -217,6 +227,7 @@ Components:
       - splines
       - MASS
       - pscl
+      - sn
     VE:
       - VEHouseholdTravel
       - VEHouseholdVehicles
@@ -225,6 +236,75 @@ Components:
       - VESimHouseholds
       - VETransportSupply
       - VETravelPerformance
+  VETravelDemandWFH:
+    Type: module
+    Path: sources/modules
+    Test:
+      Group: 5
+    CRAN:
+      - dplyr
+      - purrr
+      - tidyr
+      - splines
+      - MASS
+      - pscl
+      - sn
+    VE:
+      - VEHouseholdTravel
+      - VEHouseholdVehicles
+      - VELandUse
+      - VEPowertrainsAndFuels
+      - VESimHouseholds
+      - VETransportSupply
+      - VETravelPerformance
+  VEHouseholdVehiclesDL:
+    Type: module
+    Path: sources/modules
+    Test:
+      Group: 5
+    CRAN:
+      - ordinal
+      - reshape2
+    VE:
+      - VE2001NHTS
+      - VEHouseholdVehicles
+  VELandUseDL:
+    Type: module
+    Path: sources/modules
+    Test:
+      Group: 5
+    CRAN:
+      - fields
+      - geosphere
+    VE:
+      - VE2001NHTS
+      - VESimHouseholds
+      - VELandUse
+  VESimLandUseDL:
+    Type: module
+    Path: sources/modules
+    Test:
+      Group: 5
+    CRAN:
+      - plot3D
+    VE:
+      - VELandUse
+      - VESimLandUseData
+      - VESimLandUse
+  VETravelPerformanceDL:
+    Type: module
+    Path: sources/modules
+    Test:
+      Group: 5
+    CRAN:
+      - filesstrings
+      - stringr
+      - dplyr
+    VE:
+      - VEHouseholdTravel
+      - VEPowertrainsAndFuels
+      - VETravelPerformance
+      - VEPowertrainsAndFuelsAP2022
   VEState:
     Type: module
     Path: sources/modules

@@ -185,7 +185,43 @@ AdjustVehicleOwnershipSpecifications <- list(
       ISELEMENTOF = ""
     ),
     item(
+      NAME = "OwnTaxCost",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = ""
+    ),
+    item(
       NAME = "InsCost",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = ""
+    ),
+    item(
+      NAME = "DeprCost",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = ""
+    ),
+    item(
+      NAME = "FinCost",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = ""
+    ),
+    item(
+      NAME = "ResPkgCost",
       TABLE = "Vehicle",
       GROUP = "Year",
       TYPE = "currency",
@@ -245,6 +281,18 @@ AdjustVehicleOwnershipSpecifications <- list(
       DESCRIPTION = "Annual cost of vehicle ownership per mile of vehicle travel (dollars per mile)"
     ),
     item(
+      NAME = "OwnTaxCost",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Annual taxes of vehicle ownership"
+    ),
+    item(
       NAME = "InsCost",
       TABLE = "Vehicle",
       GROUP = "Year",
@@ -255,6 +303,42 @@ AdjustVehicleOwnershipSpecifications <- list(
       ISELEMENTOF = "",
       SIZE = 0,
       DESCRIPTION = "Annual vehicle insurance cost in dollars"
+    ),
+    item(
+      NAME = "DeprCost",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Annual vehicle depreciation cost in dollars"
+    ),
+    item(
+      NAME = "FinCost",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Annual vehicle financing cost in dollars"
+    ),
+    item(
+      NAME = "ResPkgCost",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Annual residential parking cost in dollars"
     ),
     item(
       NAME = "SwitchToCarSvc",
@@ -291,6 +375,66 @@ AdjustVehicleOwnershipSpecifications <- list(
       ISELEMENTOF = "",
       SIZE = 0,
       DESCRIPTION = "Annual household vehicle ownership cost (depreciation, finance, insurance, taxes) savings in dollars"
+    ),
+    item(
+      NAME = "OwnTaxCost",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD",
+      NAVALUE = "NA",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Annual household vehicle ownership taxes"
+    ),
+    item(
+      NAME = "InsCost",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Annual vehicle insurance cost in dollars"
+    ),
+    item(
+      NAME = "DeprCost",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD",
+      NAVALUE = "NA",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Annual household vehicle depreciation costs"
+    ),
+    item(
+      NAME = "FinCost",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD",
+      NAVALUE = "NA",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Annual household vehicle financing costs"
+    ),
+    item(
+      NAME = "ResPkgCost",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD",
+      NAVALUE = "NA",
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Annual residential parking costs"
     ),
     item(
       NAME = items(
@@ -408,12 +552,17 @@ AdjustVehicleOwnership <- function(L) {
   #--------------------------------------------------------------
   Out_ls <- initDataList()
   Out_ls$Year$Vehicle <-
-    L$Year$Vehicle[c("Age", "VehicleAccess", "OwnCost", "OwnCostPerMile", "InsCost")]
+    L$Year$Vehicle[c("Age", "VehicleAccess", "OwnCost", "OwnCostPerMile", "OwnTaxCost", 
+                     "InsCost", "DeprCost", "FinCost", "ResPkgCost")]
   Out_ls$Year$Vehicle$Age[DoChange] <- L$Year$Azone$AveCarSvcVehicleAge[AzToVehIdx_Ve][DoChange]
   Out_ls$Year$Vehicle$VehicleAccess[DoChange] <- "HighCarSvc"
   Out_ls$Year$Vehicle$OwnCost[DoChange] <- 0
   Out_ls$Year$Vehicle$OwnCostPerMile[DoChange] <- 0
+  Out_ls$Year$Vehicle$OwnTaxCost[DoChange] <- 0
   Out_ls$Year$Vehicle$InsCost[DoChange] <- 0
+  Out_ls$Year$Vehicle$DeprCost[DoChange] <- 0
+  Out_ls$Year$Vehicle$FinCost[DoChange] <- 0
+  Out_ls$Year$Vehicle$ResPkgCost[DoChange] <- 0
   Out_ls$Year$Vehicle$SwitchToCarSvc <- as.integer(DoChange)
 
   #Tabulate household values to reflect changes
@@ -437,6 +586,11 @@ AdjustVehicleOwnership <- function(L) {
   Out_ls$Year$Household$Vehicles <-
     with(Out_ls$Year$Household, NumAuto + NumLtTrk + NumHighCarSvc)
   Out_ls$Year$Household$OwnCost <- sumToHousehold(Out_ls$Year$Vehicle$OwnCost, HhToVehIdx_Ve)
+  Out_ls$Year$Household$OwnTaxCost <- sumToHousehold(Out_ls$Year$Vehicle$OwnTaxCost, HhToVehIdx_Ve)
+  Out_ls$Year$Household$InsCost <- sumToHousehold(Out_ls$Year$Vehicle$InsCost, HhToVehIdx_Ve)
+  Out_ls$Year$Household$DeprCost <- sumToHousehold(Out_ls$Year$Vehicle$DeprCost, HhToVehIdx_Ve)
+  Out_ls$Year$Household$FinCost <- sumToHousehold(Out_ls$Year$Vehicle$FinCost, HhToVehIdx_Ve)
+  Out_ls$Year$Household$ResPkgCost <- sumToHousehold(Out_ls$Year$Vehicle$ResPkgCost, HhToVehIdx_Ve)
   Out_ls$Year$Household$OwnCostSavings <-
     sumToHousehold(L$Year$Vehicle$OwnCost * DoChange, HhToVehIdx_Ve)
 

@@ -102,7 +102,7 @@ CalculateHouseholdDvmtSpecifications <- list(
       TABLE = "Household",
       GROUP = "Year",
       TYPE = "currency",
-      UNITS = "USD.2009",
+      UNITS = "USD.2017",
       NAVALUE = -1,
       PROHIBIT = c("NA", "< 0"),
       ISELEMENTOF = "",
@@ -167,7 +167,7 @@ CalculateHouseholdDvmtSpecifications <- list(
       TABLE = "Bzone",
       GROUP = "Year",
       TYPE = "compound",
-      UNITS = "PRSN/SQM",
+      UNITS = "PRSN/ACRE",
       NAVALUE = -1,
       PROHIBIT = c("NA", "< 0"),
       ISELEMENTOF = "",
@@ -376,7 +376,7 @@ visioneval::savePackageDataset(CalculateHouseholdDvmtSpecifications, overwrite =
 #' identifies the size of the longest HhId.
 #' @import visioneval dplyr purrr tidyr pscl
 #' @importFrom splines ns
-#' @importFrom stats setNames
+#' @importFrom sn rmsn
 #' @export
 CalculateHouseholdDvmt <- function(L) {
   #TODO: get id_name from L or specification?
@@ -387,6 +387,13 @@ CalculateHouseholdDvmt <- function(L) {
   if(!exists("DvmtModel_ls")){
     DvmtModel_ls <- loadPackageDataset("DvmtModel_ls")
   }
+  # file_names <- list.files(getwd(),pattern="calcdvmtmmnew.*RDS",recursive=FALSE,full.names=TRUE)
+  # if (length(file_names) > 0) {
+  #   file_num <- max(as.integer(gsub("\\D", "", basename(file_names)))) + 1L
+  #   saveRDS(L, file = paste0("calcdvmtmmnew_", file_num, ".RDS"))
+  # } else {
+  #   saveRDS(L, file = "calcdvmtmmnew_1.RDS")
+  # }
   
   Ma <- L$Year$Marea$Marea
   
@@ -402,6 +409,7 @@ CalculateHouseholdDvmt <- function(L) {
   
   D_df <- D_df %>%
     mutate(metro=ifelse(LocType=="Urban", "metro", "non_metro"),
+           LogIncomeK=log1p(Income/1000),
            LogIncome=log1p(Income),
            DrvAgePop=HhSize - Age0to14,
            VehPerDriver=ifelse(Drivers==0 | is.na(Drivers), 0, Vehicles/Drivers),
@@ -420,19 +428,40 @@ CalculateHouseholdDvmt <- function(L) {
   #D_df <- D_df %>%
   #  crossing(Marea_df, by="Marea")
   
-  # load("data/AADVMTModel_df.rda")
-  AADVMTModel_df <- loadPackageDataset("AADVMTModel_df")
+  #load("data/AADVMTModel_df.rda")
+  Model_df <- loadPackageDataset("AADVMTModel_df")
   
   # find cols used for segmenting households ("metro" by default)
-  SegmentCol_vc <- setdiff(names(AADVMTModel_df), c("model", "step", "post_func", "bias_adj"))
+  SegmentCol_vc <- setdiff(names(Model_df), c("model", "step", "post_func", "bias_adj"))
   
   # segmenting columns must appear in D_df
   stopifnot(all(SegmentCol_vc %in% names(D_df)))
   
-  Preds <- DoPredictions(AADVMTModel_df, D_df,
+  Preds <- DoPredictions(Model_df, D_df,
                          dataset_name, id_name, y_name, SegmentCol_vc)
   Preds <- Preds %>%
     mutate(y=ifelse(is.na(y) | y < 0, 0.01, y))
+  
+  # Apply random draw to the predictions
+  # Distribution parameters
+  XiVal <- -0.6
+  XiVal_NM <- -0.7
+  OmegaVal <- 1.7
+  AlphaVal <- 5
+  DrawScale <- 0.25
+  
+  MetroDraw_ <- rmsn(n = sum(D_df$metro=="metro"),
+                     xi = XiVal, 
+                     Omega = OmegaVal, 
+                     alpha = AlphaVal) * DrawScale
+  NonMetroDraw_ <- rmsn(n = sum(D_df$metro!="metro"),
+                        xi = XiVal_NM,
+                        Omega = OmegaVal,
+                        alpha = AlphaVal) * DrawScale
+  
+  Preds[["y"]][D_df$metro=="metro"] = Preds[["y"]][D_df$metro=="metro"] * (1+MetroDraw_)
+  Preds[["y"]][D_df$metro!="metro"] = Preds[["y"]][D_df$metro!="metro"] * (1+NonMetroDraw_)
+  
   #Apply the 95th percentile model
   #-------------------------------
   D_df$Dvmt <- Preds[["y"]]
@@ -446,13 +475,13 @@ CalculateHouseholdDvmt <- function(L) {
                    envir =  D_df[IsUr_,]))
   Dvmt95th_[!IsUr_] <-
     as.vector(eval(parse(text = DvmtModel_ls$NonMetro$Pctl95),
-                   envir = D_df[!IsUr_,])) 
+                   envir = D_df[!IsUr_,]))
   
   #Sum the DVMT by Marea
   #--------------------
   tabulateMareaDvmt <- function(LocType) {
     IsType <- D_df$LocType == LocType
-    Dvmt_Ma <- stats::setNames(numeric(length(Ma)), Ma)
+    Dvmt_Ma <- setNames(numeric(length(Ma)), Ma)
     if (any(IsType)) {
       Dvmt_Mx <- tapply(D_df$Dvmt[IsType], D_df$Marea[IsType], sum)
       Dvmt_Ma[names(Dvmt_Mx)] <- Dvmt_Mx

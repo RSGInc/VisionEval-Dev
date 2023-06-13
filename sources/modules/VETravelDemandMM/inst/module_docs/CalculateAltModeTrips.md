@@ -75,10 +75,11 @@ ISELEMENTOF - Categorical values that are permitted. Values in the datastore are
 |Drivers     |Household |Year  |people    |PRSN                                              |NA, < 0  |                           |
 |Age0to14    |Household |Year  |people    |PRSN                                              |NA, < 0  |                           |
 |Age65Plus   |Household |Year  |people    |PRSN                                              |NA, < 0  |                           |
-|Income      |Household |Year  |currency  |USD.2009                                          |NA, < 0  |                           |
+|Income      |Household |Year  |currency  |USD.2017                                          |NA, < 0  |                           |
 |LifeCycle   |Household |Year  |character |category                                          |         |00, 01, 02, 03, 04, 09, 10 |
 |Vehicles    |Household |Year  |vehicles  |VEH                                               |NA, < 0  |                           |
 |Bzone       |Household |Year  |character |none                                              |         |                           |
+|Marea       |Household |Year  |character |ID                                                |         |                           |
 |LocType     |Household |Year  |character |category                                          |NA       |Urban, Town, Rural         |
 |Bzone       |Bzone     |Year  |character |none                                              |         |                           |
 |D1B         |Bzone     |Year  |compound  |PRSN/ACRE                                         |NA, < 0  |                           |
@@ -93,17 +94,17 @@ ISELEMENTOF - Categorical values that are permitted. Values in the datastore are
 |TranRevMiPC |Marea     |Year  |compound  |MI/PRSN                                           |NA, < 0  |                           |
 
 ## Datasets Produced by the Module
-The following table documents each dataset that is retrieved from the datastore and used by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
+The following table documents each dataset that is placed in the datastore by the module. Each row in the table describes a dataset. All the datasets must be present in the datastore. One or more of these datasets may be entered into the datastore from the user input files. The table names and their meanings are as follows:
 
 NAME - The dataset name.
 
-TABLE - The table in the datastore that the data is retrieved from.
+TABLE - The table in the datastore that the data is placed in.
 
 GROUP - The group in the datastore where the table is located. Note that the datastore has a group named 'Global' and groups for every model run year. For example, if the model run years are 2010 and 2050, then the datastore will have a group named '2010' and a group named '2050'. If the value for 'GROUP' is 'Year', then the dataset will exist in each model run year. If the value for 'GROUP' is 'BaseYear' then the dataset will only exist in the base year group (e.g. '2010'). If the value for 'GROUP' is 'Global' then the dataset will only exist in the 'Global' group.
 
 TYPE - The data type. The framework uses the type to check units and inputs. Refer to the model system design and users guide for information on allowed types.
 
-UNITS - The units that input values need to represent. Some data types have defined units that are represented as abbreviations or combinations of abbreviations. For example 'MI/HR' means miles per hour. Many of these abbreviations are self evident, but the VisionEval model system design and users guide should be consulted.
+UNITS - The native units that are created in the datastore. Some data types have defined units that are represented as abbreviations or combinations of abbreviations. For example 'MI/HR' means miles per hour. Many of these abbreviations are self evident, but the VisionEval model system design and users guide should be consulted.
 
 PROHIBIT - Values that are prohibited. Values in the datastore do not meet any of the listed conditions.
 
@@ -111,14 +112,14 @@ ISELEMENTOF - Categorical values that are permitted. Values in the datastore are
 
 DESCRIPTION - A description of the data.
 
-|NAME               |TABLE     |GROUP |TYPE     |UNITS     |PROHIBIT |ISELEMENTOF |DESCRIPTION                                                          |
-|:------------------|:---------|:-----|:--------|:---------|:--------|:-----------|:--------------------------------------------------------------------|
-|WalkTrips          |Household |Year  |compound |TRIP/YEAR |NA, < 0  |            |Average number of walk trips per year by household members           |
-|BikeTrips          |Household |Year  |compound |TRIP/YEAR |NA, < 0  |            |Average number of bicycle trips per year by household members        |
-|TransitTrips       |Household |Year  |compound |TRIP/YEAR |NA, < 0  |            |Average number of public transit trips per year by household members |
-|WalkAvgTripDist    |Household |Year  |double   |MI        |NA, < 0  |            |Daily walking average trip length                                    |
-|BikeAvgTripDist    |Household |Year  |double   |MI        |NA, < 0  |            |Daily biking average trip length                                     |
-|TransitAvgTripDist |Household |Year  |double   |MI        |NA, < 0  |            |Daily transit average trip length                                    |
-|WalkPMT            |Household |Year  |distance |MI        |NA, < 0  |            |Daily walking person miles traveled by all members of the household  |
-|BikePMT            |Household |Year  |distance |MI        |NA, < 0  |            |Daily biking person miles traveled by all members of the household   |
-|TransitPMT         |Household |Year  |distance |MI        |NA, < 0  |            |Daily transit person miles traveled by all members of the household  |
+|NAME               |TABLE     |GROUP |TYPE     |UNITS   |PROHIBIT |ISELEMENTOF |DESCRIPTION                                                          |
+|:------------------|:---------|:-----|:--------|:-------|:--------|:-----------|:--------------------------------------------------------------------|
+|WalkTrips          |Household |Year  |compound |TRIP/YR |NA, < 0  |            |Average number of walk trips per year by household members           |
+|BikeTrips          |Household |Year  |compound |TRIP/YR |NA, < 0  |            |Average number of bicycle trips per year by household members        |
+|TransitTrips       |Household |Year  |compound |TRIP/YR |NA, < 0  |            |Average number of public transit trips per year by household members |
+|WalkAvgTripDist    |Household |Year  |double   |MI      |NA, < 0  |            |Daily walking average trip length                                    |
+|BikeAvgTripDist    |Household |Year  |double   |MI      |NA, < 0  |            |Daily biking average trip length                                     |
+|TransitAvgTripDist |Household |Year  |double   |MI      |NA, < 0  |            |Daily transit average trip length                                    |
+|WalkPMT            |Household |Year  |distance |MI      |NA, < 0  |            |Daily walking person miles traveled by all members of the household  |
+|BikePMT            |Household |Year  |distance |MI      |NA, < 0  |            |Daily biking person miles traveled by all members of the household   |
+|TransitPMT         |Household |Year  |distance |MI      |NA, < 0  |            |Daily transit person miles traveled by all members of the household  |

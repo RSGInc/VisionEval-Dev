@@ -9,3 +9,11 @@ VERSPM:
       scripts: scripts
       inputs: inputs
       defs: defs
+VE-State:
+  variants:
+    odot-mm:
+      description: VERSPM 3.0 with MultiModal Travel Demand Module
+      config: visioneval-odot-mm.cnf
+      scripts: scripts-odot-mm
+      inputs: inputs-odot-mm
+      defs: defs-odot-mm

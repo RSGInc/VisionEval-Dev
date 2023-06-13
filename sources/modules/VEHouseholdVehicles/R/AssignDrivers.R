@@ -37,6 +37,7 @@
 #Define a function to estimate driver choice model
 #-------------------------------------------------
 estimateDriverModel <- function(Data_df, StartTerms_, ValidationProp) {
+  set.seed(61223)
   #Define function to prepare inputs for estimating model
   prepIndepVar <-
     function(In_df) {
@@ -524,6 +525,13 @@ AssignDrivers <- function(L) {
     Per_df$Worker <- unlist(mapply(assignWorkers, Hh_df$Pop, Hh_df$Wkr))
     # Add age group
     Per_df$AgeGroup <- paste0("Age", Bin)
+    
+    # Add upper value threshold to Household Income
+    IsMetro_ <- L$Year$Household$LocType == "Urban"
+    L$Year$Household$Income[!IsMetro_] <- pmin(L$Year$Household$Income[!IsMetro_], 217902.9)
+    L$Year$Household$Income[IsMetro_] <- pmin(L$Year$Household$Income[IsMetro_], 238675.8)
+    
+    
     # Add household attributes
     getHhAttribute <- function(AttrName) {
       L$Year$Household[[AttrName]][match(Per_df$HhId, L$Year$Household$HhId)]

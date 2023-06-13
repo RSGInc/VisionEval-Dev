@@ -90,9 +90,17 @@ DoPredictions <- function(Model_df, Dataset_df,
       ungroup()
   }
 
-  Preds_lcdf %>%
-    mutate(id=map(data, id_name)) %>%
-    unnest(id, y)
+  if(any(grepl("step", names(Preds_lcdf),ignore.case = TRUE))){
+    Preds_df <- Preds_lcdf %>%
+      mutate(id=map(data, id_name)) %>%
+      unnest(id, y) %>% group_by(Step) %>% slice(match(Dataset_df[[id_name]],id)) %>%
+      ungroup()
+  } else {
+    Preds_df <- Preds_lcdf %>%
+      mutate(id=map(data, id_name)) %>%
+      unnest(id, y) %>% slice(match(Dataset_df[[id_name]],id))
+  }
+  Preds_df
 
 }
 

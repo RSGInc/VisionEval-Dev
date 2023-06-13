@@ -439,7 +439,7 @@ Initialize <- function(L) {
         HasUzaName <- UzaNames_[i] %in% Ua
         HasUzaName <- length(HasUzaName)>0 && HasUzaName # handle UzaNames_[i] set to NA - not valid here
         HasAllVals <- all(!(unlist(Values_df[i,]) %in% c(NA, "")))
-        Complete <- HasUzaName || HasAllVals
+        Complete <- HasUzaName | HasAllVals
         if (!Complete) {
           Msg <- paste0(
             "The 'marea_dvmt_split_by_road_class.csv' file has errors for ",

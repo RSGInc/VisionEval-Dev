@@ -671,6 +671,18 @@ CalculateVehicleOwnCostSpecifications <- list(
       DESCRIPTION = "Annual cost of vehicle ownership per mile of vehicle travel (dollars per mile)"
     ),
     item(
+      NAME = "OwnTaxCost",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD.2017",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Annual taxes of vehicle ownership"
+    ),
+    item(
       NAME = "InsCost",
       TABLE = "Vehicle",
       GROUP = "Year",
@@ -681,6 +693,42 @@ CalculateVehicleOwnCostSpecifications <- list(
       ISELEMENTOF = "",
       SIZE = 0,
       DESCRIPTION = "Annual vehicle insurance cost in dollars"
+    ),
+    item(
+      NAME = "DeprCost",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD.2017",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Annual vehicle depreciation cost in dollars"
+    ),
+    item(
+      NAME = "FinCost",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD.2017",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Annual vehicle financing cost in dollars"
+    ),
+    item(
+      NAME = "ResPkgCost",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "currency",
+      UNITS = "USD.2017",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Annual residential parking cost in dollars"
     ),
     item(
       NAME = "HasPaydIns",
@@ -1000,7 +1048,11 @@ CalculateVehicleOwnCost <- function(L,M) {
   Out_ls$Year$Vehicle <- list(
     OwnCost = TotCost_Ve,
     OwnCostPerMile = TotCostPerMi_Ve,
-    InsCost = InsCost_Ve
+    OwnTaxCost = TaxCost_Ve,
+    InsCost = InsCost_Ve,
+    DeprCost = DeprCost_Ve,
+    FinCost = FinCost_Ve,
+    ResPkgCost = PkgCost_Ve
   )
   Out_ls$Year$Household <- list(
     HasPaydIns = unname(HasPaydIns_Hh)
