@@ -1,0 +1,40 @@
+Package: VESimLandUseDL
+Type: Package
+Title: Create simulated Bzones (SimBzones) with attributes
+Version: 2.0.0
+Date: 2020-08-14
+Author: Brian Gregor [aut, cre],
+Maintainer: Brian Gregor <gregorb@or-analytics.com>
+Copyright: AASHTO, ODOT
+URL: https://github.com/gregorbj/VisionEval/sources/modules/VESimLandUseDL
+Description: This package contains several modules which create simulated 
+    Bzones (SimBzones), assign households and jobs to the SimBzones, attribute
+    the SimBzones with a number of land use characteristics, and assign policy
+    inputs related to SimBzones.
+License: file LICENSE
+LazyData: TRUE
+Depends: R (>= 3.6.0)
+Imports:
+    visioneval,
+    plot3D,
+    VELandUse,
+    VESimLandUseData
+Suggests:
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Encoding: UTF-8
+Roxygen: list(load='source')
+RoxygenNote: 7.1.2
+Collate:
+    'AssignCarSvcAvailability.R'
+    'AssignDemandManagement.R'
+    'AssignParkingRestrictions.R'
+    'CreateSimBzoneModels.R'
+    'CreateSimBzones.R'
+    'SimulateUrbanMixMeasure.R'
+    'SimulateHousing.R'
+    'SimulateEmployment.R'
+    'Simulate4DMeasures.R'
+    'Initialize.R'
+    'Finalize.R'

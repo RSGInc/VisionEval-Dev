@@ -1,0 +1,37 @@
+Package: VETravelDemandWFH
+Type: Package
+Title: Simulate Multi-Modal Travel Demand for Households with Adjustments for Working from Home
+Version: 1.0
+Date: 2022-06-13
+Authors@R: c(person("Liming", "Wang", role=c("aut", "cre"), email="lmwang@pdx.edu"), person("Colin", "Smith", role=c("ctb"), email="colin.smith@rsginc.com"))
+Maintainer: Liming Wang <lmwang@gmail.com>
+Copyright: Portland State University
+URL: https://github.com/cities-lab/VETravelDemandWFH
+Description: This package contains a module for the VisionEval framework that simulates 
+     multi-modal travel demand for individual households.
+License: file LICENSE
+LazyData: TRUE
+Encoding: UTF-8
+Depends: R (>= 3.6.0)
+Imports:
+    dplyr,
+    purrr,
+    MASS,
+    splines,
+    tidyr,
+    pscl,
+    rmarkdown,
+    sn,
+    data.table,
+    visioneval,
+    VE2001NHTS
+Suggests:
+    knitr,
+    NHTS2009,
+    SLD
+VignetteBuilder: knitr
+Roxygen: list(load="source")
+RoxygenNote: 7.2.2
+Remotes:
+    cities-lab/NHTS2009,
+    cities-lab/SLD

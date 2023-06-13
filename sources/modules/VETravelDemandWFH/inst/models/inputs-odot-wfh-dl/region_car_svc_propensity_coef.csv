@@ -1,0 +1,5 @@
+Year,CSConstant,CSFracAge20to29Coef,CSFracAge55to64Coef,CSFracAge65pCoef,CSLowCarSvcFlagCoef,CSHHIncBelow50KFlagCoef,CSHHIncAbove100KFlagCoef,CSD1BCoef
+2010,-1000,0,0,0,0,0,0,0
+2015,-1000,0,0,0,0,0,0,0
+2020,-0.5,0.5,-0.5,-1,-1.5,0.25,-0.25,0.0002
+2050,-0.5,0.5,-0.5,-1,-1.5,0.25,-0.25,0.0002

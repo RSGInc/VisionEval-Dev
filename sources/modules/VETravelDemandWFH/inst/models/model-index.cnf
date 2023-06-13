@@ -1,0 +1,11 @@
+# Next Generation test model for MultiModal module
+# reproduces "base" VERSPM from VEModel, but provides alternate run script
+# to exercise the MultiModal features.
+VE-State:
+  variants:
+    odot-wfh-dl:
+      description: VERSPM 3.0 with MultiModal Travel Demand Module
+      config: visioneval-odot-wfh-dl.cnf
+      scripts: scripts-odot-wfh-dl
+      inputs: inputs-odot-wfh-dl
+      defs: defs-odot-wfh-dl

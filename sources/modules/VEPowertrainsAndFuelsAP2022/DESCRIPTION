@@ -1,0 +1,28 @@
+Package: VEPowertrainsAndFuelsAP2022
+Type: Package
+Title:  Powertrains And Fuels updated with 2022 projections.
+Version: 1.0.0
+Date: 2022-03-28
+Author: Tara Weidner [aut, cre],
+Maintainer: Tara Weidner <tara.j.weidner@odot.state.or.us>
+Copyright: ODOT
+Description: Powertrains And Fuels for AP in 2022
+License: file LICENSE
+LazyData: TRUE
+Depends: R (>= 3.6.0)
+Imports:
+    visioneval,
+    VE2001NHTS,
+    VEHouseholdTravel,
+    data.table
+Suggests:
+    knitr
+Encoding: UTF-8
+VignetteBuilder: knitr
+Roxygen: list(load='source')
+RoxygenNote: 7.1.1
+Collate: 
+    'LoadDefaultValues.R'
+    'AssignHhVehiclePowertrain.R'
+    'CalculateCarbonIntensity.R'
+    'Initialize.R'
