@@ -3,9 +3,15 @@
 # to exercise the MultiModal features.
 VE-State:
   variants:
+    odot-wfh:
+      description: VERSPM 3.0 with MultiModal Travel Demand Module
+      config: visioneval-odot-wfh.cnf
+      scripts: scripts-odot-wfh
+      inputs: inputs-odot-wfh
+      defs: defs-odot
     odot-wfh-dl:
       description: VERSPM 3.0 with MultiModal Travel Demand Module
       config: visioneval-odot-wfh-dl.cnf
       scripts: scripts-odot-wfh-dl
       inputs: inputs-odot-wfh-dl
-      defs: defs-odot-wfh-dl
+      defs: defs-odot

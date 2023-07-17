@@ -28,13 +28,3 @@ Roxygen: list(load='source')
 RoxygenNote: 7.1.2
 Collate:
     'AssignCarSvcAvailability.R'
-    'AssignDemandManagement.R'
-    'AssignParkingRestrictions.R'
-    'CreateSimBzoneModels.R'
-    'CreateSimBzones.R'
-    'SimulateUrbanMixMeasure.R'
-    'SimulateHousing.R'
-    'SimulateEmployment.R'
-    'Simulate4DMeasures.R'
-    'Initialize.R'
-    'Finalize.R'

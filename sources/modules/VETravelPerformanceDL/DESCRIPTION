@@ -29,7 +29,6 @@ Roxygen: list(load='source')
 RoxygenNote: 7.1.2
 Collate: 
     'AdjustHhVehicleMpgMpkwh.R'
-    'BalanceRoadCostsAndRevenues.R'
     'BudgetHouseholdDvmt.R'
     'CalculateComEnergyAndEmissions.R'
     'CalculateMpgMpkwhAdjustments.R'
@@ -40,4 +39,3 @@ Collate:
     'CalculateVehicleOperatingCost.R'
     'LoadDefaultRoadDvmtValues.R'
     'Initialize.R'
-    'TravelTimeReliability.R'

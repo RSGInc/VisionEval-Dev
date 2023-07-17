@@ -34,12 +34,7 @@ RoxygenNote: 7.2.2
 Collate: 
     'AdjustVehicleOwnership.R'
     'AssignDriverlessVehicles.R'
-    'AssignDrivers.R'
     'AssignVehicleAge.R'
-    'AssignVehicleFeatures.R'
-    'AssignVehicleFeaturesFuture.R'
     'AssignVehicleOwnership.R'
-    'AssignVehicleType.R'
     'CVAVOrientation.R'
-    'CalculateVehicleOwnCost.R'
     'CreateVehicleTable.R'

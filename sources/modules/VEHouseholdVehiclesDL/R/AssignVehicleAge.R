@@ -609,7 +609,7 @@ AssignVehicleAge <- function(L) {
       IncProp_IgTy <- sweep(NumVeh_IgTy, 2, colSums(NumVeh_IgTy), "/")
       IncProp_IgTy[is.na(IncProp_IgTy)] <- 1/length(IncProp_IgTy[is.na(IncProp_IgTy)])
       #Calculate cumulative age distributions by type
-      VehicleAgeModel_ls <- loadPackageDataset("VehicleAgeModel_ls","VEFHWAAV")
+      VehicleAgeModel_ls <- loadPackageDataset("VehicleAgeModel_ls","VEHouseholdVehicles")
       AutoAgeProp_Ag <-
         adjustAgeDistribution(
           VehicleAgeModel_ls$Auto$AgeCDF_Ag,

@@ -62,28 +62,6 @@ AssignDriverlessVehiclesSpecifications <- list(
     item(
       NAME =
         items(
-          "AutoSalesDriverlessProp",
-          "LtTrkSalesDriverlessProp"),
-      FILE = "region_driverless_vehicle_prop.csv",
-      TABLE = "RegionDriverlessProps",
-      GROUP = "Global",
-      TYPE = "double",
-      UNITS = "proportion",
-      NAVALUE = -1,
-      SIZE = 0,
-      PROHIBIT = c("NA", "< 0", "> 1"),
-      ISELEMENTOF = "",
-      UNLIKELY = c("> 1.5"),
-      TOTAL = "",
-      DESCRIPTION =
-        items(
-          "The proportion of automobiles sold in the corresponding year that are driverless. Values for intervening years are interpolated",
-          "The proportion of light trucks sold in the corresponding year that are driverless. Values for intervening years are interpolated"
-        )
-    ),
-    item(
-      NAME =
-        items(
           "LowCarSvcDriverlessProp",
           "HighCarSvcDriverlessProp"),
       FILE = "region_driverless_vehicle_prop.csv",
@@ -141,18 +119,6 @@ AssignDriverlessVehiclesSpecifications <- list(
       TYPE = "time",
       UNITS = "YR",
       PROHIBIT = c("NA", "< 0"),
-      ISELEMENTOF = ""
-    ),
-    item(
-      NAME =
-        items(
-          "AutoSalesDriverlessProp",
-          "LtTrkSalesDriverlessProp"),
-      TABLE = "RegionDriverlessProps",
-      GROUP = "Global",
-      TYPE = "double",
-      UNITS = "proportion",
-      PROHIBIT = c("NA", "< 0", "> 1"),
       ISELEMENTOF = ""
     ),
     item(
@@ -227,6 +193,15 @@ AssignDriverlessVehiclesSpecifications <- list(
       ISELEMENTOF = c("Auto", "LtTrk")
     ),
     item(
+      NAME = "AVLvl",
+      TABLE = "Vehicle",
+      GROUP = "Year",
+      TYPE = "character",
+      UNITS = "category",
+      PROHIBIT = "NA",
+      ISELEMENTOF = c("L0", "L3", "L5")
+    ),
+    item(
       NAME = "HhId",
       TABLE = "Household",
       GROUP = "Year",
@@ -286,19 +261,6 @@ AssignDriverlessVehiclesSpecifications <- list(
       UNLIKELY = c("> 1.5"),
       TOTAL = "",
       DESCRIPTION ="The proportion of household DVMT that is in driverless vehicles."
-    ),
-    item(
-      NAME = "Driverless",
-      TABLE = "Vehicle",
-      GROUP = "Year",
-      TYPE = "double",
-      UNITS = "proportions",
-      NAVALUE = -1,
-      PROHIBIT = c("NA", "< 0", "> 1"),
-      ISELEMENTOF = "",
-      UNLIKELY = c("> 1.5"),
-      SIZE = 0,
-      DESCRIPTION = "Driverless vehicle identifier. A value of 1 indicates that the owned vehicle is driverless."
     )
   )
 )
@@ -379,29 +341,9 @@ AssignDriverlessVehicles <- function(L) {
   VehYear_ <- pmax(as.integer(CurrentYear) - VehAge_, 1975)
   VehType_ <- L$Year$Vehicle$Type
   CarSvcLvl_ <- as.character(L$Year$Vehicle$VehicleAccess)
-  OwnedAuto_ <- VehType_ == "Auto" & CarSvcLvl_ == "Own"
-  VehDriverlessProp_[OwnedAuto_] <- approx(as.numeric(RegionDriverlessPropByYear_df$VehYear),
-                                           as.numeric(
-                                             RegionDriverlessPropByYear_df$AutoSalesDriverlessProp),
-                                           VehYear_[OwnedAuto_],
-                                           yleft = 0)$y
-
-  OwnedLtTrk_ <- VehType_ == "LtTrk" & CarSvcLvl_ == "Own"
-  VehDriverlessProp_[OwnedLtTrk_] <- approx(as.numeric(RegionDriverlessPropByYear_df$VehYear),
-                                           as.numeric(
-                                             RegionDriverlessPropByYear_df$LtTrkSalesDriverlessProp),
-                                           VehYear_[OwnedLtTrk_],
-                                           yleft = 0)$y
-  OwnedVeh_ <- OwnedAuto_ | OwnedLtTrk_
-  Driverless_[OwnedVeh_] <- sapply(VehDriverlessProp_[OwnedVeh_],
-                                   function(prop){
-                                     sample(c(0L,1L),
-                                            size=1L,
-                                            replace=FALSE,
-                                            prob=c(1-prop, prop))
-                                   },
-                                   USE.NAMES = FALSE)
-  rm(OwnedAuto_, OwnedLtTrk_, OwnedVeh_, VehDriverlessProp_)
+  OwnedVeh_ <- CarSvcLvl_ == "Own"
+  Driverless_[OwnedVeh_] <- as.integer((L$Year$Vehicle$AVLvl=="L5")[OwnedVeh_])
+  rm(OwnedVeh_)
 
   # Assign the driverless proportion to car services
   Driverless_ <- as.numeric(Driverless_)

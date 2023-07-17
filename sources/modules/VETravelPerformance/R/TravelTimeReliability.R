@@ -38,6 +38,8 @@
 # #Uncomment following lines during code development. Recomment when done.
 # # library(visioneval)
 # # library(stringr)
+library(magrittr)
+library(dplyr)
 # 
 # #SECTION 1A: LOAD SPEED DATA
 # #==========================================
@@ -322,10 +324,11 @@ visioneval::savePackageDataset(TravelTimeReliabilitySpecifications, overwrite = 
 #' @return A list containing data produced by the function consistent with the
 #' module specifications.
 #' @name TravelTimeReliability
+#' @import visioneval
 #' @export
 TravelTimeReliability <- function(L) {
       
-  `%>%` <- magrittr::`%>%`
+  assign("%>%",getFromNamespace("%>%","magrittr"))
   
     #------
   #Define naming vectors for Mareas and congestion levels
@@ -352,39 +355,39 @@ TravelTimeReliability <- function(L) {
    X_
  }
       
-  #Calculate Travel Time Index by congestion level for metropolitan areas
-  #---------------------------------------------
-  TTR_df <- Marea_df %>%
-  dplyr::mutate(FwyModCong_TTI = (rlang::.data$FwyNoneCongSpeed)[[1]]/(rlang::.data$FwyModCongSpeed)[[1]],
-    FwyHvyCong_TTI = (rlang::.data$FwyNoneCongSpeed)[[1]]/(rlang::.data$FwyHvyCongSpeed)[[1]],
-    FwySevCong_TTI = (rlang::.data$FwyNoneCongSpeed)[[1]]/(rlang::.data$FwySevCongSpeed)[[1]],
-    FwyExtCong_TTI = (rlang::.data$FwyNoneCongSpeed)[[1]]/(rlang::.data$FwyExtCongSpeed)[[1]],
-    ArtModCong_TTI = (rlang::.data$ArtNoneCongSpeed)[[1]]/(rlang::.data$ArtModCongSpeed)[[1]],
-    ArtHvyCong_TTI = (rlang::.data$ArtNoneCongSpeed)[[1]]/(rlang::.data$ArtHvyCongSpeed)[[1]],
-    ArtSevCong_TTI = (rlang::.data$ArtNoneCongSpeed)[[1]]/(rlang::.data$ArtSevCongSpeed)[[1]],
-    ArtExtCong_TTI = (rlang::.data$ArtNoneCongSpeed)[[1]]/(rlang::.data$ArtExtCongSpeed)[[1]])
-
-  TTR_df <- TTR_df %>%
-  dplyr::mutate(FwyModCong_PTI = 1+3.67*log(mean((rlang::.data$FwyModCong_TTI))),
-    FwyHvyCong_PTI = 1+3.67*log(mean((rlang::.data$FwyHvyCong_TTI))),
-    FwySevCong_PTI = 1+3.67*log(mean((rlang::.data$FwySevCong_TTI))),
-    FwyExtCong_PTI = 1+3.67*log(mean((rlang::.data$FwyExtCong_TTI))),
-    ArtModCong_PTI = 1+3.67*log(mean((rlang::.data$ArtModCong_TTI))),
-    ArtHvyCong_PTI = 1+3.67*log(mean((rlang::.data$ArtHvyCong_TTI))),
-    ArtSevCong_PTI = 1+3.67*log(mean((rlang::.data$ArtSevCong_TTI))),
-    ArtExtCong_PTI = 1+3.67*log(mean((rlang::.data$ArtExtCong_TTI))))
-
-  TTR_df <- TTR_df %>%
-  dplyr::mutate(
-    FwyModCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean((rlang::.data$FwyModCong_TTI))))^(1/0.04953),
-    FwyHvyCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean((rlang::.data$FwyHvyCong_TTI))))^(1/0.04953),
-    FwySevCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean((rlang::.data$FwySevCong_TTI))))^(1/0.04953),
-    FwyExtCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean((rlang::.data$FwyExtCong_TTI))))^(1/0.04953),
-    ArtModCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean((rlang::.data$ArtModCong_TTI))))^(1/0.04953),
-    ArtHvyCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean((rlang::.data$ArtHvyCong_TTI))))^(1/0.04953),
-    ArtSevCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean((rlang::.data$ArtSevCong_TTI))))^(1/0.04953),
-    ArtExtCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean((rlang::.data$ArtExtCong_TTI))))^(1/0.04953)
-  )
+ #Calculate Travel Time Index by congestion level for metropolitan areas
+ #---------------------------------------------
+ TTR_df <- Marea_df %>%
+   dplyr::mutate(FwyModCong_TTI = FwyNoneCongSpeed/FwyModCongSpeed,
+                 FwyHvyCong_TTI = FwyNoneCongSpeed/FwyHvyCongSpeed,
+                 FwySevCong_TTI = FwyNoneCongSpeed/FwySevCongSpeed,
+                 FwyExtCong_TTI = FwyNoneCongSpeed/FwyExtCongSpeed,
+                 ArtModCong_TTI = ArtNoneCongSpeed/ArtModCongSpeed,
+                 ArtHvyCong_TTI = ArtNoneCongSpeed/ArtHvyCongSpeed,
+                 ArtSevCong_TTI = ArtNoneCongSpeed/ArtSevCongSpeed,
+                 ArtExtCong_TTI = ArtNoneCongSpeed/ArtExtCongSpeed)
+ 
+ TTR_df <- TTR_df %>%
+   dplyr::mutate(FwyModCong_PTI = 1+3.67*log(mean(FwyModCong_TTI)),
+                 FwyHvyCong_PTI = 1+3.67*log(mean(FwyHvyCong_TTI)),
+                 FwySevCong_PTI = 1+3.67*log(mean(FwySevCong_TTI)),
+                 FwyExtCong_PTI = 1+3.67*log(mean(FwyExtCong_TTI)),
+                 ArtModCong_PTI = 1+3.67*log(mean(ArtModCong_TTI)),
+                 ArtHvyCong_PTI = 1+3.67*log(mean(ArtHvyCong_TTI)),
+                 ArtSevCong_PTI = 1+3.67*log(mean(ArtSevCong_TTI)),
+                 ArtExtCong_PTI = 1+3.67*log(mean(ArtExtCong_TTI)))
+ 
+ TTR_df <- TTR_df %>%
+   dplyr::mutate(FwyModCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean(FwyModCong_TTI)))^(1/0.04953),
+                 FwyHvyCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean(FwyHvyCong_TTI)))^(1/0.04953),
+                 FwySevCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean(FwySevCong_TTI)))^(1/0.04953),
+                 FwyExtCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean(FwyExtCong_TTI)))^(1/0.04953),
+                 ArtModCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean(ArtModCong_TTI)))^(1/0.04953),
+                 ArtHvyCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean(ArtHvyCong_TTI)))^(1/0.04953),
+                 ArtSevCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean(ArtSevCong_TTI)))^(1/0.04953),
+                 ArtExtCong_BTI = 5.3746 / (1 + exp(- 1.5782 - 0.85867*mean(ArtExtCong_TTI)))^(1/0.04953))
+   
+ 
  
  # FwyModCong_TTI <- L$Year$Marea$FwyModCongSpeed / L$Year$Marea$FwyNoneCongSpeed
  # FwyHvyCong_TTI <- L$Year$Marea$FwyHvyCongSpeed / L$Year$Marea$FwyNoneCongSpeed
@@ -448,3 +451,7 @@ TravelTimeReliability <- function(L) {
  #----------------------------------
  #documentModule("TravelTimeReliability")
 
+
+
+      
+      

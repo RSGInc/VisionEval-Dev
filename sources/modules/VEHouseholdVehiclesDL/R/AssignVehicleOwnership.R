@@ -590,6 +590,7 @@ visioneval::savePackageDataset(AssignVehicleOwnershipSpecifications, overwrite =
 #' specifications for the module.
 #' @name AssignVehicleOwnership
 #' @import visioneval ordinal
+#' @importFrom utils tail
 #' @export
 AssignVehicleOwnership <- function(L) {
   #Set up
@@ -628,7 +629,7 @@ AssignVehicleOwnership <- function(L) {
 
   #Make a vehicle probability matrix
   #---------------------------------
-  AutoOwnModels_ls <- VEHouseholdVehicles::AutoOwnModels_ls
+  AutoOwnModels_ls <- loadPackageDataset("AutoOwnModels_ls","VEHouseholdVehicles")
 
   #Identify Urban households
   IsUrban <- Hh_df$LocType == "Urban"
@@ -735,7 +736,7 @@ AssignVehicleOwnership <- function(L) {
         NumToChg <- ChgVehByCategory_[Cat]
         ChgProb_ <- VehicleProb_HhNv[HhIdxToChg_, Cat]
       }
-      IdxToChg_ <- tail(HhIdxToChg_[order(ChgProb_)], abs(NumToChg))
+      IdxToChg_ <- utils::tail(HhIdxToChg_[order(ChgProb_)], abs(NumToChg))
       VehiclesChg_[IdxToChg_] <- sign(NumToChg)
     }
     #Calculate the adjusted number of vehicles

@@ -77,6 +77,40 @@ Simulate4DMeasuresSpecifications <- list(
         "Proportion of base town D3bpo4 value as tabulated from the EPA 2010 Smart Location Database for towns",
         "Proportion of base town D3bpo4 value as tabulated from the EPA 2010 Smart Location Database for rural areas"
         )
+    ),
+    item(
+      NAME = "D1B_MAX",
+      FILE = "marea_max_sld_variables.csv",
+      TABLE = "Marea",
+      GROUP = "Year",
+      TYPE = "compound",
+      UNITS = "PRSN/ACRE",
+      NAVALUE = -1,
+      SIZE = 0,
+      PROHIBIT = c("< 0"),
+      ISELEMENTOF = "",
+      UNLIKELY = "",
+      TOTAL = "",
+      DESCRIPTION = "Maximum gross population density (people/acre) on unprotected (i.e. developable) land in zone (Ref: EPA 2021 Smart Location Database)",
+      OPTIONAL = TRUE
+    ),
+    item(
+      NAME = items(
+        "D3BPO4_MAX"
+      ),
+      FILE = "marea_max_sld_variables.csv",
+      TABLE = "Marea",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "pedestrian-oriented intersections per square mile",
+      NAVALUE = -1,
+      SIZE = 0,
+      PROHIBIT = c("< 0"),
+      ISELEMENTOF = "",
+      UNLIKELY = "",
+      TOTAL = "",
+      DESCRIPTION = "Maximum intersection density in terms of pedestrian-oriented intersections having four or more legs per square mile (Ref: EPA 2021 Smart Location Database)",
+      OPTIONAL = TRUE
     )
   ),
   #Specify data to be loaded from data store
@@ -119,6 +153,24 @@ Simulate4DMeasuresSpecifications <- list(
       TYPE = "double",
       UNITS = "proportion",
       PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = ""
+    ),
+    item(
+      NAME = "D1B_MAX",
+      TABLE = "Marea",
+      GROUP = "Year",
+      TYPE = "compound",
+      UNITS = "PRSN/ACRE",
+      PROHIBIT = c("< 0"),
+      ISELEMENTOF = ""
+    ),
+    item(
+      NAME = "D3BPO4_MAX",
+      TABLE = "Marea",
+      GROUP = "Year",
+      TYPE = "double",
+      UNITS = "pedestrian-oriented intersections per square mile",
+      PROHIBIT = c("< 0"),
       ISELEMENTOF = ""
     ),
     item(
@@ -349,10 +401,22 @@ visioneval::savePackageDataset(Simulate4DMeasuresSpecifications, overwrite = TRU
 #' @return A numeric vector containing D3bpo4 values for the SimBzones.
 #' @export
 simulateD3bpo4 <- function(AveD3bpo4_, PlaceType_, NormD3bpo4_PtQt) {
+  NormD3bpo4_PtQt <- scaleNormD3bpo4(AveD3bpo4_, PlaceType_, NormD3bpo4_PtQt)
   NormD3bpo4_ <- sapply(PlaceType_, function(x) {
     sample(NormD3bpo4_PtQt[x,], 1)})
   NormD3bpo4_ * AveD3bpo4_
 }
+
+scaleNormD3bpo4 <- function(AveD3bpo4_, PlaceType_, NormD3bpo4_PtQt, MaxValue=430){
+  MaxNormD3bpo4_Pt <- NormD3bpo4_PtQt[,"100%"]
+  MaxAveD3bpo4_Pt <- tapply(AveD3bpo4_, PlaceType_, max)[names(MaxNormD3bpo4_Pt)]
+  ScaleNormD3bpo4_Pt <- pmax(MaxAveD3bpo4_Pt*MaxNormD3bpo4_Pt/MaxValue,1)
+  # NormD3bpo4_PtQt <- sweep(NormD3bpo4_PtQt,1,ScaleNormD3bpo4_Pt,"/")
+  NormD3bpo4_PtQt[,"100%"] <- NormD3bpo4_PtQt[,"100%"]/ScaleNormD3bpo4_Pt
+  NormD3bpo4_PtQt
+}
+
+
 
 
 #Main module function that simulates 4D measures
@@ -458,6 +522,26 @@ Simulate4DMeasures <- function(L) {
     PlaceType_ = D_df$PlaceType[IsUrban],
     NormD3bpo4_PtQt = SimBzone_ls$UaProfiles$NormD3bpo4_PtQt
   )
+  
+  # Cap the SLD metrics based on the threshold provided
+  # D1B cap
+  if(!any(is.null(L$Year$Marea$D1B_MAX))){
+    D1B_ <- local({
+      D1B_MAX <- L$Year$Marea$D1B_MAX
+      names(D1B_MAX) <- as.vector(L$Year$Marea$Marea)
+      D1B_MAX[is.na(D1B_MAX)] <- Inf
+      pmin(D1B_, D1B_MAX[D_df$Marea])
+    })
+  }
+  # D3BPO4 cap
+  if(!any(is.null(L$Year$Marea$D3BPO4_MAX))){
+    D_df$D3bpo4 <- local({
+      D3BPO4_MAX <- L$Year$Marea$D3BPO4_MAX
+      names(D3BPO4_MAX) <- as.vector(L$Year$Marea$Marea)
+      D3BPO4_MAX[is.na(D3BPO4_MAX)] <- Inf
+      pmin(D_df$D3bpo4, D3BPO4_MAX[D_df$Marea])
+    })
+  }
 
   #Return list of results
   #----------------------

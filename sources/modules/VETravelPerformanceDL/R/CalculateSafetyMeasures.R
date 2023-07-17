@@ -290,14 +290,13 @@ visioneval::savePackageDataset(CalculateSafetyMeasuresSpecifications, overwrite 
 #' @return A list containing data produced by the function consistent with the
 #' module specifications.
 #' @name CalculateSafetyMeasures
-#' @import visioneval utils
 #' @export
 CalculateSafetyMeasures <- function(L) {
   
   assign("%>%",getFromNamespace("%>%","magrittr"))
   
-  HH_df= as.data.frame(L$Year$Household)
-  Marea_df= as.data.frame(L$Year$Marea)
+  HH_df= data.frame(L$Year$Household)
+  Marea_df= data.frame(L$Year$Marea)
 
 # calcualte Bike and Walk PMT from Houshold table and aggregate all housholds to geth the total Marea PMTs
 # apply the injury and fatal rates to estiamte the crashes by type.  
@@ -346,9 +345,7 @@ CalculateSafetyMeasures <- function(L) {
     Out_ls$Year$Marea$BusInjuryCrash <- Crashes_Marea$businjury *365
     Out_ls$Year$Marea$VanFatalCrash <- Crashes_Marea$vanfatal *365
     Out_ls$Year$Marea$VanInjuryCrash <- Crashes_Marea$vaninjury *365
-    
-    
-    
+
     Out_ls
 }
 
@@ -359,4 +356,3 @@ CalculateSafetyMeasures <- function(L) {
 #Run module automatic documentation
 #----------------------------------
 documentModule("CalculateSafetyMeasures")
-
