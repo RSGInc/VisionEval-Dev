@@ -4,14 +4,20 @@
 VE-State:
   variants:
     odot-wfh:
-      description: VERSPM 3.0 with MultiModal Travel Demand Module
+      description: VERSPM 3.0 with Work From Home Travel Demand Module for ODOT
       config: visioneval-odot-wfh.cnf
       scripts: scripts-odot-wfh
       inputs: inputs-odot-wfh
       defs: defs-odot
     odot-wfh-dl:
-      description: VERSPM 3.0 with MultiModal Travel Demand Module
+      description: VERSPM 3.0 with Work From Home Driverless Travel Demand Module for ODOT
       config: visioneval-odot-wfh-dl.cnf
       scripts: scripts-odot-wfh-dl
       inputs: inputs-odot-wfh-dl
       defs: defs-odot
+    massdot-wfh:
+      description: VERSPM 3.0 with Work From Home Travel Demand Module for MASSDOT
+      config: visioneval-massdot-wfh.cnf
+      scripts: scripts-massdot-wfh
+      inputs: inputs-massdot-wfh
+      defs: defs-massdot
