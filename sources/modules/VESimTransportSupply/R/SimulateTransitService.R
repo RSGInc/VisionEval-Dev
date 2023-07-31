@@ -485,21 +485,24 @@ SimulateTransitService <- function(L) {
   }
   #Identify Mareas having no average D4c values
   MaNoD4c_ <- Ma[Ma != "None" & is.na(AveD4c_Ma)]
-  #Model average D4c values for Mareas where values are missing
-  AveD4c_Mx <- local({
-    TranRevMi_Mx <- BusEqRevMi_Ma[MaNoD4c_]
-    UrbanAcres_Mx <- with(L$Year$Bzone, tapply(UrbanArea, Marea, sum))[MaNoD4c_]
-    TotAct_Mx <- with(L$Year$Bzone, tapply(NumHh + TotEmp, Marea, sum))[MaNoD4c_]
-    TranRevMiPerAc_Mx <- TranRevMi_Mx / UrbanAcres_Mx
-    AveD1D_Mx <- TotAct_Mx / UrbanAcres_Mx
-    Data_df <- data.frame(
-        TranRevMiPerAc = TranRevMiPerAc_Mx,
-        AveD1D = AveD1D_Mx)
-    AveD4c_Mx <- applyLinearModel(D4cModels_ls$AveD4cModel_ls, Data_df)
-    AveD4c_Mx[TranRevMi_Mx == 0] <- 0
-    AveD4c_Mx
-  })
-  AveD4c_Ma[MaNoD4c_] <- AveD4c_Mx
+  #Model average D4c values for Mareas where values are missing if any exists
+  if(length(MaNoD4c_) > 0){
+    AveD4c_Mx <- local({
+      TranRevMi_Mx <- BusEqRevMi_Ma[MaNoD4c_]
+      UrbanAcres_Mx <- with(L$Year$Bzone, tapply(UrbanArea, Marea, sum))[MaNoD4c_]
+      TotAct_Mx <- with(L$Year$Bzone, tapply(NumHh + TotEmp, Marea, sum))[MaNoD4c_]
+      TranRevMiPerAc_Mx <- TranRevMi_Mx / UrbanAcres_Mx
+      AveD1D_Mx <- TotAct_Mx / UrbanAcres_Mx
+      Data_df <- data.frame(
+          TranRevMiPerAc = TranRevMiPerAc_Mx,
+          AveD1D = AveD1D_Mx)
+      AveD4c_Mx <- applyLinearModel(D4cModels_ls$AveD4cModel_ls, Data_df)
+      AveD4c_Mx[TranRevMi_Mx == 0] <- 0
+      AveD4c_Mx
+    })
+    AveD4c_Ma[MaNoD4c_] <- AveD4c_Mx
+    rm(AveD4c_Mx)
+  }
   if (any(names(AveD4c_Ma) == "None")) AveD4c_Ma["None"] <- 0
 
   #Calculate SimBzone D4c values

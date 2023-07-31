@@ -707,6 +707,9 @@ assignHhUrbanDvmtProp <- function(Hh_ls, HhUrbanRoadDvmt_Ma) {
   UrbanHhPropUrbanDvmt_Ma <- setNames(numeric(length(Ma)), Ma)
   NonUrbanHhPropUrbanDvmt_Ma <- setNames(numeric(length(Ma)), Ma)
   HasUrbanDvmt <- setNames(HhUrbanRoadDvmt_Ma > 0, Ma)
+  # Aditya fixed 07182023
+  # For "None" marea the values are NA so need to set to FALSE
+  HasUrbanDvmt[is.na(HasUrbanDvmt)] <- FALSE
   for (ma in Ma) {
     if (HasUrbanDvmt[ma]) {
       Dvmt_ <- Hh_ls$Dvmt[Hh_ls$Marea == ma]

@@ -1403,14 +1403,16 @@ CalculateVehicleOperatingCost <- function(L) {
     #Running time rate of travel
     Ma <- L$Year$Marea$Marea
     UrbanRunTimeRate_Ve <- (1 / L$Year$Marea$LdvAveSpeed)[MaToVehIdx_Ve]
+    NonUrbanRunTimeRate_Ve <- (1 / L$Year$Marea$NonUrbanAveSpeed)[MaToVehIdx_Ve]
     if (!any(is.na(L$Year$Marea$NonUrbanAveSpeed))) {
-      NonUrbanRunTimeRate_Ve <- (1 / L$Year$Marea$NonUrbanAveSpeed)[MaToVehIdx_Ve]
       RunTimeRate_Ve <-
         UrbanVmtProp_Ve * UrbanRunTimeRate_Ve + (1 - UrbanVmtProp_Ve) * NonUrbanRunTimeRate_Ve
       RunTimeRate_Ve[is.na(RunTimeRate_Ve)] <- NonUrbanRunTimeRate_Ve[is.na(RunTimeRate_Ve)]
     } else {
       RunTimeRate_Ve <- UrbanRunTimeRate_Ve
     }
+    # None area may not have UrbanRunTimeRate
+    RunTimeRate_Ve[is.na(RunTimeRate_Ve)] <- NonUrbanRunTimeRate_Ve[is.na(RunTimeRate_Ve)]
     #Access time equivalent rate of travel
     TripsPerDvmt_Ve <- with(L$Year$Household, VehicleTrips / Dvmt)[HhToVehIdx_Ve]
     MaxTripsPerDvmt <- quantile(TripsPerDvmt_Ve, probs = 0.99)
