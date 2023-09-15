@@ -167,10 +167,10 @@ CalculateAltModeTripsSpecifications <- list(
     visioneval::item(
       NAME =
         list("HhSize",
-              "Workers",
-              "Drivers",
-              "Age0to14",
-              "Age65Plus"),
+             "Workers",
+             "Drivers",
+             "Age0to14",
+             "Age65Plus"),
       TABLE = "Household",
       GROUP = "Year",
       TYPE = "people",
@@ -296,7 +296,7 @@ CalculateAltModeTripsSpecifications <- list(
     #   PROHIBIT = "NA",
     #   ISELEMENTOF = ""
     # ),
-
+    
     visioneval::item(
       NAME = "D3bpo4",
       TABLE = "Bzone",
@@ -399,7 +399,7 @@ CalculateAltModeTripsSpecifications <- list(
       TABLE = "Marea",
       GROUP = "Year",
       TYPE = "compound",
-      UNITS = "MI/PRSN",
+      UNITS = "MI/PRSN/YR",
       NAVALUE = -1,
       PROHIBIT = c("NA", "< 0"),
       ISELEMENTOF = "",
@@ -408,13 +408,13 @@ CalculateAltModeTripsSpecifications <- list(
   ),
   
   #Specify data to saved in the data store
- 
+  
   Set = visioneval::items(
     visioneval::item(
       NAME =
         list("WalkTrips",
-              "BikeTrips",
-              "TransitTrips"),
+             "BikeTrips",
+             "TransitTrips"),
       TABLE = "Household",
       GROUP = "Year",
       TYPE = "compound",
@@ -432,8 +432,8 @@ CalculateAltModeTripsSpecifications <- list(
     visioneval::item(
       NAME =
         list("WalkAvgTripDist",
-              "BikeAvgTripDist",
-              "TransitAvgTripDist"),
+             "BikeAvgTripDist",
+             "TransitAvgTripDist"),
       TABLE = "Household",
       GROUP = "Year",
       TYPE = "double",
@@ -449,9 +449,9 @@ CalculateAltModeTripsSpecifications <- list(
     ),
     visioneval::item(
       NAME =
-         list("WalkPMT",
-              "BikePMT",
-              "TransitPMT"),
+        list("WalkPMT",
+             "BikePMT",
+             "TransitPMT"),
       TABLE = "Household",
       GROUP = "Year",
       TYPE = "compound",
@@ -465,14 +465,14 @@ CalculateAltModeTripsSpecifications <- list(
         "Daily biking person miles traveled by all members of the household",
         "Daily transit person miles traveled by all members of the household"
       )   
-      )
-    
-  
+    )
     
     
     
     
-    ),
+    
+    
+  ),
   #Make module callable
   Call = TRUE
   
@@ -556,6 +556,9 @@ CalculateAltModeTrips <- function(L) {
   stopifnot("data.frame" %in% class(Bzone_df))
   
   Marea_df <- data.frame(L$Year[["Marea"]])
+  if ("TranRevMiPC" %in% colnames(Marea_df)) {
+    Marea_df$TranRevMiPC = Marea_df$TranRevMiPC / 1000
+  }
   stopifnot("data.frame" %in% class(Marea_df))
   
   D_df <- data.frame(L$Year[[dataset_name]])
@@ -602,7 +605,7 @@ CalculateAltModeTrips <- function(L) {
   Out_ls$Year$Household$WalkPMT <- Preds[["y"]]
   
   
-    # BikePMT
+  # BikePMT
   
   #load("data/WalkPMTModel_df.rda")
   Model_df <- loadPackageDataset("BikePMTModel_df")
@@ -655,8 +658,8 @@ CalculateAltModeTrips <- function(L) {
   Out_ls$Year$Household$TransitPMT <- Preds[["y"]]
   
   #change the dataframe to be compatible with TFL models
- 
-    # WalkTFL
+  
+  # WalkTFL
   
   #load("data/WalkTFLModel_df.rda")
   Model_df <- loadPackageDataset("WalkTFLModel_df")
