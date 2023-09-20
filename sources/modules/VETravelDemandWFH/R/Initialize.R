@@ -103,7 +103,8 @@ InitializeSpecifications <- list(
         "Proportion of households residing in the metropolitan (i.e. urbanized) part of the Azone",
         "Proportion of households residing in towns (i.e. urban-like but not urbanized) in the Azone",
         "Proportion of households residing in rural (i.e. not urbanized or town) parts of the Azone"
-      )
+      ),
+      OPTIONAL = TRUE
     )
   )
 )
@@ -176,7 +177,11 @@ Initialize <- function(L) {
   AzoneVars_ <- names(L$Data$Year$Azone)
   NotSaveVars_ <-
     c("PropMetroHh", "PropTownHh", "PropRuralHh")
-  OutAzoneVars_ <- AzoneVars_[-which(AzoneVars_ %in% NotSaveVars_)]
+  if(all(NotSaveVars_ %in% AzoneVars_)){
+    OutAzoneVars_ <- AzoneVars_[-which(AzoneVars_ %in% NotSaveVars_)]
+  } else {
+    OutAzoneVars_ <- AzoneVars_
+  }
   Out_ls <- L
   Out_ls$Data$Year$Azone <- Out_ls$Data$Year$Azone[OutAzoneVars_]
   
@@ -250,37 +255,39 @@ Initialize <- function(L) {
   #Check consistency of location type area and activity
   #----------------------------------------------------
   #Only check if no other errors identified
-  if (length(Errors_) == 0) {
-    #Iterate through years and check values
-    Yr <- unique(L$Data$Year$Azone$Year)
-    Values_df <- data.frame(Out_ls$Data$Year$Azone)
-    Values_df$Geo <- as.character(Values_df$Geo)
-    Values_df$Year <- as.character(Values_df$Year)
-    for (yr in Yr) {
-      IsYear <- L$Data$Year$Azone$Year == yr
-      V_df <- Values_df[IsYear,]
-      #Check if there are valid proportions
-      for(loc_type in LocType_){
-        Names_ <- paste0("Prop", loc_type, TeleWork_)
-        HhNames_ <- paste0("Prop", loc_type, "Hh")
-        WrkProps_ <- rowSums(V_df[,Names_])
-        HhProps_ <- data.frame(L$Data$Year$Azone[HhNames_])[IsYear,]
-        # Check if there are positive proportions where households exists
-        ValidProps_ <- WrkProps_>=HhProps_
-        BothNAs_ <- is.na(WrkProps_) & is.na(HhProps_)
-        ValidProps_[is.na(ValidProps_) & !BothNAs_] <- FALSE
-        if (any(!ValidProps_)) {
-          ErrAzones_ <- V_df[!ValidProps_, "Geo"]
-          Msg <- paste0(
-            "Error in the input file 'azone_wkr_loc_type_occupation_prop.csv", "' for year ", yr,
-            " and the following Azones: ",
-            paste(ErrAzones_, collapse = ", "), ". ",
-            "The values are inconsistent for (", paste(Names_, collapse = ", "),
-            ") compared to values for (", HhNames_, ") in 'azone_hh_loc_type_prop.csv' file."
-          )
-          Errors_ <- c(Errors_, Msg)
+  if(all(NotSaveVars_ %in% names(Out_ls$Data$Year$Azone))){
+    if (length(Errors_) == 0) {
+      #Iterate through years and check values
+      Yr <- unique(L$Data$Year$Azone$Year)
+      Values_df <- data.frame(Out_ls$Data$Year$Azone)
+      Values_df$Geo <- as.character(Values_df$Geo)
+      Values_df$Year <- as.character(Values_df$Year)
+      for (yr in Yr) {
+        IsYear <- L$Data$Year$Azone$Year == yr
+        V_df <- Values_df[IsYear,]
+        #Check if there are valid proportions
+        for(loc_type in LocType_){
+          Names_ <- paste0("Prop", loc_type, TeleWork_)
+          HhNames_ <- paste0("Prop", loc_type, "Hh")
+          WrkProps_ <- rowSums(V_df[,Names_])
+          HhProps_ <- data.frame(L$Data$Year$Azone[HhNames_])[IsYear,]
+          # Check if there are positive proportions where households exists
+          ValidProps_ <- WrkProps_>=HhProps_
+          BothNAs_ <- is.na(WrkProps_) & is.na(HhProps_)
+          ValidProps_[is.na(ValidProps_) & !BothNAs_] <- FALSE
+          if (any(!ValidProps_)) {
+            ErrAzones_ <- V_df[!ValidProps_, "Geo"]
+            Msg <- paste0(
+              "Error in the input file 'azone_wkr_loc_type_occupation_prop.csv", "' for year ", yr,
+              " and the following Azones: ",
+              paste(ErrAzones_, collapse = ", "), ". ",
+              "The values are inconsistent for (", paste(Names_, collapse = ", "),
+              ") compared to values for (", HhNames_, ") in 'azone_hh_loc_type_prop.csv' file."
+            )
+            Errors_ <- c(Errors_, Msg)
+          }
+          
         }
-        
       }
     }
   }

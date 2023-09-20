@@ -138,6 +138,17 @@ PredictWFHSpecifications <- list(
       ISELEMENTOF = ""
     ),
     visioneval::item(
+      NAME = "DistanceToWork",
+      TABLE = "Worker",
+      GROUP = "Year",
+      TYPE = "distance",
+      UNITS = "MI",
+      NAVALUE = "-1",
+      PROHIBIT = c("NA", "<= 0"),
+      ISELEMENTOF = "",
+      OPTIONAL = TRUE
+    ),
+    visioneval::item(
       NAME =
         items("Age0to14",
               "Age15to19",
@@ -228,7 +239,18 @@ PredictWFHSpecifications <- list(
       TYPE = "character",
       UNITS = "category",
       PROHIBIT = "",
-      ISELEMENTOF = ""
+      ISELEMENTOF = "",
+      OPTIONAL = TRUE
+    ),
+    visioneval::item(
+      NAME = "LocType",
+      TABLE = "Household",
+      GROUP = "Year",
+      TYPE = "character",
+      UNITS = "category",
+      PROHIBIT = "",
+      ISELEMENTOF = "",
+      OPTIONAL = TRUE
     ),
     visioneval::item(
       NAME = "D1B",
@@ -504,7 +526,7 @@ PredictWFH <- function(L) {
                                  variable.factor = FALSE)
   
   # Normalize overall
-  # Seperate out the field names
+  # Separate out the field names
   
   targets_all[, Occupation := ifelse(grepl("Mixed", OccupationTeleWorkLevel), "Mixed",
                                      ifelse(grepl("OnSite", OccupationTeleWorkLevel), "OnSite", "Remote"))]
@@ -519,11 +541,13 @@ PredictWFH <- function(L) {
   targets_all[!TeleWorkLevel %in% telework_levels_workfromhome, 
               Target := Target/sum(Target), 
               by = Occupation]
+  targets_all[is.na(Target), Target:=0]
   
   # Then further adjust the days, they should sum to one
   targets_all[TeleWorkLevel %in% telework_levels_teleworkdays, 
               Target := Target/sum(Target), 
               by = Occupation]
+  targets_all[is.na(Target), Target:=0]
   
   # Get the labels consistent with those used in the models
   targets_all[, Occupation := c("mixed", "on-site","remote")[match(Occupation, occupations)]]
@@ -570,8 +594,13 @@ PredictWFH <- function(L) {
   worker[hh, c("Bzone", "Azone") := .(i.Bzone, i.Azone), on = "HhId"]
   
   # add the work and home location types (occupation shares are by location type within azones)
-  worker[bzone, LocType := i.LocType, on = "Bzone"]
-  worker[bzone[, .(BzoneWork = Bzone, LocType)], LocTypeWork := i.LocType, on = "BzoneWork"]
+  if("LocType" %in% colnames(bzone)){
+    worker[bzone, LocType := i.LocType, on = "Bzone"]
+    worker[bzone[, .(BzoneWork = Bzone, LocType)], LocTypeWork := i.LocType, on = "BzoneWork"]
+  }
+  if("LocType" %in% colnames(hh)){
+    worker[hh, LocType := i.LocType, on = "HhId"]
+  }
   
   # simulate the occupation for every worker by Azone and LocType
   worker[occ_shares, c("pOnSite", "pMixed") := .(i.OnSite, i.Mixed), on = c("Azone", "LocType")]
@@ -687,54 +716,58 @@ PredictWFH <- function(L) {
   # Do you Telework at all? 
   # ======================= 
   
-  #  Binary logit. If the person doesn’t work from home, do they telecommute at all during the week? (0 vs 1+)
+  #  Binary logit. If the person does not work from home, do they telecommute at all during the week? (0 vs 1+)
   model_telework <- loadPackageDataset("Telework_df")
   model_telework <- data.table(model_telework)
   
   # Additional variables not in the work from home model
   # Commute Distance
-  DistToWork_ls <- loadPackageDataset("DistToWork_ls")
-  
-  # Names of the table in the list is the home location (county and loc type combination)
-  # Column name is the work location
-  # convert to data.table and changes all names to upper case
-  DistToWork_ls_names <- names(DistToWork_ls)
-  DistToWork_ls <- lapply(1:length(DistToWork_ls), function(x) data.table(DistToWork_ls[[x]]))
-  names(DistToWork_ls) <- toupper(DistToWork_ls_names)
-  lapply(DistToWork_ls, function(x) {setnames(x, toupper); invisible()})
-  
-  # household locations and worker locations
-  worker[, AZ_LTH := toupper(paste(Azone, LocType, sep = "_"))]
-  worker[, AZ_LTW := toupper(paste(AzoneWork, LocTypeWork, sep = "_"))]
-  
-  # Deal with some differences for out of state:
-  # Distance to work matrices names for out of state geographies do not include the loctype
-  # Distance to work matrices out of state geographies only out of state to in state direction
-  # No out of state to out of state distance (allow for missing combinations in code).
-  worker[grepl("OUTOFSTATE", AZ_LTH), AZ_LTH := toupper(Azone)]
-  worker[grepl("OUTOFSTATE", AZ_LTW), c("AZ_LTH", "AZ_LTW") := .(toupper(AzoneWork), AZ_LTH)]
-  
-  # loop through the groups by origin and then destination and draw from the distribution
-  for(azlth in unique(worker$AZ_LTH)){
-    for(azltw in unique(worker[AZ_LTH == azlth]$AZ_LTW)){
-      if(azltw %in% names(DistToWork_ls[[azlth]])){
-        prob_vec <- unlist(DistToWork_ls[[azlth]][,azltw, with = FALSE])
-      } else {
-        prob_vec <- c(0, rep(0.1,10),rep(0,90))    
+  if(!"DistanceToWork" %in% colnames(worker)){
+    DistToWork_ls <- loadPackageDataset("DistToWork_ls")
+    
+    # Names of the table in the list is the home location (county and loc type combination)
+    # Column name is the work location
+    # convert to data.table and changes all names to upper case
+    DistToWork_ls_names <- names(DistToWork_ls)
+    DistToWork_ls <- lapply(1:length(DistToWork_ls), function(x) data.table(DistToWork_ls[[x]]))
+    names(DistToWork_ls) <- toupper(DistToWork_ls_names)
+    lapply(DistToWork_ls, function(x) {setnames(x, toupper); invisible()})
+    
+    # household locations and worker locations
+    worker[, AZ_LTH := toupper(paste(Azone, LocType, sep = "_"))]
+    worker[, AZ_LTW := toupper(paste(AzoneWork, LocTypeWork, sep = "_"))]
+    
+    # Deal with some differences for out of state:
+    # Distance to work matrices names for out of state geographies do not include the loctype
+    # Distance to work matrices out of state geographies only out of state to in state direction
+    # No out of state to out of state distance (allow for missing combinations in code).
+    worker[grepl("OUTOFSTATE", AZ_LTH), AZ_LTH := toupper(Azone)]
+    worker[grepl("OUTOFSTATE", AZ_LTW), c("AZ_LTH", "AZ_LTW") := .(toupper(AzoneWork), AZ_LTH)]
+    
+    # loop through the groups by origin and then destination and draw from the distribution
+    for(azlth in unique(worker$AZ_LTH)){
+      for(azltw in unique(worker[AZ_LTH == azlth]$AZ_LTW)){
+        if(azltw %in% names(DistToWork_ls[[azlth]])){
+          prob_vec <- unlist(DistToWork_ls[[azlth]][,azltw, with = FALSE])
+        } else {
+          prob_vec <- c(0, rep(0.1,10),rep(0,90))    
+        }
+        if(length(prob_vec[is.na(prob_vec)])>0) prob_vec <- c(0, rep(0.1,10),rep(0,90))
+        worker[AZ_LTH == azlth & AZ_LTW == azltw, 
+               CommuteDistanceBin := sample(101, 
+                                            size = .N, 
+                                            replace = TRUE, 
+                                            prob = prob_vec)]
       }
-      if(length(prob_vec[is.na(prob_vec)])>0) prob_vec <- c(0, rep(0.1,10),rep(0,90))
-      worker[AZ_LTH == azlth & AZ_LTW == azltw, 
-             CommuteDistanceBin := sample(101, 
-                                          size = .N, 
-                                          replace = TRUE, 
-                                          prob = prob_vec)]
     }
+    
+    # Draw a value to change from integer bin value, which represents the upper bound commute distance, 
+    # Round max value to 100
+    worker[, CommuteDistance := CommuteDistanceBin - runif(.N)]
+    worker[, CommuteDistance := ifelse(CommuteDistance > 100, 100, CommuteDistance)]
+  } else {
+    worker[, CommuteDistance := DistanceToWork]
   }
-  
-  # Draw a value to change from integer bin value, which represents the upper bound commute distance, 
-  # Round max value to 100
-  worker[, CommuteDistance := CommuteDistanceBin - runif(.N)]
-  worker[, CommuteDistance := ifelse(CommuteDistance > 100, 100, CommuteDistance)]
   
   # for workers from home, replace commute distance with 0
   worker[WorkFromHome == "Yes", CommuteDistance := 0]
