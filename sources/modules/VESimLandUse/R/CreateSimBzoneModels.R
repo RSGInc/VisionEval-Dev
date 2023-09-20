@@ -1866,7 +1866,7 @@ UsaBlkGrpTypes_df <- rbind(Ua_df[,Keep_], Tn_df[,Keep_], Ru_df[,Keep_])
 #'
 #' A data frame containing values of for land use types and levels for land use
 #' density, mixing, and destination accessibility measures corresponding to
-#' block groups in the loadPackageDataset("SimLandUseData_df","VESimLandUseData") data frame
+#' block groups in the VESimLandUseData::SimLandUseData_df data frame
 #'
 #' @format A data frame having the following components:
 #' \describe{
