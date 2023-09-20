@@ -138,6 +138,17 @@ estimateIncomeModel <- function(Data_df, StartTerms_) {
   if ("(Intercept)" %in% EndTerms_) {
     EndTerms_ <- EndTerms_[-grep("(Intercept)", EndTerms_)]
   }
+  #Changed for GQ value estimation - allowing constant only model as a special case
+  ## This will allow the small sample to have a sample share model with no significant exogenous attribute
+  #IncModel_LM <- lm(makeFormula(EndTerms_), data = EstData_df)
+  if (length(EndTerms_) == 0){
+    makeFormula <-
+      function(Terms_) {
+        FormulaString <-
+          paste("PowInc ~ 1")
+        as.formula(FormulaString)
+      }
+  }
   IncModel_LM <- lm(makeFormula(EndTerms_), data = EstData_df)
   #Define function to transform model outputs and establish income groups
   transformResult <- function(Result_) {
