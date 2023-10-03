@@ -527,9 +527,9 @@ AssignDrivers <- function(L) {
     Per_df$AgeGroup <- paste0("Age", Bin)
     
     # Add upper value threshold to Household Income
-    IsMetro_ <- L$Year$Household$LocType == "Urban"
-    L$Year$Household$Income[!IsMetro_] <- pmin(L$Year$Household$Income[!IsMetro_], 217902.9)
-    L$Year$Household$Income[IsMetro_] <- pmin(L$Year$Household$Income[IsMetro_], 238675.8)
+    #IsMetro_ <- L$Year$Household$LocType == "Urban"
+    #L$Year$Household$Income[!IsMetro_] <- pmin(L$Year$Household$Income[!IsMetro_], 217902.9)
+    #L$Year$Household$Income[IsMetro_] <- pmin(L$Year$Household$Income[IsMetro_], 238675.8)
     
     
     # Add household attributes
