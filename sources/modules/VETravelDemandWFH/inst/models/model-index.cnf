@@ -16,8 +16,28 @@ VE-State:
       inputs: inputs-odot-wfh-dl
       defs: defs-odot
     massdot-wfh:
-      description: VERSPM 3.0 with Work From Home Travel Demand Module for MASSDOT
+      description: VERSPM 3.0 with Work From Home Travel Demand Module for MASSDOT Base
       config: visioneval-massdot-wfh.cnf
       scripts: scripts-massdot-wfh
       inputs: inputs-massdot-wfh
       defs: defs-massdot
+    massdot-oos-wfh:
+      description: VERSPM 3.0 with Work From Home Travel Demand Module for MASSDOT with out-of-state Azones
+      config: visioneval-massdot-wfh.cnf
+      scripts: scripts-massdot-wfh
+      inputs: inputs-massdot-oos-wfh
+      defs: defs-massdot-oos
+    massdot-wfh-staged:
+      description: VERSPM 3.0 with Work From Home Travel Demand Module for MASSDOT Staged Scenario
+      config: visioneval-massdot-staged.cnf
+      scripts: scripts-massdot-wfh
+      inputs: inputs-massdot-wfh
+      defs: defs-massdot
+	  stages: 
+		- base-year
+		- base
+		- sc1
+		- sc2
+		- sc3
+		- sc4
+    

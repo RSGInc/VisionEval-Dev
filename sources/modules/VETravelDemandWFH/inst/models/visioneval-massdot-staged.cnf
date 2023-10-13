@@ -1,0 +1,45 @@
+Notes:
+- VisionEval.cnf for MultiModal VERSPM (single stage)
+- Model Structural Parameters: ScriptsDir, InputDir, ParamDir, GeoFile, ModelParamFile
+- Model Description: Model, Region, State
+- Scenario Description (single stage): Scenario, Description, BaseYear, Years
+
+# Model Structural Parameters
+ScriptsDir     : scripts
+InputDir       : inputs
+ParamDir       : defs
+GeoFile        : geo.csv
+ModelParamFile : model_parameters.json # Located in InputDir
+
+# Model description
+Model          : VE-State-WFH
+Region         : Massachusetts
+State          : MA
+
+# Scenario description (using default or runtime Seed parameter)
+Scenario       : MASSDOT VE-State WFH Base Model
+Description    : Base VE-State model for MASSDOT for year 2015 and 2050
+BaseYear       : 2015
+Years          : [2015, 2050]
+
+ModelStages : # specify explicitly to avoid processing base scenario
+    "base-year":
+      Dir: base-year
+      Reportable: true
+    "base":
+      Dir: base
+      Reportable: true
+    "scenario-1":
+      Dir: sc1
+      Reportable: true
+    "scenario-2":
+      Dir: sc2
+      Reportable: true
+    "scenario-3":
+      Dir: sc3
+      Reportable: true
+    "scenario-4":
+      Dir: sc4
+      Reportable: true
+
+

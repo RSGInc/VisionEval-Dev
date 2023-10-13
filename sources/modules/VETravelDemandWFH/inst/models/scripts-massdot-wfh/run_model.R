@@ -1,4 +1,4 @@
-requireModulePackage(VETravelDemandWFH)
+requirePackage(VETravelDemandWFH)
 
 #Run all demo module for all years
 #---------------------------------

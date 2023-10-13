@@ -1,0 +1,17 @@
+"Geo","Year","CenterPkgSpacesPerSFDU","InnerPkgSpacesPerSFDU","OuterPkgSpacesPerSFDU","CenterPkgSpacesPerMFDU","InnerPkgSpacesPerMFDU","OuterPkgSpacesPerMFDU","CenterPkgSpacesPerGQ","InnerPkgSpacesPerGQ","OuterPkgSpacesPerGQ"
+"Barn",2015,4,4,4,2,2,2,1,1,1
+"Berk",2015,4,4,4,2,2,2,1,1,1
+"Bos1",2015,2,2,2,1,1,1,0.5,0.5,0.5
+"Bos2",2015,4,4,4,2,2,2,1,1,1
+"Bos3",2015,4,4,4,2,2,2,1,1,1
+"Hamp",2015,4,4,4,2,2,2,1,1,1
+"None",2015,4,4,4,2,2,2,1,1,1
+"Worc",2015,4,4,4,2,2,2,1,1,1
+"Barn",2050,4,4,4,2,2,2,1,1,1
+"Berk",2050,4,4,4,2,2,2,1,1,1
+"Bos1",2050,2,2,2,1,1,1,0.5,0.5,0.5
+"Bos2",2050,4,4,4,2,2,2,1,1,1
+"Bos3",2050,4,4,4,2,2,2,1,1,1
+"Hamp",2050,4,4,4,2,2,2,1,1,1
+"None",2050,4,4,4,2,2,2,1,1,1
+"Worc",2050,4,4,4,2,2,2,1,1,1
