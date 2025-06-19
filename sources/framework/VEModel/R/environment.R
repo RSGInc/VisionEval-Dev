@@ -307,16 +307,18 @@ updateSetup <- function(object=NULL,inFile=TRUE,Source="interactive",Param_ls=li
 #' ve.runtime/visioneval.cnf. Otherwise the object should be a VEModel or VEModelStage.
 #' @param filename the name of the configuration file to write. If NULL (the default), write to the
 #'   file associated with the existing parameter list of the object.
+#' @param fromFile a logical value; if TRUE, return base configuration file (loadedParam_ls),
+#'   otherwise parameters as configured into model's RunParam_ls.
 #' @param overwrite if TRUE, overwrite any existing configuration file; otherwise abort with error
 #' @return The filename that was written, or character(0) with a warning if the file could not
 #'   be written
 #' @importFrom yaml write_yaml
 #' @export
-writeSetup <- function(object=NULL,filename=NULL,overwrite=FALSE) {
+writeSetup <- function(object=NULL,filename=NULL,fromFile=TRUE,overwrite=FALSE) {
 
-  Param_ls <- getSetup(object=object,fromFile=TRUE)
+  Param_ls <- getSetup(object=object,fromFile=fromFile)
+  ParamDir <- ve.env$ve.runtime # Default to save parameters to root of runtime directory
   if ( is.null(object) ) {
-    ParamDir <- ve.env$ve.runtime
     ParamName <- "runtime"
   } else {
     if ( inherits(object,"VEModel") ) {
@@ -340,11 +342,13 @@ writeSetup <- function(object=NULL,filename=NULL,overwrite=FALSE) {
 
   if ( is.null(filename) ) {
     ParamPath <- attr(Param_ls,"FILE")
-    if ( is.null(ParamPath) ) ParamPath <- file.path(ParamDir,"visioneval.cnf")
+    if ( is.null(ParamPath) ) {
+      ParamPath <- file.path(ParamDir,"dump-visioneval.cnf")
+    }
   } else if ( ! isAbsolutePath(filename) ) {
     ParamPath <- file.path(ParamDir,filename)
-    attr(Param_ls,"FILE") <- ParamPath
-  } else {
+    # attr(Param_ls,"FILE") <- ParamPath # This seems too aggressive and may confuse things later.
+  } else { # absolute path provided as filename parameter
     ParamPath <- filename
   }
 
